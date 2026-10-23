@@ -5,7 +5,8 @@ import { AbsoluteFill, Img, staticFile } from "remotion";
 import { C, SANS, SERIF, clamp, expoOut, keys, mix, pr, suave } from "./tokens";
 import { CENAS2 } from "./roteiro2";
 import { Cursor, Fundo, Janela, Logo, LogoEscrita, Tracejado, curvaTraco } from "./Cenas";
-import { Camera, Clique, Fio, GEO_H, GEO_V, Geo, Titulo, caminho, stage } from "./Reel";
+import { Camera, Clique, GEO_H, GEO_V, Geo, Titulo, caminho, stage } from "./Reel";
+const Fio: React.FC<{ d?: string; p?: number; t?: number }> = () => null;   // sem linhas tracejadas
 
 const rnd = (i: number) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 type P2 = [number, number];
@@ -13,8 +14,8 @@ export type Fmt = {
   W: number; H: number; c: P2; g: Geo;
   logo: { w: number; left: number; top: number }; tag: { top: number; size: number }; url: { top: number; size: number }; d1: string; d2: string;
   title: { top: number; size: number };
-  z: { search: number; cta: number; ctaFim: number; card: number; drawer: number; chk: number };
-  alvo: P2; alvoCta: P2; alvoC: { card: P2; drawer: P2; chk: P2 };
+  z: { search: number; cta: number; ctaFim: number; card: number; drawer: number; chk: number; filt: number; prod: number };
+  alvo: P2; alvoCta: P2; alvoC: { card: P2; drawer: P2; chk: P2 }; alvoF: P2; alvoP: P2;
   frase: { top: number; size: number; d: [string, string, string, string]; ul: { left: number; w: number; top: number } };
   cards: { items: { t: string; f: string; x: number; y: number; w: number; h: number; rz: number; z: number }[]; fios: string[]; cam: { px: [number, number][]; py: [number, number][]; s: [number, number][]; ry: [number, number][]; rx: [number, number][] }; title: { top: number; size: number } };
   dev: { g: Geo; phone: { x: number; y: number; w: number; h: number } };
@@ -33,7 +34,7 @@ const Letras: React.FC<{ u: number; ini: number; children: string; rosa?: boolea
   <span style={{ display: "inline-block", whiteSpace: "nowrap", marginRight: "0.28em", perspective: 600 }}>
     {[...children].map((ch, i) => {
       const p = pr(u, ini + i * 0.032, 0.45);
-      return <span key={i} style={{ display: "inline-block", opacity: p, transform: `translateY(${(1 - p) * 60 + Math.sin(t * 3.2 + i * 0.55) * 7 * p}px) rotateX(${(1 - p) * -80}deg)`, transformOrigin: "50% 100%", filter: `blur(${(1 - p) * 8}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal" }}>{ch === " " ? " " : ch}</span>;
+      return <span key={i} style={{ display: "inline-block", opacity: p, transform: `translateY(${(1 - p) * 60 + Math.sin(t * 3.2 + i * 0.55) * 7 * p}px) rotateX(${(1 - p) * -80}deg)`, transformOrigin: "50% 100%", filter: `blur(${(1 - p) * 8}px)`, color: rosa ? (C.claro ? C.rosaEsc : C.rosa) : C.offwhite, fontStyle: rosa ? "italic" : "normal" }}>{ch === " " ? " " : ch}</span>;
     })}
   </span>
 );
@@ -90,53 +91,25 @@ const NovaAba: React.FC<{ u: number }> = ({ u }) => {
   );
 };
 
-// ---------- 1. abertura: montagem rápida de fotos, depois a logo se escrevendo ----------
-const MONT = ["640", "351", "428", "320", "1033", "385"];
-const Montagem: React.FC<{ t: number; F: Fmt; saiEm: number; desloca?: number; passo?: number }> = ({ t, F, saiEm, desloca = 0, passo = 0.25 }) => {
-  if (t > saiEm + 0.3) return null;
-  const n = F.W > F.H ? 3 : 1, pw = F.W / n, o = 1 - pr(t, saiEm, 0.3, suave);
-  return (
-    <AbsoluteFill style={{ opacity: o }}>
-      {Array.from({ length: n }, (_, k) => {
-        const tt = Math.max(0, t - k * 0.07), i = Math.floor(tt / passo), loc = (tt % passo) / passo, foto = MONT[(i + k * 2 + desloca) % MONT.length];
-        return (
-          <div key={k} style={{ position: "absolute", left: k * pw, top: 0, width: pw, height: F.H, overflow: "hidden" }}>
-            <Img src={staticFile(`fotos/${foto}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 24%", transform: `scale(${mix(1.28, 1.02, expoOut(loc))})` }} />
-            <div style={{ position: "absolute", inset: 0, background: C.rosa, opacity: Math.pow(1 - loc, 3) * 0.5, mixBlendMode: "screen" }} />
-          </div>
-        );
-      })}
-      <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 0 240px rgba(0,0,0,.35)" }} />
-    </AbsoluteFill>
-  );
-};
+// ---------- 1. abertura e final: a logo sobre o fundo limpo ----------
 const CenaLogo: React.FC<{ t: number; F: Fmt; fim?: boolean }> = ({ t, F, fim }) => {
-  const t1 = fim ? 0.7 : 0.9;   // instante em que a logo entra
-  const push = fim ? mix(0.94, 1, expoOut(clamp((t - t1) / 1.0))) : mix(0.72, 1, expoOut(clamp((t - t1) / 1.0)));
-  const p = fim ? 1 : curvaTraco(clamp((t - t1) / 1.1)), off = -(fim ? CENAS2.final.a + t : t) * 230, a = pr(t, t1, 0.4);
-  const t0 = fim ? 1.1 : 1.9, pulso = 1 + 0.03 * Math.sin(t * 5);
+  const push = fim ? mix(0.94, 1, expoOut(clamp(t / 1.0))) : mix(0.55, 1, expoOut(clamp(t / 1.2)));
+  const p = fim ? 1 : curvaTraco(clamp((t - 0.05) / 1.2)), a = pr(t, 0.02, 0.4);
+  const t0 = fim ? 0.5 : 1.2, pulso = 1 + 0.03 * Math.sin(t * 5);
   return (
-    <AbsoluteFill>
-      <AbsoluteFill style={{ transform: `scale(${push})`, opacity: clamp(0.3 + push) }}>
-        <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible", opacity: a }}>
-          <Tracejado d={F.d1} largura={5} off={off} /><Tracejado d={F.d2} largura={3} dash="22 24" off={off * 1.3} op={0.55} />
-        </svg>
-        <div style={{ position: "absolute", left: F.logo.left, top: F.logo.top, opacity: a }}>
-          {fim ? <div style={{ filter: "drop-shadow(0 0 10px hsl(332 82% 62% / .45))" }}><Logo w={F.logo.w} /></div> : <LogoEscrita w={F.logo.w} p={p} />}
-        </div>
-        <div style={{ position: "absolute", left: 0, right: 0, top: F.tag.top, textAlign: "center", fontFamily: SERIF, fontSize: F.tag.size, letterSpacing: mix(14, 8, expoOut(clamp((t - t0) / 0.6))), color: C.dim, opacity: pr(t, t0, 0.5), filter: `blur(${(1 - pr(t, t0, 0.5)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
-        {fim ? (
-          <>
-            <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top - 10, textAlign: "center", opacity: pr(t, t0 + 0.4, 0.4), transform: `scale(${pulso})` }}>
-              <span style={{ display: "inline-block", padding: "16px 40px", borderRadius: 60, background: `linear-gradient(135deg, ${C.rosa}, ${C.rosaEsc})`, color: "#fff", fontFamily: SANS, fontWeight: 600, fontSize: Math.round(F.url.size * 0.62), letterSpacing: 5, boxShadow: `0 0 40px ${C.rosa}` }}>COMPRE PELO SITE ›</span>
-            </div>
-            <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top + 105, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.7, 0.4) }}>USEAZA.COM.BR</div>
-          </>
-        ) : (
-          <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.3, 0.4) }}>USEAZA.COM.BR</div>
-        )}
-      </AbsoluteFill>
-      <Montagem t={t} F={F} saiEm={fim ? 0.55 : 0.8} desloca={fim ? 3 : 0} />
+    <AbsoluteFill style={{ transform: `scale(${push})`, opacity: fim ? 1 : clamp(0.35 + push) }}>
+      <div style={{ position: "absolute", left: F.logo.left, top: F.logo.top, opacity: a }}>{fim ? <Logo w={F.logo.w} /> : <LogoEscrita w={F.logo.w} p={p} />}</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: F.tag.top, textAlign: "center", fontFamily: SERIF, fontSize: F.tag.size, letterSpacing: mix(14, 8, expoOut(clamp((t - t0) / 0.6))), color: C.dim, opacity: pr(t, t0, 0.5), filter: `blur(${(1 - pr(t, t0, 0.5)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
+      {fim ? (
+        <>
+          <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top - 10, textAlign: "center", opacity: pr(t, t0 + 0.4, 0.4), transform: `scale(${pulso})` }}>
+            <span style={{ display: "inline-block", padding: "16px 40px", borderRadius: 60, background: `linear-gradient(135deg, ${C.rosa}, ${C.rosaEsc})`, color: "#fff", fontFamily: SANS, fontWeight: 600, fontSize: Math.round(F.url.size * 0.62), letterSpacing: 5, boxShadow: `0 10px 40px hsl(332 82% 60% / .45)` }}>COMPRE PELO SITE ›</span>
+          </div>
+          <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top + 105, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.7, 0.4) }}>USEAZA.COM.BR</div>
+        </>
+      ) : (
+        <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.3, 0.4) }}>USEAZA.COM.BR</div>
+      )}
     </AbsoluteFill>
   );
 };
@@ -205,7 +178,6 @@ const CenaProm: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   return (
     <>
       {foto(idx, clamp(loc * 4))}{idx > 0 && foto(idx - 1, 1 - clamp(loc * 4))}
-      <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>{[0, 1, 2].map(ring)}</svg>
       <Fio d={F.frase.d[0]} p={pr(u, 0.1, 0.7, suave) * al} t={u} /><Fio d={F.frase.d[1]} p={pr(u, 0.25, 0.7, suave) * al} t={u} />
       <Fio d={F.frase.d[2]} p={pr(u, k - 0.1, 0.7, suave) * ar} t={u} /><Fio d={F.frase.d[3]} p={pr(u, k, 0.7, suave) * ar} t={u} />
       <div style={{ ...caixa, opacity: al, filter: `blur(${(1 - al) * 10}px)` }}>
@@ -243,34 +215,46 @@ const CenaCards: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   );
 };
 
-// ---------- 5. compra de verdade: tamanho M, gaveta do carrinho e finalizar ----------
-// coordenadas na janela (1440x900): cartão 4 em (1086..1428, 104..617); tamanho M em (1256,576); gaveta de 940 a 1440; FINALIZAR em (988,527,194,64); resumo do pedido em (810..1210, 140..400)
-const CenaCompra: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
-  const { g, c } = F, st = (x: number, y: number) => stage(g, x, y);
-  const hov = pr(u, 1.4, 0.3, suave), hovM = pr(u, 2.3, 0.2, suave), dim = pr(u, 2.9, 0.5, suave), slide = pr(u, 2.85, 0.75, expoOut), chk = pr(u, 5.4, 0.45, suave);
-  const [m1x, m1y] = st(1256, 470), [m2x, m2y] = st(1090, 440), [m3x, m3y] = st(1010, 270);
-  const s = keys(u, [[0, 0.9], [0.9, 1.0], [1.6, F.z.card], [2.7, F.z.card], [3.4, F.z.drawer], [5.2, F.z.drawer], [5.9, F.z.chk], [7.8, F.z.chk], [8.8, 1.1]]);
-  const px = keys(u, [[0, m1x], [2.7, m1x], [3.4, m2x], [5.2, m2x], [5.9, m3x], [8.8, m3x]]), py = keys(u, [[0, m1y], [2.7, m1y], [3.4, m2y], [5.2, m2y], [5.9, m3y], [8.8, m3y]]);
-  const f = keys(u, [[0, 0], [0.9, 0.15], [1.6, 1], [8.0, 1], [8.8, 0.3]]);
-  const ry = keys(u, [[0, -8], [1.6, 0], [8.0, 0], [8.8, -5]]), rx = keys(u, [[0, 5], [1.6, 0], [8.0, 0], [8.8, 3]]);
-  const [cx, cy] = caminho(u, [[0.6, 520, 260], [1.4, 1256, 300], [1.9, 1256, 300], [2.4, 1256, 576], [3.3, 1256, 576], [4.0, 1090, 470], [4.6, 1085, 559]]);
-  const press = pr(u, 5.0, 0.12) * (1 - pr(u, 5.15, 0.15));
-  const pm = (x: number, y: number, w: number, h: number, ini: number, fim: number): React.ReactNode => <div style={{ position: "absolute", left: x, top: y, width: w, height: h, borderRadius: 4, boxShadow: `0 0 0 4px ${C.rosa}, 0 0 36px ${C.rosa}`, opacity: pr(u, ini, 0.3) * (1 - pr(u, fim, 0.25)) }} />;
+// ---------- 5. jornada de compra: filtros, página do produto, carrinho e checkout (capturas reais do site) ----------
+// coordenadas em px css da janela (1440x900). Coleção: Tamanho (90,304), caixa M (20,414), Cor (90,513), Rosa (30,681), cartão do Top Nula (564..840, 218..636).
+// Produto: tamanho M (971,300), "Adicionar ao carrinho" (1210,366), benefícios (905,432). Gaveta de 940 a 1440; "Finalizar compra" (988,527,194,64).
+const CenaJornada: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
+  const { g, c } = F, st = (x: number, y: number) => stage(g, x, y), H = F.W > F.H;
+  const o1 = pr(u, 1.15, 0.2), o2 = pr(u, 2.3, 0.25), o3 = pr(u, 3.35, 0.2), o4 = pr(u, 4.4, 0.25);
+  const trP = pr(u, 5.7, 0.8, expoOut), oM = pr(u, 8.0, 0.2), dim = pr(u, 9.2, 0.5, suave), slide = pr(u, 9.15, 0.75, expoOut), chk = pr(u, 11.4, 0.45, suave);
+  const [f1x, f1y] = st(420, 430), [f2x, f2y] = st(1060, 330), [f3x, f3y] = st(1090, 440), [f4x, f4y] = st(1010, 270);
+  const s = keys(u, [[0, 0.9], [0.8, 1.0], [1.4, F.z.filt], [5.0, F.z.filt], [5.9, 1.05], [6.7, F.z.prod], [8.8, F.z.prod], [9.5, F.z.drawer], [11.2, F.z.drawer], [11.9, F.z.chk], [14.0, F.z.chk], [14.6, 1.1]]);
+  const px = keys(u, [[0, f1x], [5.0, f1x], [6.0, f2x], [8.8, f2x], [9.5, f3x], [11.2, f3x], [11.9, f4x], [14.6, f4x]]), py = keys(u, [[0, f1y], [5.0, f1y], [6.0, f2y], [8.8, f2y], [9.5, f3y], [11.2, f3y], [11.9, f4y], [14.6, f4y]]);
+  const f = keys(u, [[0, 0], [0.8, 0.15], [1.4, 1], [5.0, 1], [5.9, 0.3], [6.7, 1], [14.0, 1], [14.6, 0.3]]);
+  const ax = keys(u, [[0, F.alvoF[0]], [5.0, F.alvoF[0]], [6.0, F.alvoP[0]], [8.8, F.alvoP[0]], [9.5, F.alvoC.drawer[0]], [11.2, F.alvoC.drawer[0]], [11.9, F.alvoC.chk[0]], [14.6, F.alvoC.chk[0]]]);
+  const ay = keys(u, [[0, F.alvoF[1]], [5.0, F.alvoF[1]], [6.0, F.alvoP[1]], [8.8, F.alvoP[1]], [9.5, F.alvoC.drawer[1]], [11.2, F.alvoC.drawer[1]], [11.9, F.alvoC.chk[1]], [14.6, F.alvoC.chk[1]]]);
+  const ry = keys(u, [[0, -7], [1.4, 0], [14.0, 0], [14.6, -5]]), rx = keys(u, [[0, 4], [1.4, 0], [14.0, 0], [14.6, 3]]);
+  const [cx, cy] = caminho(u, [[0.4, 600, 200], [1.0, 90, 304], [1.35, 90, 304], [1.9, 22, 414], [2.4, 22, 414], [2.9, 90, 513], [3.5, 90, 513], [4.0, 30, 681], [4.5, 30, 681], [5.4, 700, 420], [6.0, 700, 420], [7.0, 780, 320], [7.8, 971, 300], [8.2, 971, 300], [9.0, 1210, 366], [9.5, 1210, 366], [10.9, 1085, 559], [11.5, 1085, 559]]);
+  const pm = (x: number, y: number, w: number, h: number, ini: number, fim: number): React.ReactNode => <div style={{ position: "absolute", left: x, top: y, width: w, height: h, borderRadius: 4, boxShadow: `0 0 0 4px ${C.rosa}, 0 0 30px ${C.rosa}`, opacity: pr(u, ini, 0.25) * (1 - pr(u, fim, 0.25)) }} />;
+  const press = pr(u, 11.3, 0.12) * (1 - pr(u, 11.45, 0.15));
+  const url = chk > 0.4 ? `${ENDERECO}/checkout` : trP > 0.35 ? `${ENDERECO}/products/top-nula-manga-rosa` : `${ENDERECO}/collections/presenca`;
+  const cr = g.k < 0.8 ? 1.35 : 1.0, rr = g.k < 0.8 ? 80 : 60;
   return (
-    <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={[keys(u, [[0, F.alvoC.card[0]], [2.7, F.alvoC.card[0]], [3.4, F.alvoC.drawer[0]], [5.2, F.alvoC.drawer[0]], [5.9, F.alvoC.chk[0]], [8.8, F.alvoC.chk[0]]]), keys(u, [[0, F.alvoC.card[1]], [2.7, F.alvoC.card[1]], [3.4, F.alvoC.drawer[1]], [5.2, F.alvoC.drawer[1]], [5.9, F.alvoC.chk[1]], [8.8, F.alvoC.chk[1]]])] as P2} c={c}>
-      <Nav2 g={g} url={ENDERECO} load={clamp((u - 5.0) / 0.5) * (1 - clamp((u - 5.5) / 0.05))}>
-        <Vista src="s_idle" /><Vista src="s_hover" o={hov} /><Vista src="s_hoverM" o={hovM} />
-        {pm(1210, 556, 92, 42, 1.8, 2.8)}
+    <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={[ax, ay] as P2} c={c}>
+      <Nav2 g={g} url={url} load={clamp((u - 5.65) / 0.5) * (1 - clamp((u - 6.2) / 0.05))}>
+        <div style={{ position: "absolute", inset: 0, opacity: 1 - trP, transform: `translateY(${-trP * 60}px) scale(${1 + trP * 0.04})` }}>
+          <Vista src="a0" /><Vista src="a1" o={o1} /><Vista src="a2" o={o2} /><Vista src="a3" o={o3} /><Vista src="a4" o={o4} />
+          {pm(4, 288, 242, 34, 0.9, 1.7)}{pm(4, 402, 66, 28, 2.0, 2.9)}{pm(4, 498, 242, 34, 3.1, 3.7)}{pm(4, 668, 112, 28, 4.1, 4.9)}{pm(558, 214, 290, 450, 5.0, 5.8)}
+        </div>
+        <div style={{ position: "absolute", inset: 0, opacity: trP, transform: `translateY(${(1 - trP) * 300}px)` }}>
+          <Vista src="p0" /><Vista src="pM" o={oM} />
+          {pm(900, 428, 240, 98, 6.8, 7.7)}{pm(946, 280, 48, 40, 7.5, 8.6)}{pm(1000, 336, 420, 60, 8.7, 9.7)}
+        </div>
         <div style={{ position: "absolute", inset: 0, background: "#000", opacity: 0.5 * dim }} />
         <div style={{ position: "absolute", left: 940 + (1 - slide) * 500, top: 0, width: 500, height: 900, overflow: "hidden", boxShadow: "-20px 0 60px rgba(0,0,0,.25)" }}>
-          <Img src={staticFile("site/drawer.jpg")} style={{ width: 500, height: 900 }} />
+          <Img src={staticFile("site/drawerP.jpg")} style={{ width: 500, height: 900 }} />
         </div>
-        <div style={{ opacity: pr(u, 3.5, 0.3) * (1 - pr(u, 5.3, 0.2)) }}>{pm(982, 520, 206, 76, 0, 99)}</div>
+        <div style={{ opacity: pr(u, 10.3, 0.3) * (1 - pr(u, 11.6, 0.2)) }}>{pm(982, 520, 206, 76, 0, 99)}</div>
         <div style={{ position: "absolute", left: 988, top: 527, width: 194, height: 64, background: `hsl(332 82% 68% / ${press * 0.35})` }} />
         <Vista src="s_checkout" o={chk} />
-        <div style={{ opacity: pr(u, 6.1, 0.3) * (1 - pr(u, 8.2, 0.3)) }}>{pm(804, 138, 412, 82, 0, 99)}{pm(804, 368, 412, 46, 0, 99)}</div>
-        <div style={{ opacity: 1 - chk }}><Cursor x={cx} y={cy} s={g.k < 0.8 ? 1.35 : 1.0} /></div>
-        <Clique x={cx + 8} y={cy + 10} u={u} ini={2.6} r={g.k < 0.8 ? 80 : 60} /><Clique x={cx + 8} y={cy + 10} u={u} ini={5.0} r={g.k < 0.8 ? 80 : 60} />
+        <div style={{ opacity: pr(u, 12.1, 0.3) * (1 - pr(u, 14.2, 0.3)) }}>{pm(804, 138, 412, 82, 0, 99)}{pm(804, 368, 412, 46, 0, 99)}</div>
+        <div style={{ opacity: 1 - chk }}><Cursor x={cx} y={cy} s={cr} /></div>
+        {[1.1, 2.2, 3.3, 4.3, 5.6, 7.9, 9.1, 11.3].map((t) => <Clique key={t} x={cx + 8} y={cy + 10} u={u} ini={t} r={rr} />)}
       </Nav2>
     </Camera>
   );
@@ -302,7 +286,7 @@ export const Reel2: React.FC<{ t: number; F: Fmt }> = ({ t, F }) => {
       <Cena2 t={t} a={k.site.a} b={k.site.b}>{(u) => <CenaSite u={u} F={F} />}</Cena2>
       <Cena2 t={t} a={k.prom.a} b={k.prom.b}>{(u) => <CenaProm u={u} F={F} />}</Cena2>
       <Cena2 t={t} a={k.cards.a} b={k.cards.b}>{(u) => <CenaCards u={u} F={F} />}</Cena2>
-      <Cena2 t={t} a={k.compra.a} b={k.compra.b}>{(u) => <CenaCompra u={u} F={F} />}</Cena2>
+      <Cena2 t={t} a={k.jornada.a} b={k.jornada.b}>{(u) => <CenaJornada u={u} F={F} />}</Cena2>
       <Cena2 t={t} a={k.disp.a} b={k.disp.b}>{(u) => <CenaDisp u={u} F={F} />}</Cena2>
       <Cena2 t={t} a={k.final.a} b={k.final.b + 1}>{(u) => <CenaLogo t={u} F={F} fim />}</Cena2>
     </AbsoluteFill>
@@ -315,8 +299,8 @@ export const FMT_V: Fmt = {
   logo: { w: 616, left: 232, top: 780 }, tag: { top: 1420, size: 40 }, url: { top: 1560, size: 44 },
   d1: "M-80 1180 C 260 1180 380 1010 540 1010 S 820 700 1160 700", d2: "M-80 1330 C 300 1330 420 1160 600 1130 S 880 880 1160 860",
   title: { top: 150, size: 74 },
-  z: { search: 1.75, cta: 1.5, ctaFim: 1.2, card: 1.6, drawer: 1.25, chk: 1.4 },
-  alvo: [600, 1130], alvoCta: [600, 1130], alvoC: { card: [760, 1100], drawer: [800, 1050], chk: [700, 950] },
+  z: { search: 1.75, cta: 1.5, ctaFim: 1.2, card: 1.6, drawer: 1.25, chk: 1.4, filt: 1.6, prod: 1.7 },
+  alvo: [600, 1130], alvoCta: [600, 1130], alvoC: { card: [760, 1100], drawer: [800, 1050], chk: [700, 950] }, alvoF: [560, 1050], alvoP: [650, 980],
   frase: { top: 880, size: 112, d: ["M-60 760 C 40 760 70 900 120 1010", "M1140 1250 C 1040 1250 1010 1120 960 1010", "M-60 1250 C 80 1250 140 1100 200 950", "M1140 700 C 1000 700 940 840 880 950"], ul: { left: 340, w: 400, top: 1170 } },
   cards: {
     items: [
@@ -335,8 +319,8 @@ export const FMT_H: Fmt = {
   logo: { w: 640, left: 640, top: 290 }, tag: { top: 770, size: 38 }, url: { top: 880, size: 38 },
   d1: "M-100 660 C 380 660 620 520 960 530 S 1500 340 2020 320", d2: "M-100 760 C 420 760 700 640 1000 610 S 1520 460 2020 430",
   title: { top: 18, size: 56 },
-  z: { search: 1.25, cta: 1.75, ctaFim: 1.2, card: 1.7, drawer: 1.3, chk: 1.5 },
-  alvo: [840, 580], alvoCta: [840, 580], alvoC: { card: [1300, 560], drawer: [1250, 540], chk: [1150, 520] },
+  z: { search: 1.25, cta: 1.75, ctaFim: 1.2, card: 1.7, drawer: 1.3, chk: 1.5, filt: 1.4, prod: 1.55 },
+  alvo: [840, 580], alvoCta: [840, 580], alvoC: { card: [1300, 560], drawer: [1250, 540], chk: [1150, 520] }, alvoF: [900, 560], alvoP: [1100, 520],
   frase: { top: 385, size: 150, d: ["M-60 380 C 120 380 260 520 470 600", "M1980 780 C 1800 780 1660 640 1450 580", "M-60 800 C 140 800 280 640 520 560", "M1980 340 C 1780 340 1640 480 1400 540"], ul: { left: 720, w: 480, top: 735 } },
   cards: {
     items: [

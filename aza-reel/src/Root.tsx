@@ -26,14 +26,10 @@ const Com: React.FC<{ c: React.FC; claro?: boolean }> = ({ c: Cena, claro }) => 
 const Logo1: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Cena1 t={t} />} />; };
 const Reel1: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Reel t={t} />} />; };
 const Reel16: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <ReelH t={t} />} />; };
-const Reel2V: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Reel2 t={t} F={FMT_V} />} />; };
-const Reel2H: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Reel2 t={t} F={FMT_H} />} />; };
-const Reel2VC: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_V} />} />; };
-const Reel2HC: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_H} />} />; };
+const Reel2V: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_V} />} />; };
+const Reel2H: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_H} />} />; };
 export const Root: React.FC = () => (
   <>
-    <Composition id="Reel2VC" component={Reel2VC} width={1080} height={1920} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
-    <Composition id="Reel2HC" component={Reel2HC} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel2V" component={Reel2V} width={1080} height={1920} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel2H" component={Reel2H} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel16" component={Reel16} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR_TOTAL * FPS)} />
