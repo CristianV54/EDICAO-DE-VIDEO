@@ -1,7 +1,7 @@
 // Reel v2: abertura com zoom e logo, digitação do endereço, tour pelo site, promessas com movimento, compra real com carrinho, dispositivos e assinatura.
 // Uma única implementação para os dois formatos: o objeto Fmt traz a geometria de cada um (vertical 1080x1920 e horizontal 1920x1080).
 import React from "react";
-import { AbsoluteFill, Img, staticFile } from "remotion";
+import { AbsoluteFill, Easing, Img, staticFile } from "remotion";
 import { C, SANS, SERIF, clamp, expoOut, keys, mix, pr, suave } from "./tokens";
 import { CENAS2 } from "./roteiro2";
 import { Cursor, Fundo, Janela, Logo, LogoEscrita, Tracejado, curvaTraco } from "./Cenas";
@@ -16,6 +16,7 @@ export type Fmt = {
   title: { top: number; size: number };
   z: { search: number; cta: number; ctaFim: number; card: number; drawer: number; chk: number; filt: number; prod: number };
   alvo: P2; alvoCta: P2; alvoC: { card: P2; drawer: P2; chk: P2 }; alvoF: P2; alvoP: P2;
+  prom: { x: number; top: number; w: number; size: number; align: "left" | "center"; card: { x: number; y: number; w: number; h: number }; ul: { x: number; top: number } };
   frase: { top: number; size: number; d: [string, string, string, string]; ul: { left: number; w: number; top: number } };
   cards: { items: { t: string; f: string; x: number; y: number; w: number; h: number; rz: number; z: number }[]; fios: string[]; cam: { px: [number, number][]; py: [number, number][]; s: [number, number][]; ry: [number, number][]; rx: [number, number][] }; title: { top: number; size: number } };
   dev: { g: Geo; phone: { x: number; y: number; w: number; h: number } };
@@ -23,6 +24,7 @@ export type Fmt = {
 
 // ---------- transição: a cena atual avança (zoom in) e a próxima recua até o lugar (zoom out) ----------
 const T = 0.4;
+const slideEase = Easing.bezier(0.5, 0, 0.15, 1);   // arrancada suave para páginas que deslizam
 const Cena2: React.FC<{ t: number; a: number; b: number; children: (u: number) => React.ReactNode }> = ({ t, a, b, children }) => {
   if (t < a || t > b) return null;
   const ent = clamp((t - a) / T), sai = clamp((b - t) / T);
@@ -118,15 +120,15 @@ const CenaLogo: React.FC<{ t: number; F: Fmt; fim?: boolean }> = ({ t, F, fim })
 // página da coleção (colecao.jpg, 1440 de largura): cartão do Top Nula Manga Rosa em (564..843, 744..1160)
 const CenaSite: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   const { g, c } = F, [sx, sy] = stage(g, 720, 364), [bx, by] = stage(g, 128, 673), H = F.W > F.H;
-  const mostra = pr(u, 2.9, 0.4, suave), digitou = u > 2.15, tr = pr(u, 6.35, 0.9, expoOut);
+  const mostra = pr(u, 2.9, 0.4, suave), digitou = u > 2.15, tr = pr(u, 6.7, 1.0, slideEase);
   const sOver = H ? 0.85 : 0.95;
-  const s = keys(u, [[0, F.z.search], [2.2, F.z.search * 1.1], [3.6, sOver], [5.0, sOver + 0.03], [5.8, F.z.cta], [7.0, F.z.cta], [8.2, 1.3], [10.3, F.z.ctaFim]]);
-  const px = keys(u, [[0, sx], [2.2, sx], [3.6, c[0]], [5.0, bx], [7.0, bx], [8.2, c[0]]]), py = keys(u, [[0, sy], [2.2, sy], [3.6, c[1]], [5.0, by], [7.0, by], [8.2, c[1]]]);
-  const f = keys(u, [[0, 1], [2.2, 1], [3.6, 0], [5.0, 0], [5.8, 0.9], [7.0, 0.9], [8.2, 0.4], [10.3, 0.4]]);
-  const ry = keys(u, [[0, 0], [2.2, -2], [3.6, -9], [5.8, -3], [8.2, -6]]), rx = keys(u, [[0, 0], [3.6, 5], [5.8, 2], [8.2, 4]]);
-  const [cx, cy] = caminho(u, [[3.7, 1380, 140], [4.5, 703, 62], [5.1, 703, 62], [5.9, 150, 690], [6.9, 200, 640], [8.0, 560, 520], [9.2, 703, 440]]);
-  const click = pr(u, 6.0, 0.2, suave) * (1 - pr(u, 6.25, 0.25, suave)), cs = keys(u, [[7.0, 0], [9.6, 520]], expoOut);
-  const alvoP = mix2(F.c, F.alvo, clamp((u - 4.8) / 1.0));
+  const s = keys(u, [[0, F.z.search], [2.2, F.z.search * 1.1], [3.6, sOver], [4.5, sOver + 0.03], [6.0, F.z.cta], [9.0, F.z.cta], [10.3, F.z.ctaFim]]);
+  const px = keys(u, [[0, sx], [2.2, sx], [3.6, c[0]], [4.5, c[0]], [6.0, bx], [7.3, bx], [9.0, c[0]]]), py = keys(u, [[0, sy], [2.2, sy], [3.6, c[1]], [4.5, c[1]], [6.0, by], [7.3, by], [9.0, c[1]]]);
+  const f = keys(u, [[0, 1], [2.2, 1], [3.6, 0], [4.5, 0], [6.0, 0.9], [7.3, 0.9], [9.0, 0.4], [10.3, 0.4]]);
+  const ry = keys(u, [[0, 0], [2.2, -2], [3.6, -8], [5.9, -2], [9.0, -4]]), rx = keys(u, [[0, 0], [3.6, 4], [5.9, 1], [9.0, 3]]);
+  const [cx, cy] = caminho(u, [[3.7, 1380, 140], [4.3, 703, 62], [4.8, 703, 62], [6.1, 150, 690], [6.9, 200, 640], [8.0, 560, 520], [9.2, 703, 440]]);
+  const click = pr(u, 6.2, 0.2, suave) * (1 - pr(u, 6.45, 0.25, suave)), cs = keys(u, [[7.4, 0], [10.0, 520]], expoOut);
+  const alvoP = mix2(F.c, F.alvo, clamp((u - 4.5) / 1.5));
   const url = !digitou ? undefined : tr > 0.35 ? `${ENDERECO}/collections/presenca` : ENDERECO;
   const load = digita(u);
   return (
@@ -134,21 +136,21 @@ const CenaSite: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
       <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={alvoP as P2} c={c}>
         <Nav2 g={g} url={url} load={load}>
           <div style={{ position: "absolute", inset: 0, opacity: 1 - mostra }}><NovaAba u={u} /></div>
-          <div style={{ position: "absolute", inset: 0, opacity: mostra * (1 - tr), transform: `translateY(${-tr * 70}px) scale(${1 + tr * 0.05})` }}>
+          <div style={{ position: "absolute", inset: 0, opacity: mostra, transform: `translateY(${-tr * 90}px) scale(${1 + tr * 0.04})` }}>
             <Pagina scroll={0}>
-              <div style={{ position: "absolute", left: 6, top: 642, width: 244, height: 62, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 ${50 + click * 50}px ${C.rosa}`, opacity: pr(u, 5.4, 0.3) * (1 - pr(u, 6.6, 0.3)) }} />
+              <div style={{ position: "absolute", left: 6, top: 642, width: 244, height: 62, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 ${50 + click * 50}px ${C.rosa}`, opacity: pr(u, 5.6, 0.3) * (1 - pr(u, 7.0, 0.3)) }} />
             </Pagina>
             <div style={{ position: "absolute", left: 665, top: 74, width: 80 * pr(u, 4.5, 0.4, expoOut), height: 3, background: C.rosa, boxShadow: `0 0 12px ${C.rosa}`, opacity: 1 - pr(u, 6.4, 0.2) }} />
           </div>
-          <div style={{ position: "absolute", inset: 0, opacity: tr, transform: `translateY(${(1 - tr) * 420}px)` }}>
+          <div style={{ position: "absolute", inset: 0, background: "#fff", boxShadow: "0 -30px 60px rgba(0,0,0,.18)", transform: `translateY(${(1 - tr) * 900}px)` }}>
             <div style={{ position: "absolute", left: 0, top: -cs, width: 1440, height: 2400 }}>
               <Img src={staticFile("site/colecao.jpg")} style={{ width: 1440, height: 2400, display: "block" }} />
-              <div style={{ position: "absolute", left: 560, top: 740, width: 288, height: 424, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 44px ${C.rosa}`, opacity: pr(u, 9.0, 0.35) }} />
+              <div style={{ position: "absolute", left: 560, top: 740, width: 288, height: 424, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 44px ${C.rosa}`, opacity: pr(u, 9.4, 0.35) }} />
             </div>
           </div>
           <div style={{ opacity: mostra }}>
             <Cursor x={cx} y={cy} s={g.k < 0.8 ? 1.35 : 1.0} />
-            <Clique x={cx + 8} y={cy + 10} u={u} ini={6.0} r={g.k < 0.8 ? 90 : 70} />
+            <Clique x={cx + 8} y={cy + 10} u={u} ini={6.2} r={g.k < 0.8 ? 90 : 70} />
           </div>
         </Nav2>
       </Camera>
@@ -158,36 +160,32 @@ const CenaSite: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
     </>
   );
 };
-const digita = (u: number) => clamp((u - 2.15) / 0.7) * (1 - clamp((u - 2.9) / 0.05)) + clamp((u - 6.0) / 0.8) * (1 - clamp((u - 6.8) / 0.05));
+const digita = (u: number) => clamp((u - 2.15) / 0.7) * (1 - clamp((u - 2.9) / 0.05)) + clamp((u - 6.2) / 0.8) * (1 - clamp((u - 7.0) / 0.05));
 const mix2 = (a: P2, b: P2, p: number): P2 => [mix(a[0], b[0], p), mix(a[1], b[1], p)];
 const Pal: React.FC<{ u: number; ini: number; sai: number; rosa?: boolean; children: React.ReactNode }> = ({ u, ini, sai, rosa, children }) => {
   const p = pr(u, ini, 0.5), q = pr(u, sai, 0.3, suave);
-  return <span style={{ display: "inline-block", opacity: p * (1 - q), transform: `translateY(${(1 - p) * 46 - q * 20}px)`, filter: `blur(${(1 - p) * 10 + q * 8}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal", marginRight: "0.28em" }}>{children}</span>;
+  return <span style={{ display: "inline-block", opacity: p * (1 - q), transform: `translateY(${(1 - p) * 46 - q * 20}px)`, filter: `blur(${(1 - p) * 4 + q * 4}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal", marginRight: "0.28em" }}>{children}</span>;
 };
 
 // ---------- 3. as promessas do site, em movimento ----------
-const FOTOS_PROM = ["385", "640", "428", "1033"];
+const FRASES_PROM = [{ foto: "361", pos: "50% 40%", z0: 1.5, org: "50% 48%" }, { foto: "355", pos: "50% 55%", z0: 1.0, org: "50% 50%" }];
+const Linha: React.FC<{ u: number; ini: number; saiEm: number; rosa?: boolean; children: string }> = ({ u, ini, saiEm, rosa, children }) => {
+  const p = pr(u, ini, 0.6), q = pr(u, saiEm, 0.35, suave);
+  return <div style={{ opacity: p * (1 - q), transform: `translateY(${(1 - p) * 28}px)`, color: rosa ? (C.claro ? C.rosaEsc : C.rosa) : C.offwhite, fontStyle: rosa ? "italic" : "normal" }}>{children}</div>;
+};
 const CenaProm: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
-  const k = 2.6, al = 1 - pr(u, k - 0.5, 0.3, suave), ar = pr(u, k - 0.45, 0.3, suave);
-  const [cx, cy] = F.c, ring = (i: number) => { const ph = (u * 1.0 + i / 3) % 1; return <circle key={i} cx={cx} cy={cy + (F.W > F.H ? 10 : 60)} r={90 + ph * (F.W > F.H ? 560 : 640)} fill="none" stroke={C.rosa} strokeWidth={3} opacity={(1 - ph) * 0.5} />; };
-  const sway = Math.sin(u * 1.4) * 5, zoom = 1 + u * 0.018;
-  const caixa: React.CSSProperties = { position: "absolute", left: 40, right: 40, top: F.frase.top, textAlign: "center", fontFamily: SERIF, fontSize: F.frase.size, lineHeight: 1.05, transform: `rotateY(${sway}deg) scale(${zoom})`, perspective: 900 };
-  const dur = 1.35, idx = Math.floor(u / dur), loc = (u % dur) / dur;
-  const foto = (i: number, o: number) => <div key={`${i}-${o}`} style={{ position: "absolute", inset: "-14%", opacity: o * 0.6, filter: "blur(20px) brightness(.58) saturate(1.35)", transform: `scale(${1.08 + ((i === idx ? loc : 1) * 0.3)}) translateX(${(i % 2 ? -1 : 1) * (i === idx ? loc : 1) * 90}px)` }}><Img src={staticFile(`fotos/${FOTOS_PROM[i % FOTOS_PROM.length]}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>;
-  const brilhoX = ((u * 0.8) % 1) * (F.W + 500) - 250;
+  const k = 2.6, P = F.prom, ar = pr(u, k - 0.1, 0.4, suave);
+  const caixa: React.CSSProperties = { position: "absolute", left: P.x, width: P.w, top: P.top, textAlign: P.align, fontFamily: SERIF, fontSize: P.size, lineHeight: 1.05 };
+  const foto = (i: number, o: number, ini: number) => <div key={i} style={{ position: "absolute", inset: 0, opacity: o }}><Img src={staticFile(`fotos/${FRASES_PROM[i].foto}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: FRASES_PROM[i].pos, transform: `scale(${FRASES_PROM[i].z0 + clamp((u - ini) / 2.8) * 0.06})`, transformOrigin: FRASES_PROM[i].org }} /></div>;
+  const ce = pr(u, 0.15, 0.8, expoOut), cs = 1 - pr(u, 4.95, 0.35, suave);
   return (
     <>
-      {foto(idx, clamp(loc * 4))}{idx > 0 && foto(idx - 1, 1 - clamp(loc * 4))}
-      <Fio d={F.frase.d[0]} p={pr(u, 0.1, 0.7, suave) * al} t={u} /><Fio d={F.frase.d[1]} p={pr(u, 0.25, 0.7, suave) * al} t={u} />
-      <Fio d={F.frase.d[2]} p={pr(u, k - 0.1, 0.7, suave) * ar} t={u} /><Fio d={F.frase.d[3]} p={pr(u, k, 0.7, suave) * ar} t={u} />
-      <div style={{ ...caixa, opacity: al, filter: `blur(${(1 - al) * 10}px)` }}>
-        <div><Letras u={u} t={u} ini={0.15}>Valoriza</Letras></div><div><Letras u={u} t={u} ini={0.55} rosa>sua silhueta</Letras></div>
+      <div style={{ position: "absolute", left: P.card.x, top: P.card.y, width: P.card.w, height: P.card.h, borderRadius: 28, overflow: "hidden", boxShadow: C.sombra, background: "#fff", opacity: ce * cs, transform: `translateY(${(1 - ce) * 40}px)` }}>
+        {foto(0, 1 - ar, 0)}{foto(1, ar, k)}
       </div>
-      <div style={{ ...caixa, opacity: ar }}>
-        <div><Letras u={u - k} t={u} ini={-0.4}>Feito</Letras><Letras u={u - k} t={u} ini={-0.2}>para</Letras></div><div><Letras u={u - k} t={u} ini={0.05} rosa>durar</Letras></div>
-      </div>
-      <div style={{ position: "absolute", left: brilhoX, top: -100, width: 220, height: F.H + 200, transform: "rotate(16deg)", background: "linear-gradient(90deg, transparent, rgba(255,255,255,.20), transparent)", mixBlendMode: "screen", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", left: F.frase.ul.left, width: F.frase.ul.w * pr(u, k + 1.0, 0.6, expoOut), top: F.frase.ul.top, height: 4, background: C.rosa, boxShadow: `0 0 24px ${C.rosa}`, opacity: ar }} />
+      <div style={caixa}><Linha u={u} ini={0.2} saiEm={k - 0.4}>Valoriza</Linha><Linha u={u} ini={0.5} saiEm={k - 0.4} rosa>sua silhueta</Linha></div>
+      <div style={caixa}><Linha u={u - k} ini={0.0} saiEm={2.35}>Feito para</Linha><Linha u={u - k} ini={0.3} saiEm={2.35} rosa>durar</Linha></div>
+      <div style={{ position: "absolute", left: P.align === "left" ? P.ul.x : P.ul.x, top: P.ul.top, width: 300 * pr(u, k + 0.9, 0.6, expoOut), height: 4, background: C.rosa, opacity: ar * (1 - pr(u, k + 2.35, 0.35, suave)) }} />
     </>
   );
 };
@@ -221,7 +219,7 @@ const CenaCards: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
 const CenaJornada: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   const { g, c } = F, st = (x: number, y: number) => stage(g, x, y), H = F.W > F.H;
   const o1 = pr(u, 1.15, 0.2), o2 = pr(u, 2.3, 0.25), o3 = pr(u, 3.35, 0.2), o4 = pr(u, 4.4, 0.25);
-  const trP = pr(u, 5.7, 0.8, expoOut), oM = pr(u, 8.0, 0.2), dim = pr(u, 9.2, 0.5, suave), slide = pr(u, 9.15, 0.75, expoOut), chk = pr(u, 11.4, 0.45, suave);
+  const trP = pr(u, 5.7, 1.0, slideEase), oM = pr(u, 8.0, 0.2), dim = pr(u, 9.2, 0.5, suave), slide = pr(u, 9.15, 0.75, expoOut), chk = pr(u, 11.4, 0.8, slideEase);
   const [f1x, f1y] = st(420, 430), [f2x, f2y] = st(1060, 330), [f3x, f3y] = st(1090, 440), [f4x, f4y] = st(1010, 270);
   const s = keys(u, [[0, 0.9], [0.8, 1.0], [1.4, F.z.filt], [5.0, F.z.filt], [5.9, 1.05], [6.7, F.z.prod], [8.8, F.z.prod], [9.5, F.z.drawer], [11.2, F.z.drawer], [11.9, F.z.chk], [14.0, F.z.chk], [14.6, 1.1]]);
   const px = keys(u, [[0, f1x], [5.0, f1x], [6.0, f2x], [8.8, f2x], [9.5, f3x], [11.2, f3x], [11.9, f4x], [14.6, f4x]]), py = keys(u, [[0, f1y], [5.0, f1y], [6.0, f2y], [8.8, f2y], [9.5, f3y], [11.2, f3y], [11.9, f4y], [14.6, f4y]]);
@@ -237,11 +235,11 @@ const CenaJornada: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   return (
     <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={[ax, ay] as P2} c={c}>
       <Nav2 g={g} url={url} load={clamp((u - 5.65) / 0.5) * (1 - clamp((u - 6.2) / 0.05))}>
-        <div style={{ position: "absolute", inset: 0, opacity: 1 - trP, transform: `translateY(${-trP * 60}px) scale(${1 + trP * 0.04})` }}>
+        <div style={{ position: "absolute", inset: 0, transform: `translateY(${-trP * 80}px) scale(${1 + trP * 0.03})` }}>
           <Vista src="a0" /><Vista src="a1" o={o1} /><Vista src="a2" o={o2} /><Vista src="a3" o={o3} /><Vista src="a4" o={o4} />
           {pm(4, 288, 242, 34, 0.9, 1.7)}{pm(4, 402, 66, 28, 2.0, 2.9)}{pm(4, 498, 242, 34, 3.1, 3.7)}{pm(4, 668, 112, 28, 4.1, 4.9)}{pm(558, 214, 290, 450, 5.0, 5.8)}
         </div>
-        <div style={{ position: "absolute", inset: 0, opacity: trP, transform: `translateY(${(1 - trP) * 300}px)` }}>
+        <div style={{ position: "absolute", inset: 0, background: "#fff", boxShadow: "0 -30px 60px rgba(0,0,0,.18)", transform: `translateY(${(1 - trP) * 900}px)` }}>
           <Vista src="p0" /><Vista src="pM" o={oM} />
           {pm(900, 428, 240, 98, 6.8, 7.7)}{pm(946, 280, 48, 40, 7.5, 8.6)}{pm(1000, 336, 420, 60, 8.7, 9.7)}
         </div>
@@ -251,9 +249,9 @@ const CenaJornada: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
         </div>
         <div style={{ opacity: pr(u, 10.3, 0.3) * (1 - pr(u, 11.6, 0.2)) }}>{pm(982, 520, 206, 76, 0, 99)}</div>
         <div style={{ position: "absolute", left: 988, top: 527, width: 194, height: 64, background: `hsl(332 82% 68% / ${press * 0.35})` }} />
-        <Vista src="s_checkout" o={chk} />
+        <div style={{ position: "absolute", inset: 0, background: "#fff", boxShadow: "-30px 0 60px rgba(0,0,0,.15)", transform: `translateX(${(1 - chk) * 1440}px)` }}><Vista src="s_checkout" /></div>
         <div style={{ opacity: pr(u, 12.1, 0.3) * (1 - pr(u, 14.2, 0.3)) }}>{pm(804, 138, 412, 82, 0, 99)}{pm(804, 368, 412, 46, 0, 99)}</div>
-        <div style={{ opacity: 1 - chk }}><Cursor x={cx} y={cy} s={cr} /></div>
+        <div style={{ opacity: 1 - clamp(chk * 2) }}><Cursor x={cx} y={cy} s={cr} /></div>
         {[1.1, 2.2, 3.3, 4.3, 5.6, 7.9, 9.1, 11.3].map((t) => <Clique key={t} x={cx + 8} y={cy + 10} u={u} ini={t} r={rr} />)}
       </Nav2>
     </Camera>
@@ -299,8 +297,9 @@ export const FMT_V: Fmt = {
   logo: { w: 616, left: 232, top: 780 }, tag: { top: 1420, size: 40 }, url: { top: 1560, size: 44 },
   d1: "M-80 1180 C 260 1180 380 1010 540 1010 S 820 700 1160 700", d2: "M-80 1330 C 300 1330 420 1160 600 1130 S 880 880 1160 860",
   title: { top: 150, size: 74 },
-  z: { search: 1.75, cta: 1.5, ctaFim: 1.2, card: 1.6, drawer: 1.25, chk: 1.4, filt: 1.6, prod: 1.7 },
+  z: { search: 1.75, cta: 1.35, ctaFim: 1.2, card: 1.6, drawer: 1.25, chk: 1.4, filt: 1.6, prod: 1.7 },
   alvo: [600, 1130], alvoCta: [600, 1130], alvoC: { card: [760, 1100], drawer: [800, 1050], chk: [700, 950] }, alvoF: [560, 1050], alvoP: [650, 980],
+  prom: { x: 40, top: 270, w: 1000, size: 118, align: "center", card: { x: 190, y: 760, w: 700, h: 940 }, ul: { x: 380, top: 535 } },
   frase: { top: 880, size: 112, d: ["M-60 760 C 40 760 70 900 120 1010", "M1140 1250 C 1040 1250 1010 1120 960 1010", "M-60 1250 C 80 1250 140 1100 200 950", "M1140 700 C 1000 700 940 840 880 950"], ul: { left: 340, w: 400, top: 1170 } },
   cards: {
     items: [
@@ -319,8 +318,9 @@ export const FMT_H: Fmt = {
   logo: { w: 640, left: 640, top: 290 }, tag: { top: 770, size: 38 }, url: { top: 880, size: 38 },
   d1: "M-100 660 C 380 660 620 520 960 530 S 1500 340 2020 320", d2: "M-100 760 C 420 760 700 640 1000 610 S 1520 460 2020 430",
   title: { top: 18, size: 56 },
-  z: { search: 1.25, cta: 1.75, ctaFim: 1.2, card: 1.7, drawer: 1.3, chk: 1.5, filt: 1.4, prod: 1.55 },
+  z: { search: 1.25, cta: 1.45, ctaFim: 1.2, card: 1.7, drawer: 1.3, chk: 1.5, filt: 1.4, prod: 1.55 },
   alvo: [840, 580], alvoCta: [840, 580], alvoC: { card: [1300, 560], drawer: [1250, 540], chk: [1150, 520] }, alvoF: [900, 560], alvoP: [1100, 520],
+  prom: { x: 130, top: 395, w: 900, size: 132, align: "left", card: { x: 1130, y: 140, w: 620, h: 800 }, ul: { x: 134, top: 690 } },
   frase: { top: 385, size: 150, d: ["M-60 380 C 120 380 260 520 470 600", "M1980 780 C 1800 780 1660 640 1450 580", "M-60 800 C 140 800 280 640 520 560", "M1980 340 C 1780 340 1640 480 1400 540"], ul: { left: 720, w: 480, top: 735 } },
   cards: {
     items: [

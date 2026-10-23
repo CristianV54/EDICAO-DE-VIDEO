@@ -40,7 +40,7 @@ export const Camera: React.FC<{ s: number; rx: number; ry: number; u: number; px
   const { tx, ty } = camT(s, f, px, py, alvo, c);
   return (
     <div style={{ position: "absolute", inset: 0, perspective: 2600, perspectiveOrigin: "50% 45%" }}>
-      <div style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d", transform: `translate(${tx}px, ${ty}px) scale(${s}) rotateX(${rx + Math.sin(u * 0.9) * 0.8}deg) rotateY(${ry + Math.sin(u * 1.3) * 1.6}deg)` }}>{children}</div>
+      <div style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d", transform: `translate(${tx}px, ${ty}px) scale(${s}) rotateX(${rx + Math.sin(u * 0.7) * 0.3}deg) rotateY(${ry + Math.sin(u * 1.0) * 0.6}deg)` }}>{children}</div>
     </div>
   );
 };
