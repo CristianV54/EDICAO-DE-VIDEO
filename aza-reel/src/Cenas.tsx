@@ -4,8 +4,8 @@ import { C, SANS, SERIF, W, H, clamp, expoOut, mix, pr } from "./tokens";
 
 export const Fundo: React.FC<{ brilho?: number }> = ({ brilho = 1 }) => (
   <AbsoluteFill style={{ background: C.fundo }}>
-    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 80% 45% at 50% 108%, hsl(332 80% 52% / ${0.42 * brilho}), transparent 70%), radial-gradient(ellipse 60% 30% at 85% -5%, hsl(332 60% 40% / ${0.22 * brilho}), transparent 70%)` }} />
-    <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1.3px)", backgroundSize: "30px 30px", opacity: 0.5 }} />
+    <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 80% 45% at 50% 108%, hsl(332 80% 52% / ${0.42 * brilho * (C.claro ? 0.45 : 1)}), transparent 70%), radial-gradient(ellipse 60% 30% at 85% -5%, hsl(332 60% 40% / ${0.22 * brilho * (C.claro ? 0.5 : 1)}), transparent 70%)` }} />
+    <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(${C.ponto} 1px, transparent 1.3px)`, backgroundSize: "30px 30px", opacity: 0.5 }} />
   </AbsoluteFill>
 );
 
@@ -23,7 +23,7 @@ export const Tracejado: React.FC<{ d: string; largura?: number; dash?: string; o
 );
 
 export const Janela: React.FC<{ titulo: string; w: number; h: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ titulo, w, h, children, style }) => (
-  <div style={{ position: "absolute", width: w, height: h, borderRadius: 30, overflow: "hidden", background: C.painel, border: `1.5px solid ${C.borda}`, boxShadow: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)", ...style }}>
+  <div style={{ position: "absolute", width: w, height: h, borderRadius: 30, overflow: "hidden", background: C.painel, border: `1.5px solid ${C.borda}`, boxShadow: C.sombra, ...style }}>
     <div style={{ height: 62, display: "flex", alignItems: "center", gap: 14, padding: "0 24px", background: `linear-gradient(90deg, ${C.rosa}, ${C.rosaEsc})`, fontFamily: SANS, fontWeight: 600, fontSize: 24, letterSpacing: 1, color: "#fff" }}>
       <span style={{ width: 20, height: 20, borderRadius: 6, border: "2.5px solid rgba(255,255,255,.92)", boxSizing: "border-box" }} />
       {titulo}
@@ -77,7 +77,7 @@ export const LogoEscrita: React.FC<{ w: number; p: number }> = ({ w, p }) => {
       const atras = frente - m.dist[i]; if (atras <= 0) continue;
       const r = Math.min(1, atras / borda);
       const t = Math.pow(clamp(1 - atras / rastro), 1.6);
-      o[i * 4] = BRANCO[0] + (ROSA[0] - BRANCO[0]) * t; o[i * 4 + 1] = BRANCO[1] + (ROSA[1] - BRANCO[1]) * t; o[i * 4 + 2] = BRANCO[2] + (ROSA[2] - BRANCO[2]) * t;
+      o[i * 4] = C.tinta[0] + (ROSA[0] - C.tinta[0]) * t; o[i * 4 + 1] = C.tinta[1] + (ROSA[1] - C.tinta[1]) * t; o[i * 4 + 2] = C.tinta[2] + (ROSA[2] - C.tinta[2]) * t;
       o[i * 4 + 3] = a * r;
     }
     cx.putImageData(img, 0, 0);

@@ -42,10 +42,10 @@ const Letras: React.FC<{ u: number; ini: number; children: string; rosa?: boolea
 const Nav2: React.FC<{ g: Geo; url?: string; load?: number; children: React.ReactNode }> = ({ g, url, load = 0, children }) => {
   const w = 1440 * g.k;
   return (
-    <div style={{ position: "absolute", left: g.left, top: g.top, width: w, height: g.chrome + g.vh, borderRadius: 26, overflow: "hidden", background: "#1c1a1e", border: `1.5px solid ${C.borda}`, boxShadow: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)" }}>
-      <div style={{ height: g.chrome, background: "#2b282d", display: "flex", alignItems: "center", padding: "0 26px", gap: 14, position: "relative" }}>
+    <div style={{ position: "absolute", left: g.left, top: g.top, width: w, height: g.chrome + g.vh, borderRadius: 26, overflow: "hidden", background: C.chrome, border: `1.5px solid ${C.borda}`, boxShadow: C.sombra }}>
+      <div style={{ height: g.chrome, background: C.chrome, display: "flex", alignItems: "center", padding: "0 26px", gap: 14, position: "relative" }}>
         {["#ff5f57", "#febc2e", "#28c840"].map((c) => <span key={c} style={{ width: 16, height: 16, borderRadius: 16, background: c, opacity: 0.85 }} />)}
-        <div style={{ marginLeft: 26, flex: 1, height: 44, borderRadius: 22, background: "#1c1a1e", display: "flex", alignItems: "center", padding: "0 22px", gap: 12, fontFamily: SANS, fontSize: 22, fontWeight: 500, color: url ? C.offwhite : C.dim, letterSpacing: 0.5 }}>
+        <div style={{ marginLeft: 26, flex: 1, height: 44, borderRadius: 22, background: C.pill, display: "flex", alignItems: "center", padding: "0 22px", gap: 12, fontFamily: SANS, fontSize: 22, fontWeight: 500, color: url ? C.offwhite : C.dim, letterSpacing: 0.5 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.rosa} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
           {url ?? "Pesquisar ou digitar endereço"}
         </div>
@@ -90,52 +90,98 @@ const NovaAba: React.FC<{ u: number }> = ({ u }) => {
   );
 };
 
-// ---------- 1. abertura: zoom até a logo se escrevendo ----------
-const CenaLogo: React.FC<{ t: number; F: Fmt; fim?: boolean }> = ({ t, F, fim }) => {
-  const push = fim ? mix(0.94, 1, expoOut(clamp(t / 1.0))) : mix(0.55, 1, expoOut(clamp(t / 1.2)));
-  const p = fim ? 1 : curvaTraco(clamp((t - 0.05) / 1.2)), off = -(fim ? CENAS2.final.a + t : t) * 230, a = fim ? pr(t, 0, 0.5) : pr(t, 0.05, 0.4);
-  const t0 = fim ? 0.2 : 1.2;
+// ---------- 1. abertura: montagem rápida de fotos, depois a logo se escrevendo ----------
+const MONT = ["640", "351", "428", "320", "1033", "385"];
+const Montagem: React.FC<{ t: number; F: Fmt; saiEm: number; desloca?: number; passo?: number }> = ({ t, F, saiEm, desloca = 0, passo = 0.25 }) => {
+  if (t > saiEm + 0.3) return null;
+  const n = F.W > F.H ? 3 : 1, pw = F.W / n, o = 1 - pr(t, saiEm, 0.3, suave);
   return (
-    <AbsoluteFill style={{ transform: `scale(${fim ? 1 : push})`, opacity: fim ? 1 : clamp(0.35 + push) }}>
-      <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible", opacity: a }}>
-        <Tracejado d={F.d1} largura={5} off={off} /><Tracejado d={F.d2} largura={3} dash="22 24" off={off * 1.3} op={0.55} />
-      </svg>
-      <div style={{ position: "absolute", left: F.logo.left, top: F.logo.top, transform: fim ? `scale(${push})` : undefined, opacity: fim ? a : 1 }}>
-        {fim ? <div style={{ filter: "drop-shadow(0 0 10px hsl(332 82% 62% / .45))" }}><Logo w={F.logo.w} /></div> : <LogoEscrita w={F.logo.w} p={p} />}
-      </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: F.tag.top, textAlign: "center", fontFamily: SERIF, fontSize: F.tag.size, letterSpacing: mix(14, 8, expoOut(clamp((t - t0) / 0.6))), color: C.dim, opacity: pr(t, t0, 0.5), filter: `blur(${(1 - pr(t, t0, 0.5)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.3, 0.4) }}>USEAZA.COM.BR</div>
+    <AbsoluteFill style={{ opacity: o }}>
+      {Array.from({ length: n }, (_, k) => {
+        const tt = Math.max(0, t - k * 0.07), i = Math.floor(tt / passo), loc = (tt % passo) / passo, foto = MONT[(i + k * 2 + desloca) % MONT.length];
+        return (
+          <div key={k} style={{ position: "absolute", left: k * pw, top: 0, width: pw, height: F.H, overflow: "hidden" }}>
+            <Img src={staticFile(`fotos/${foto}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 24%", transform: `scale(${mix(1.28, 1.02, expoOut(loc))})` }} />
+            <div style={{ position: "absolute", inset: 0, background: C.rosa, opacity: Math.pow(1 - loc, 3) * 0.5, mixBlendMode: "screen" }} />
+          </div>
+        );
+      })}
+      <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 0 240px rgba(0,0,0,.35)" }} />
+    </AbsoluteFill>
+  );
+};
+const CenaLogo: React.FC<{ t: number; F: Fmt; fim?: boolean }> = ({ t, F, fim }) => {
+  const t1 = fim ? 0.7 : 0.9;   // instante em que a logo entra
+  const push = fim ? mix(0.94, 1, expoOut(clamp((t - t1) / 1.0))) : mix(0.72, 1, expoOut(clamp((t - t1) / 1.0)));
+  const p = fim ? 1 : curvaTraco(clamp((t - t1) / 1.1)), off = -(fim ? CENAS2.final.a + t : t) * 230, a = pr(t, t1, 0.4);
+  const t0 = fim ? 1.1 : 1.9, pulso = 1 + 0.03 * Math.sin(t * 5);
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{ transform: `scale(${push})`, opacity: clamp(0.3 + push) }}>
+        <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible", opacity: a }}>
+          <Tracejado d={F.d1} largura={5} off={off} /><Tracejado d={F.d2} largura={3} dash="22 24" off={off * 1.3} op={0.55} />
+        </svg>
+        <div style={{ position: "absolute", left: F.logo.left, top: F.logo.top, opacity: a }}>
+          {fim ? <div style={{ filter: "drop-shadow(0 0 10px hsl(332 82% 62% / .45))" }}><Logo w={F.logo.w} /></div> : <LogoEscrita w={F.logo.w} p={p} />}
+        </div>
+        <div style={{ position: "absolute", left: 0, right: 0, top: F.tag.top, textAlign: "center", fontFamily: SERIF, fontSize: F.tag.size, letterSpacing: mix(14, 8, expoOut(clamp((t - t0) / 0.6))), color: C.dim, opacity: pr(t, t0, 0.5), filter: `blur(${(1 - pr(t, t0, 0.5)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
+        {fim ? (
+          <>
+            <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top - 10, textAlign: "center", opacity: pr(t, t0 + 0.4, 0.4), transform: `scale(${pulso})` }}>
+              <span style={{ display: "inline-block", padding: "16px 40px", borderRadius: 60, background: `linear-gradient(135deg, ${C.rosa}, ${C.rosaEsc})`, color: "#fff", fontFamily: SANS, fontWeight: 600, fontSize: Math.round(F.url.size * 0.62), letterSpacing: 5, boxShadow: `0 0 40px ${C.rosa}` }}>COMPRE PELO SITE ›</span>
+            </div>
+            <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top + 105, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.7, 0.4) }}>USEAZA.COM.BR</div>
+          </>
+        ) : (
+          <div style={{ position: "absolute", left: 0, right: 0, top: F.url.top, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: F.url.size, letterSpacing: 9, color: C.rosa, opacity: pr(t, t0 + 0.3, 0.4) }}>USEAZA.COM.BR</div>
+        )}
+      </AbsoluteFill>
+      <Montagem t={t} F={F} saiEm={fim ? 0.55 : 0.8} desloca={fim ? 3 : 0} />
     </AbsoluteFill>
   );
 };
 
-// ---------- 2. digita o endereço, o site abre, passa o mouse, clica no botão e rola ----------
+// ---------- 2. digita o endereço, o site abre, passa o mouse, clica no botão e a página da coleção abre ----------
+// página da coleção (colecao.jpg, 1440 de largura): cartão do Top Nula Manga Rosa em (564..843, 744..1160)
 const CenaSite: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
-  const { g, c } = F, [sx, sy] = stage(g, 720, 364), [bx, by] = stage(g, 128, 673);
-  const mostra = pr(u, 2.9, 0.4, suave), digitou = u > 2.15;
-  const s = keys(u, [[0, F.z.search], [2.2, F.z.search * 1.1], [3.6, 0.95], [5.0, 0.98], [5.8, F.z.cta], [7.4, F.z.cta], [8.6, 1.3], [10.3, F.z.ctaFim]]);
-  const px = keys(u, [[0, sx], [2.2, sx], [3.6, c[0]], [5.0, bx], [7.4, bx], [8.6, c[0]]]), py = keys(u, [[0, sy], [2.2, sy], [3.6, c[1]], [5.0, by], [7.4, by], [8.6, c[1]]]);
-  const f = keys(u, [[0, 1], [2.2, 1], [3.6, 0], [5.0, 0], [5.8, 0.9], [7.4, 0.9], [8.6, 0.4], [10.3, 0.4]]);
-  const ry = keys(u, [[0, 0], [2.2, -2], [3.6, -9], [5.8, -3], [8.6, -6]]), rx = keys(u, [[0, 0], [3.6, 5], [5.8, 2], [8.6, 4]]);
-  const [cx, cy] = caminho(u, [[3.7, 1380, 140], [4.5, 703, 62], [5.1, 703, 62], [5.9, 150, 690]]);
-  const click = pr(u, 6.0, 0.2, suave) * (1 - pr(u, 6.25, 0.25, suave)), rola = keys(u, [[6.4, 0], [9.2, 1000]], curvaTraco);
+  const { g, c } = F, [sx, sy] = stage(g, 720, 364), [bx, by] = stage(g, 128, 673), H = F.W > F.H;
+  const mostra = pr(u, 2.9, 0.4, suave), digitou = u > 2.15, tr = pr(u, 6.35, 0.9, expoOut);
+  const sOver = H ? 0.85 : 0.95;
+  const s = keys(u, [[0, F.z.search], [2.2, F.z.search * 1.1], [3.6, sOver], [5.0, sOver + 0.03], [5.8, F.z.cta], [7.0, F.z.cta], [8.2, 1.3], [10.3, F.z.ctaFim]]);
+  const px = keys(u, [[0, sx], [2.2, sx], [3.6, c[0]], [5.0, bx], [7.0, bx], [8.2, c[0]]]), py = keys(u, [[0, sy], [2.2, sy], [3.6, c[1]], [5.0, by], [7.0, by], [8.2, c[1]]]);
+  const f = keys(u, [[0, 1], [2.2, 1], [3.6, 0], [5.0, 0], [5.8, 0.9], [7.0, 0.9], [8.2, 0.4], [10.3, 0.4]]);
+  const ry = keys(u, [[0, 0], [2.2, -2], [3.6, -9], [5.8, -3], [8.2, -6]]), rx = keys(u, [[0, 0], [3.6, 5], [5.8, 2], [8.2, 4]]);
+  const [cx, cy] = caminho(u, [[3.7, 1380, 140], [4.5, 703, 62], [5.1, 703, 62], [5.9, 150, 690], [6.9, 200, 640], [8.0, 560, 520], [9.2, 703, 440]]);
+  const click = pr(u, 6.0, 0.2, suave) * (1 - pr(u, 6.25, 0.25, suave)), cs = keys(u, [[7.0, 0], [9.6, 520]], expoOut);
+  const alvoP = mix2(F.c, F.alvo, clamp((u - 4.8) / 1.0));
+  const url = !digitou ? undefined : tr > 0.35 ? `${ENDERECO}/collections/presenca` : ENDERECO;
   const load = digita(u);
   return (
     <>
-      <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={mix2(F.c, F.alvo, clamp((u - 4.8) / 1.0)) as P2} c={c}>
-        <Nav2 g={g} url={digitou ? ENDERECO : undefined} load={load}>
+      <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={alvoP as P2} c={c}>
+        <Nav2 g={g} url={url} load={load}>
           <div style={{ position: "absolute", inset: 0, opacity: 1 - mostra }}><NovaAba u={u} /></div>
-          <div style={{ position: "absolute", inset: 0, opacity: mostra }}>
-            <Pagina scroll={rola}>
-              <div style={{ position: "absolute", left: 6, top: 642, width: 244, height: 62, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 ${50 + click * 50}px ${C.rosa}`, opacity: pr(u, 5.4, 0.3) * (1 - pr(u, 6.9, 0.3)) }} />
+          <div style={{ position: "absolute", inset: 0, opacity: mostra * (1 - tr), transform: `translateY(${-tr * 70}px) scale(${1 + tr * 0.05})` }}>
+            <Pagina scroll={0}>
+              <div style={{ position: "absolute", left: 6, top: 642, width: 244, height: 62, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 ${50 + click * 50}px ${C.rosa}`, opacity: pr(u, 5.4, 0.3) * (1 - pr(u, 6.6, 0.3)) }} />
             </Pagina>
             <div style={{ position: "absolute", left: 665, top: 74, width: 80 * pr(u, 4.5, 0.4, expoOut), height: 3, background: C.rosa, boxShadow: `0 0 12px ${C.rosa}`, opacity: 1 - pr(u, 6.4, 0.2) }} />
+          </div>
+          <div style={{ position: "absolute", inset: 0, opacity: tr, transform: `translateY(${(1 - tr) * 420}px)` }}>
+            <div style={{ position: "absolute", left: 0, top: -cs, width: 1440, height: 2400 }}>
+              <Img src={staticFile("site/colecao.jpg")} style={{ width: 1440, height: 2400, display: "block" }} />
+              <div style={{ position: "absolute", left: 560, top: 740, width: 288, height: 424, borderRadius: 3, boxShadow: `0 0 0 5px ${C.rosa}, 0 0 44px ${C.rosa}`, opacity: pr(u, 9.0, 0.35) }} />
+            </div>
+          </div>
+          <div style={{ opacity: mostra }}>
             <Cursor x={cx} y={cy} s={g.k < 0.8 ? 1.35 : 1.0} />
             <Clique x={cx + 8} y={cy + 10} u={u} ini={6.0} r={g.k < 0.8 ? 90 : 70} />
           </div>
         </Nav2>
       </Camera>
-      <Titulo top={F.title.top} size={F.title.size}><Pal u={u} ini={3.8} sai={5.3}>O novo site</Pal><Pal u={u} ini={4.0} sai={5.3} rosa>da AZA</Pal></Titulo>
+      <div style={{ position: "absolute", left: 60, right: 60, top: F.title.top, textAlign: "center", fontFamily: SERIF, fontSize: F.title.size, letterSpacing: 3, color: C.offwhite, lineHeight: 1.08 }}>
+        <Pal u={u} ini={3.4} sai={4.8}>Agora você pode comprar</Pal>{!H && <br />}<Pal u={u} ini={3.7} sai={4.8} rosa>pelo site</Pal>
+      </div>
     </>
   );
 };
@@ -268,7 +314,7 @@ export const FMT_V: Fmt = {
   W: 1080, H: 1920, c: [540, 960], g: GEO_V,
   logo: { w: 616, left: 232, top: 780 }, tag: { top: 1420, size: 40 }, url: { top: 1560, size: 44 },
   d1: "M-80 1180 C 260 1180 380 1010 540 1010 S 820 700 1160 700", d2: "M-80 1330 C 300 1330 420 1160 600 1130 S 880 880 1160 860",
-  title: { top: 170, size: 78 },
+  title: { top: 150, size: 74 },
   z: { search: 1.75, cta: 1.5, ctaFim: 1.2, card: 1.6, drawer: 1.25, chk: 1.4 },
   alvo: [600, 1130], alvoCta: [600, 1130], alvoC: { card: [760, 1100], drawer: [800, 1050], chk: [700, 950] },
   frase: { top: 880, size: 112, d: ["M-60 760 C 40 760 70 900 120 1010", "M1140 1250 C 1040 1250 1010 1120 960 1010", "M-60 1250 C 80 1250 140 1100 200 950", "M1140 700 C 1000 700 940 840 880 950"], ul: { left: 340, w: 400, top: 1170 } },
@@ -288,7 +334,7 @@ export const FMT_H: Fmt = {
   W: 1920, H: 1080, c: [960, 540], g: GEO_H,
   logo: { w: 640, left: 640, top: 290 }, tag: { top: 770, size: 38 }, url: { top: 880, size: 38 },
   d1: "M-100 660 C 380 660 620 520 960 530 S 1500 340 2020 320", d2: "M-100 760 C 420 760 700 640 1000 610 S 1520 460 2020 430",
-  title: { top: 34, size: 64 },
+  title: { top: 18, size: 56 },
   z: { search: 1.25, cta: 1.75, ctaFim: 1.2, card: 1.7, drawer: 1.3, chk: 1.5 },
   alvo: [840, 580], alvoCta: [840, 580], alvoC: { card: [1300, 560], drawer: [1250, 540], chk: [1150, 520] },
   frase: { top: 385, size: 150, d: ["M-60 380 C 120 380 260 520 470 600", "M1980 780 C 1800 780 1660 640 1450 580", "M-60 800 C 140 800 280 640 520 560", "M1980 340 C 1780 340 1640 480 1400 540"], ul: { left: 720, w: 480, top: 735 } },

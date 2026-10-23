@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Composition, continueRender, delayRender, staticFile } from "remotion";
 import { Cena1, Still1, Still2, Still3 } from "./Cenas";
+import { aplicaTema } from "./tokens";
 import { Reel } from "./Reel";
 import { FMT_H, FMT_V, Reel2 } from "./Reel2";
 import { DUR2 } from "./roteiro2";
@@ -9,7 +10,8 @@ import { DUR_TOTAL } from "./roteiro";
 import { useCurrentFrame } from "remotion";
 import { FPS, H, W } from "./tokens";
 
-const Com: React.FC<{ c: React.FC }> = ({ c: Cena }) => {
+const Com: React.FC<{ c: React.FC; claro?: boolean }> = ({ c: Cena, claro }) => {
+  aplicaTema(!!claro);
   const [h] = useState(() => delayRender("fontes"));
   useEffect(() => {
     const f = [
@@ -26,8 +28,12 @@ const Reel1: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c
 const Reel16: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <ReelH t={t} />} />; };
 const Reel2V: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Reel2 t={t} F={FMT_V} />} />; };
 const Reel2H: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Reel2 t={t} F={FMT_H} />} />; };
+const Reel2VC: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_V} />} />; };
+const Reel2HC: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com claro c={() => <Reel2 t={t} F={FMT_H} />} />; };
 export const Root: React.FC = () => (
   <>
+    <Composition id="Reel2VC" component={Reel2VC} width={1080} height={1920} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
+    <Composition id="Reel2HC" component={Reel2HC} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel2V" component={Reel2V} width={1080} height={1920} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel2H" component={Reel2H} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR2 * FPS)} />
     <Composition id="Reel16" component={Reel16} width={1920} height={1080} fps={FPS} durationInFrames={Math.round(DUR_TOTAL * FPS)} />

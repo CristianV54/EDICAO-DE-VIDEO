@@ -3,11 +3,24 @@ export const FPS = 30;
 export const W = 1080;
 export const H = 1920;
 // rosa da marca: matiz 332 medido nas fotos do ensaio; claro o bastante para ler sobre fundo grafite
-export const C = {
-  fundo: "#141315", painel: "#1e1c20", borda: "rgba(255,255,255,0.12)",
+const ESCURO = {
+  claro: false, fundo: "#141315", painel: "#1e1c20", borda: "rgba(255,255,255,0.12)",
   rosa: "hsl(332 82% 68%)", rosaEsc: "hsl(332 70% 48%)", rosaClaro: "hsl(332 90% 82%)",
   offwhite: "#f4f1ec", dim: "rgba(244,241,236,0.55)",
+  chrome: "#2b282d", pill: "#1c1a1e", ponto: "rgba(255,255,255,0.09)", tinta: [244, 241, 236],
+  sombra: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)",
 };
+const CLARO = {
+  claro: true, fundo: "#f6f4f0", painel: "#ffffff", borda: "rgba(0,0,0,0.10)",
+  rosa: "hsl(332 78% 58%)", rosaEsc: "hsl(332 70% 44%)", rosaClaro: "hsl(332 90% 78%)",
+  offwhite: "#1c1a1e", dim: "rgba(28,26,30,0.55)",
+  chrome: "#e9e5df", pill: "#ffffff", ponto: "rgba(0,0,0,0.07)", tinta: [28, 26, 30],
+  sombra: "0 40px 90px rgba(80,40,60,.28), 0 0 0 1px rgba(0,0,0,.08)",
+};
+// tema mutável: o Reel claro troca estas cores antes de desenhar (fundo branco, logo preta)
+export const C = { ...ESCURO };
+export const aplicaTema = (claro: boolean) => Object.assign(C, claro ? CLARO : ESCURO);
+
 export const SERIF = "Cormorant, 'Times New Roman', serif";
 export const SANS = "Inter, sans-serif";
 export const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
