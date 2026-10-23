@@ -87,7 +87,7 @@ export const LogoEscrita: React.FC<{ w: number; p: number }> = ({ w, p }) => {
 
 // ---------- CENA 1: abertura com a logo se escrevendo (t em segundos) ----------
 export const Cena1: React.FC<{ t: number; fundoProprio?: boolean }> = ({ t, fundoProprio = true }) => {
-  const fundo = pr(t, 0, 0.6), traco = clamp((t - 0.4) / 2.3);
+  const fundo = 1, traco = clamp((t - 0.05) / 1.2);
   const p = curvaTraco(traco);
   const off = -t * 230;   // tracejado corre em velocidade constante
   return (
@@ -98,8 +98,8 @@ export const Cena1: React.FC<{ t: number; fundoProprio?: boolean }> = ({ t, fund
         <Tracejado d={`M-80 1330 C 300 1330 420 1160 600 1130 S 880 880 1160 860`} largura={3} dash="22 24" off={off * 1.3} op={0.55} />
       </svg>
       <div style={{ position: "absolute", left: (W - W * 0.57) / 2, top: 780 }}><LogoEscrita w={W * 0.57} p={p} /></div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1420, textAlign: "center", fontFamily: SERIF, fontSize: 40, letterSpacing: mix(14, 8, expoOut(clamp((t - 2.7) / 0.8))), color: C.dim, opacity: pr(t, 2.7, 0.7), filter: `blur(${(1 - pr(t, 2.7, 0.7)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 150, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: 30, letterSpacing: 8, color: C.rosa, opacity: pr(t, 3.1, 0.6) }}>USEAZA.COM.BR</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 1420, textAlign: "center", fontFamily: SERIF, fontSize: 40, letterSpacing: mix(14, 8, expoOut(clamp((t - 1.2) / 0.6))), color: C.dim, opacity: pr(t, 1.2, 0.5), filter: `blur(${(1 - pr(t, 1.2, 0.5)) * 8}px)` }}>MOVIMENTO QUE VESTE PRESENÇA</div>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 150, textAlign: "center", fontFamily: SANS, fontWeight: 500, fontSize: 30, letterSpacing: 8, color: C.rosa, opacity: pr(t, 1.5, 0.4) }}>USEAZA.COM.BR</div>
     </AbsoluteFill>
   );
 };
