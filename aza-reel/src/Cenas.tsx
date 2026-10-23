@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AbsoluteFill, Easing, Img, continueRender, delayRender, staticFile } from "remotion";
 import { C, SANS, SERIF, W, H, clamp, expoOut, mix, pr } from "./tokens";
 
-const Fundo: React.FC<{ brilho?: number }> = ({ brilho = 1 }) => (
+export const Fundo: React.FC<{ brilho?: number }> = ({ brilho = 1 }) => (
   <AbsoluteFill style={{ background: C.fundo }}>
     <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 80% 45% at 50% 108%, hsl(332 80% 52% / ${0.42 * brilho}), transparent 70%), radial-gradient(ellipse 60% 30% at 85% -5%, hsl(332 60% 40% / ${0.22 * brilho}), transparent 70%)` }} />
     <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1.3px)", backgroundSize: "30px 30px", opacity: 0.5 }} />
@@ -15,14 +15,14 @@ export const Logo: React.FC<{ w: number; cor?: string }> = ({ w, cor = C.offwhit
 );
 
 // curva tracejada rosa que "corre", com brilho (assinatura do estilo Furion)
-const Tracejado: React.FC<{ d: string; largura?: number; dash?: string; off?: number; op?: number }> = ({ d, largura = 5, dash = "34 26", off = 0, op = 1 }) => (
+export const Tracejado: React.FC<{ d: string; largura?: number; dash?: string; off?: number; op?: number }> = ({ d, largura = 5, dash = "34 26", off = 0, op = 1 }) => (
   <g opacity={op}>
     <path d={d} fill="none" stroke={C.rosa} strokeWidth={largura * 4} strokeDasharray={dash} strokeDashoffset={off} strokeLinecap="round" opacity={0.28} style={{ filter: "blur(14px)" }} />
     <path d={d} fill="none" stroke={C.rosa} strokeWidth={largura} strokeDasharray={dash} strokeDashoffset={off} strokeLinecap="round" />
   </g>
 );
 
-const Janela: React.FC<{ titulo: string; w: number; h: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ titulo, w, h, children, style }) => (
+export const Janela: React.FC<{ titulo: string; w: number; h: number; children: React.ReactNode; style?: React.CSSProperties }> = ({ titulo, w, h, children, style }) => (
   <div style={{ position: "absolute", width: w, height: h, borderRadius: 30, overflow: "hidden", background: C.painel, border: `1.5px solid ${C.borda}`, boxShadow: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)", ...style }}>
     <div style={{ height: 62, display: "flex", alignItems: "center", gap: 14, padding: "0 24px", background: `linear-gradient(90deg, ${C.rosa}, ${C.rosaEsc})`, fontFamily: SANS, fontWeight: 600, fontSize: 24, letterSpacing: 1, color: "#fff" }}>
       <span style={{ width: 20, height: 20, borderRadius: 6, border: "2.5px solid rgba(255,255,255,.92)", boxSizing: "border-box" }} />
@@ -33,7 +33,7 @@ const Janela: React.FC<{ titulo: string; w: number; h: number; children: React.R
   </div>
 );
 
-const Cursor: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
+export const Cursor: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (
   <svg width={84 * s} height={84 * s} viewBox="0 0 24 24" style={{ position: "absolute", left: x, top: y, filter: "drop-shadow(0 6px 10px rgba(0,0,0,.55))" }}>
     <path d="M4 2 L4 19 L8.6 15 L11.6 21.6 L14.4 20.3 L11.4 13.8 L17.5 13.8 Z" fill={C.rosa} stroke="#fff" strokeWidth="1.2" strokeLinejoin="round" />
   </svg>
@@ -86,13 +86,13 @@ export const LogoEscrita: React.FC<{ w: number; p: number }> = ({ w, p }) => {
 };
 
 // ---------- CENA 1: abertura com a logo se escrevendo (t em segundos) ----------
-export const Cena1: React.FC<{ t: number }> = ({ t }) => {
+export const Cena1: React.FC<{ t: number; fundoProprio?: boolean }> = ({ t, fundoProprio = true }) => {
   const fundo = pr(t, 0, 0.6), traco = clamp((t - 0.4) / 2.3);
   const p = curvaTraco(traco);
   const off = -t * 230;   // tracejado corre em velocidade constante
   return (
     <AbsoluteFill>
-      <div style={{ opacity: fundo }}><Fundo /></div>
+      {fundoProprio && <div style={{ opacity: fundo }}><Fundo /></div>}
       <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible", opacity: pr(t, 0.1, 0.8) }}>
         <Tracejado d={`M-80 1180 C 260 1180 380 1010 540 1010 S 820 700 1160 700`} largura={5} off={off} />
         <Tracejado d={`M-80 1330 C 300 1330 420 1160 600 1130 S 880 880 1160 860`} largura={3} dash="22 24" off={off * 1.3} op={0.55} />

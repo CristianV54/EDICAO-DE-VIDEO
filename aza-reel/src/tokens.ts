@@ -15,3 +15,10 @@ export const expoOut = Easing.bezier(0.16, 1, 0.3, 1);
 export const suave = Easing.bezier(0.45, 0, 0.15, 1);
 export const pr = (t: number, ini: number, dur: number, e: (x: number) => number = expoOut) => e(clamp((t - ini) / Math.max(0.0001, dur)));
 export const mix = (a: number, b: number, p: number) => a + (b - a) * p;
+export const volta = Easing.bezier(0.34, 1.4, 0.64, 1);
+// interpola por chaves [t, valor] com suavização entre chaves
+export const keys = (t: number, ks: [number, number][], e: (x: number) => number = suave) => {
+  if (t <= ks[0][0]) return ks[0][1];
+  for (let i = 1; i < ks.length; i++) if (t <= ks[i][0]) return mix(ks[i - 1][1], ks[i][1], e((t - ks[i - 1][0]) / (ks[i][0] - ks[i - 1][0])));
+  return ks[ks.length - 1][1];
+};
