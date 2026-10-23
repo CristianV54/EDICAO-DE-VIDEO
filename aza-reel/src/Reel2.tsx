@@ -29,11 +29,11 @@ const Cena2: React.FC<{ t: number; a: number; b: number; children: (u: number) =
   return <AbsoluteFill style={{ opacity: o, transform: `scale(${sc})`, filter: bl > 0.2 ? `blur(${bl}px)` : undefined }}>{children(t - a)}</AbsoluteFill>;
 };
 
-const Letras: React.FC<{ u: number; ini: number; children: string; rosa?: boolean }> = ({ u, ini, children, rosa }) => (
+const Letras: React.FC<{ u: number; ini: number; children: string; rosa?: boolean; t?: number }> = ({ u, ini, children, rosa, t = 0 }) => (
   <span style={{ display: "inline-block", whiteSpace: "nowrap", marginRight: "0.28em", perspective: 600 }}>
     {[...children].map((ch, i) => {
       const p = pr(u, ini + i * 0.032, 0.45);
-      return <span key={i} style={{ display: "inline-block", opacity: p, transform: `translateY(${(1 - p) * 60}px) rotateX(${(1 - p) * -80}deg)`, transformOrigin: "50% 100%", filter: `blur(${(1 - p) * 8}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal" }}>{ch === " " ? " " : ch}</span>;
+      return <span key={i} style={{ display: "inline-block", opacity: p, transform: `translateY(${(1 - p) * 60 + Math.sin(t * 3.2 + i * 0.55) * 7 * p}px) rotateX(${(1 - p) * -80}deg)`, transformOrigin: "50% 100%", filter: `blur(${(1 - p) * 8}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal" }}>{ch === " " ? " " : ch}</span>;
     })}
   </span>
 );
@@ -113,7 +113,7 @@ const CenaLogo: React.FC<{ t: number; F: Fmt; fim?: boolean }> = ({ t, F, fim })
 const CenaSite: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
   const { g, c } = F, [sx, sy] = stage(g, 720, 364), [bx, by] = stage(g, 128, 673);
   const mostra = pr(u, 2.9, 0.4, suave), digitou = u > 2.15;
-  const s = keys(u, [[0, F.z.search], [2.2, F.z.search], [3.6, 0.95], [5.0, 0.98], [5.8, F.z.cta], [7.4, F.z.cta], [8.6, 1.3], [10.3, F.z.ctaFim]]);
+  const s = keys(u, [[0, F.z.search], [2.2, F.z.search * 1.1], [3.6, 0.95], [5.0, 0.98], [5.8, F.z.cta], [7.4, F.z.cta], [8.6, 1.3], [10.3, F.z.ctaFim]]);
   const px = keys(u, [[0, sx], [2.2, sx], [3.6, c[0]], [5.0, bx], [7.4, bx], [8.6, c[0]]]), py = keys(u, [[0, sy], [2.2, sy], [3.6, c[1]], [5.0, by], [7.4, by], [8.6, c[1]]]);
   const f = keys(u, [[0, 1], [2.2, 1], [3.6, 0], [5.0, 0], [5.8, 0.9], [7.4, 0.9], [8.6, 0.4], [10.3, 0.4]]);
   const ry = keys(u, [[0, 0], [2.2, -2], [3.6, -9], [5.8, -3], [8.6, -6]]), rx = keys(u, [[0, 0], [3.6, 5], [5.8, 2], [8.6, 4]]);
@@ -147,25 +147,28 @@ const Pal: React.FC<{ u: number; ini: number; sai: number; rosa?: boolean; child
 };
 
 // ---------- 3. as promessas do site, em movimento ----------
+const FOTOS_PROM = ["385", "640", "428", "1033"];
 const CenaProm: React.FC<{ u: number; F: Fmt }> = ({ u, F }) => {
-  const k = 2.6, al = 1 - pr(u, k - 0.35, 0.35, suave), ar = pr(u, k - 0.15, 0.35, suave);
-  const [cx, cy] = F.c, ring = (i: number, off: number) => { const ph = (u * 0.65 + i / 3 + off) % 1; return <circle key={i} cx={cx} cy={cy + (F.W > F.H ? 10 : 60)} r={90 + ph * (F.W > F.H ? 520 : 600)} fill="none" stroke={C.rosa} strokeWidth={3} opacity={(1 - ph) * 0.45} />; };
-  const sway = Math.sin(u * 1.4) * 4;
-  const caixa: React.CSSProperties = { position: "absolute", left: 40, right: 40, top: F.frase.top, textAlign: "center", fontFamily: SERIF, fontSize: F.frase.size, lineHeight: 1.05, transform: `rotateY(${sway}deg)`, perspective: 900 };
+  const k = 2.6, al = 1 - pr(u, k - 0.5, 0.3, suave), ar = pr(u, k - 0.45, 0.3, suave);
+  const [cx, cy] = F.c, ring = (i: number) => { const ph = (u * 1.0 + i / 3) % 1; return <circle key={i} cx={cx} cy={cy + (F.W > F.H ? 10 : 60)} r={90 + ph * (F.W > F.H ? 560 : 640)} fill="none" stroke={C.rosa} strokeWidth={3} opacity={(1 - ph) * 0.5} />; };
+  const sway = Math.sin(u * 1.4) * 5, zoom = 1 + u * 0.018;
+  const caixa: React.CSSProperties = { position: "absolute", left: 40, right: 40, top: F.frase.top, textAlign: "center", fontFamily: SERIF, fontSize: F.frase.size, lineHeight: 1.05, transform: `rotateY(${sway}deg) scale(${zoom})`, perspective: 900 };
+  const dur = 1.35, idx = Math.floor(u / dur), loc = (u % dur) / dur;
+  const foto = (i: number, o: number) => <div key={`${i}-${o}`} style={{ position: "absolute", inset: "-14%", opacity: o * 0.6, filter: "blur(20px) brightness(.58) saturate(1.35)", transform: `scale(${1.08 + ((i === idx ? loc : 1) * 0.3)}) translateX(${(i % 2 ? -1 : 1) * (i === idx ? loc : 1) * 90}px)` }}><Img src={staticFile(`fotos/${FOTOS_PROM[i % FOTOS_PROM.length]}.jpg`)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>;
+  const brilhoX = ((u * 0.8) % 1) * (F.W + 500) - 250;
   return (
     <>
-      <div style={{ position: "absolute", inset: "-12%", opacity: 0.55, filter: "blur(24px) brightness(.55) saturate(1.3)", transform: `scale(${1.05 + u * 0.025}) translateX(${Math.sin(u * 0.7) * 30}px)` }}>
-        <Img src={staticFile("fotos/385.jpg")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      </div>
-      <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>{[0, 1, 2].map((i) => ring(i, 0))}</svg>
+      {foto(idx, clamp(loc * 4))}{idx > 0 && foto(idx - 1, 1 - clamp(loc * 4))}
+      <svg width={F.W} height={F.H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>{[0, 1, 2].map(ring)}</svg>
       <Fio d={F.frase.d[0]} p={pr(u, 0.1, 0.7, suave) * al} t={u} /><Fio d={F.frase.d[1]} p={pr(u, 0.25, 0.7, suave) * al} t={u} />
       <Fio d={F.frase.d[2]} p={pr(u, k - 0.1, 0.7, suave) * ar} t={u} /><Fio d={F.frase.d[3]} p={pr(u, k, 0.7, suave) * ar} t={u} />
       <div style={{ ...caixa, opacity: al, filter: `blur(${(1 - al) * 10}px)` }}>
-        <div><Letras u={u} ini={0.15}>Valoriza</Letras></div><div><Letras u={u} ini={0.55} rosa>sua silhueta</Letras></div>
+        <div><Letras u={u} t={u} ini={0.15}>Valoriza</Letras></div><div><Letras u={u} t={u} ini={0.55} rosa>sua silhueta</Letras></div>
       </div>
       <div style={{ ...caixa, opacity: ar }}>
-        <div><Letras u={u - k} ini={-0.1}>Feito</Letras><Letras u={u - k} ini={0.15}>para</Letras></div><div><Letras u={u - k} ini={0.5} rosa>durar</Letras></div>
+        <div><Letras u={u - k} t={u} ini={-0.4}>Feito</Letras><Letras u={u - k} t={u} ini={-0.2}>para</Letras></div><div><Letras u={u - k} t={u} ini={0.05} rosa>durar</Letras></div>
       </div>
+      <div style={{ position: "absolute", left: brilhoX, top: -100, width: 220, height: F.H + 200, transform: "rotate(16deg)", background: "linear-gradient(90deg, transparent, rgba(255,255,255,.20), transparent)", mixBlendMode: "screen", pointerEvents: "none" }} />
       <div style={{ position: "absolute", left: F.frase.ul.left, width: F.frase.ul.w * pr(u, k + 1.0, 0.6, expoOut), top: F.frase.ul.top, height: 4, background: C.rosa, boxShadow: `0 0 24px ${C.rosa}`, opacity: ar }} />
     </>
   );
