@@ -4,40 +4,40 @@ import { C, SANS, SERIF, W, H, clamp, expoOut, keys, mix, pr, suave, volta } fro
 import { CENAS } from "./roteiro";
 import { Cena1, Cursor, Fundo, Janela, Logo, Tracejado, curvaTraco } from "./Cenas";
 
-const FADE = 0.25;
+export const FADE = 0.25;
 // envelope de cena: entra e sai com desfoque, sobrepondo a cena vizinha
-const Cena: React.FC<{ t: number; a: number; b: number; children: (u: number) => React.ReactNode }> = ({ t, a, b, children }) => {
+export const Cena: React.FC<{ t: number; a: number; b: number; children: (u: number) => React.ReactNode }> = ({ t, a, b, children }) => {
   if (t < a || t > b) return null;
   const ent = clamp((t - a) / FADE), sai = clamp((b - t) / FADE);
   const o = Math.min(ent, sai), bl = (1 - o) * 14;
   return <AbsoluteFill style={{ opacity: o, filter: bl > 0.1 ? `blur(${bl}px)` : undefined }}>{children(t - a)}</AbsoluteFill>;
 };
 
-const Palavra: React.FC<{ u: number; ini: number; children: React.ReactNode; rosa?: boolean; saiEm?: number }> = ({ u, ini, children, rosa, saiEm }) => {
+export const Palavra: React.FC<{ u: number; ini: number; children: React.ReactNode; rosa?: boolean; saiEm?: number }> = ({ u, ini, children, rosa, saiEm }) => {
   const p = pr(u, ini, 0.5), q = saiEm ? pr(u, saiEm, 0.3, suave) : 0;
   return <span style={{ display: "inline-block", opacity: p * (1 - q), transform: `translateY(${(1 - p) * 46 - q * 20}px)`, filter: `blur(${(1 - p) * 10 + q * 8}px)`, color: rosa ? C.rosa : C.offwhite, fontStyle: rosa ? "italic" : "normal", marginRight: "0.28em" }}>{children}</span>;
 };
 
 // tracejado que se revela da origem ao destino e depois corre
-const Fio: React.FC<{ d: string; p: number; t: number; largura?: number; op?: number }> = ({ d, p, t, largura = 5, op = 1 }) => {
+export const Fio: React.FC<{ d: string; p: number; t: number; largura?: number; op?: number }> = ({ d, p, t, largura = 5, op = 1 }) => {
   const id = useId().replace(/:/g, "");
   return (
     <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible", pointerEvents: "none" }}>
-      <defs><mask id={id} maskUnits="userSpaceOnUse" x={-500} y={-500} width={W + 1000} height={H + 1000}><path d={d} pathLength={1} fill="none" stroke="#fff" strokeWidth={60} strokeLinecap="round" strokeDasharray={`${p} 2`} /></mask></defs>
+      <defs><mask id={id} maskUnits="userSpaceOnUse" x={-1000} y={-1000} width={5000} height={5000}><path d={d} pathLength={1} fill="none" stroke="#fff" strokeWidth={60} strokeLinecap="round" strokeDasharray={`${p} 2`} /></mask></defs>
       <g mask={`url(#${id})`}><Tracejado d={d} largura={largura} off={-t * 260} op={op} /></g>
     </svg>
   );
 };
 
-const Clique: React.FC<{ x: number; y: number; u: number; ini: number; r?: number }> = ({ x, y, u, ini, r = 70 }) => {
+export const Clique: React.FC<{ x: number; y: number; u: number; ini: number; r?: number }> = ({ x, y, u, ini, r = 70 }) => {
   const p = pr(u, ini, 0.5, expoOut); if (u < ini || p >= 1) return null;
   return <div style={{ position: "absolute", left: x - r, top: y - r, width: r * 2, height: r * 2, borderRadius: r * 2, border: `${r / 17}px solid ${C.rosa}`, opacity: 1 - p, transform: `scale(${0.2 + p * 1.1})`, boxShadow: `0 0 40px ${C.rosa}` }} />;
 };
 
 // câmera: foco centraliza um ponto do palco aplicando a escala s; sway dá um balanço contínuo
-const camT = (s: number, f: number, px: number, py: number, alvo: [number, number]) => ({ tx: f * (alvo[0] - 540 - s * (px - 540)), ty: f * (alvo[1] - 960 - s * (py - 960)) });
-const Camera: React.FC<{ s: number; rx: number; ry: number; u: number; px: number; py: number; f: number; alvo?: [number, number]; children: React.ReactNode }> = ({ s, rx, ry, u, px, py, f, alvo = [540, 960], children }) => {
-  const { tx, ty } = camT(s, f, px, py, alvo);
+export const camT = (s: number, f: number, px: number, py: number, alvo: [number, number], c: [number, number] = [540, 960]) => ({ tx: f * (alvo[0] - c[0] - s * (px - c[0])), ty: f * (alvo[1] - c[1] - s * (py - c[1])) });
+export const Camera: React.FC<{ s: number; rx: number; ry: number; u: number; px: number; py: number; f: number; alvo?: [number, number]; c?: [number, number]; children: React.ReactNode }> = ({ s, rx, ry, u, px, py, f, alvo = [540, 960], c = [540, 960], children }) => {
+  const { tx, ty } = camT(s, f, px, py, alvo, c);
   return (
     <div style={{ position: "absolute", inset: 0, perspective: 2600, perspectiveOrigin: "50% 45%" }}>
       <div style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d", transform: `translate(${tx}px, ${ty}px) scale(${s}) rotateX(${rx + Math.sin(u * 0.9) * 0.8}deg) rotateY(${ry + Math.sin(u * 1.3) * 1.6}deg)` }}>{children}</div>
@@ -45,18 +45,21 @@ const Camera: React.FC<{ s: number; rx: number; ry: number; u: number; px: numbe
   );
 };
 
-const Titulo: React.FC<{ top?: number; size?: number; children: React.ReactNode }> = ({ top = 120, size = 62, children }) => (
+export const Titulo: React.FC<{ top?: number; size?: number; children: React.ReactNode }> = ({ top = 120, size = 62, children }) => (
   <div style={{ position: "absolute", left: 0, right: 0, top, textAlign: "center", fontFamily: SERIF, fontSize: size, letterSpacing: 3, color: C.offwhite, lineHeight: 1.08 }}>{children}</div>
 );
 
 // ---------- navegador (o site do computador, 1440x900 css, em janela) ----------
 // desk.jpg é a captura 2x da home do site (2880 de largura). "pagina" fica na camada que rola (px da página); "vista" fica fixa (px da janela do navegador).
-const K = 1000 / 1440;
-const NAV = { left: 40, top: 650, w: 1000, vh: 625, chrome: 78 };
-const stage = (vx: number, vy: number): [number, number] => [NAV.left + vx * K, NAV.top + NAV.chrome + vy * K];
-const Navegador: React.FC<{ scroll: number; load?: number; pagina?: React.ReactNode; vista?: React.ReactNode }> = ({ scroll, load = 0, pagina, vista }) => (
-  <div style={{ position: "absolute", left: NAV.left, top: NAV.top, width: NAV.w, height: NAV.chrome + NAV.vh, borderRadius: 26, overflow: "hidden", background: "#1c1a1e", border: `1.5px solid ${C.borda}`, boxShadow: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)" }}>
-    <div style={{ height: NAV.chrome, background: "#2b282d", display: "flex", alignItems: "center", padding: "0 26px", gap: 14, position: "relative" }}>
+export type Geo = { left: number; top: number; vh: number; chrome: number; k: number };
+export const GEO_V: Geo = { left: 40, top: 650, vh: 625, chrome: 78, k: 1000 / 1440 };
+export const GEO_H: Geo = { left: 240, top: 55, vh: 900, chrome: 70, k: 1 };
+export const stage = (g: Geo, vx: number, vy: number): [number, number] => [g.left + vx * g.k, g.top + g.chrome + vy * g.k];
+export const Navegador: React.FC<{ scroll: number; load?: number; pagina?: React.ReactNode; vista?: React.ReactNode; g?: Geo }> = ({ scroll, load = 0, pagina, vista, g = GEO_V }) => {
+  const w = 1440 * g.k;
+  return (
+  <div style={{ position: "absolute", left: g.left, top: g.top, width: w, height: g.chrome + g.vh * (g.k === 1 ? 1 : 1), borderRadius: 26, overflow: "hidden", background: "#1c1a1e", border: `1.5px solid ${C.borda}`, boxShadow: "0 60px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.4)" }}>
+    <div style={{ height: g.chrome, background: "#2b282d", display: "flex", alignItems: "center", padding: "0 26px", gap: 14, position: "relative" }}>
       {["#ff5f57", "#febc2e", "#28c840"].map((c) => <span key={c} style={{ width: 16, height: 16, borderRadius: 16, background: c, opacity: 0.85 }} />)}
       <div style={{ marginLeft: 26, flex: 1, height: 44, borderRadius: 22, background: "#1c1a1e", display: "flex", alignItems: "center", padding: "0 22px", gap: 12, fontFamily: SANS, fontSize: 22, fontWeight: 500, color: C.offwhite, letterSpacing: 0.5 }}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.rosa} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
@@ -64,30 +67,31 @@ const Navegador: React.FC<{ scroll: number; load?: number; pagina?: React.ReactN
       </div>
       <div style={{ position: "absolute", left: 0, bottom: 0, height: 4, width: `${load * 100}%`, background: C.rosa, boxShadow: `0 0 14px ${C.rosa}`, opacity: load > 0 && load < 1 ? 1 : 0 }} />
     </div>
-    <div style={{ position: "relative", width: NAV.w, height: NAV.vh, overflow: "hidden", background: "#f6f4f0" }}>
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1440, height: 4700, transformOrigin: "0 0", transform: `translateY(${-scroll * K}px) scale(${K})` }}>
+    <div style={{ position: "relative", width: w, height: g.vh, overflow: "hidden", background: "#f6f4f0" }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1440, height: 4700, transformOrigin: "0 0", transform: `translateY(${-scroll * g.k}px) scale(${g.k})` }}>
         <Img src={staticFile("site/desk.jpg")} style={{ width: 1440, height: 4700, display: "block" }} />
         {pagina}
       </div>
-      <div style={{ position: "absolute", left: 0, top: 0, width: 1440, height: 900, transformOrigin: "0 0", transform: `scale(${K})` }}>{vista}</div>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 1440, height: 900, transformOrigin: "0 0", transform: `scale(${g.k})` }}>{vista}</div>
     </div>
   </div>
-);
-const caminho = (u: number, pts: [number, number, number][]) => [keys(u, pts.map((p) => [p[0], p[1]] as [number, number])), keys(u, pts.map((p) => [p[0], p[2]] as [number, number]))];
+  );
+};
+export const caminho = (u: number, pts: [number, number, number][]) => [keys(u, pts.map((p) => [p[0], p[1]] as [number, number])), keys(u, pts.map((p) => [p[0], p[2]] as [number, number]))];
 
 // ---------- CENA 2: o site no navegador, passa o mouse, clica no botão e rola ----------
 const CenaSite: React.FC<{ u: number }> = ({ u }) => {
   const ent = pr(u, 0, 0.8, expoOut);
-  const s = keys(u, [[0, 0.8], [0.8, 1.0], [1.6, 1.75], [2.8, 1.75], [3.4, 1.4], [5.8, 1.3]]);
+  const s = keys(u, [[0, 0.8], [0.8, 1.0], [1.6, 1.5], [2.8, 1.5], [3.4, 1.3], [5.8, 1.25]]);
   const ry = keys(u, [[0, -34], [0.9, -8], [1.8, -3], [5.8, -7]]), rx = keys(u, [[0, 10], [1.8, 3], [5.8, 5]]);
-  const [cbx, cby] = stage(128, 673);
-  const px = keys(u, [[1.6, cbx], [3.4, 540]]), py = keys(u, [[1.6, cby], [3.4, 1040]]), f = keys(u, [[0.8, 0], [1.6, 0.9], [3.4, 0.5]]);
+  const [cbx, cby] = stage(GEO_V, 128, 673);
+  const px = keys(u, [[1.6, cbx], [2.9, cbx], [3.8, 540]]), py = keys(u, [[1.6, cby], [2.9, cby], [3.8, 1040]]), f = keys(u, [[0.8, 0], [1.6, 0.9], [2.9, 0.9], [3.8, 0.5]]);
   const [cx, cy] = caminho(u, [[0.5, 1420, 160], [1.2, 703, 62], [1.8, 703, 62], [2.4, 150, 690]]);
   const click = pr(u, 2.5, 0.2, suave) * (1 - pr(u, 2.75, 0.25, suave));
   const rola = keys(u, [[2.9, 0], [5.3, 1000]], curvaTraco);
   return (
     <>
-      <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={[540, 1130]}>
+      <Camera s={s} rx={rx} ry={ry} u={u} px={px} py={py} f={f} alvo={[600, 1130]}>
         <div style={{ opacity: ent, transform: `translateX(${(1 - ent) * 260}px)` }}>
           <Navegador scroll={rola} load={clamp((u - 2.6) / 0.8)}
             vista={<>
@@ -165,8 +169,8 @@ const CenaTexto: React.FC<{ u: number }> = ({ u }) => {
 // medidas em px css da página (1440 de largura): cartão 4 em x 1086..1428, y 1104..1617; tamanho M em (1256,1576); preço em (1257,1666)
 const SCROLL5 = 1000;
 const CenaCompra: React.FC<{ u: number }> = ({ u }) => {
-  const [mx, my] = stage(1256, 1576 - SCROLL5);
-  const s = keys(u, [[0, 0.9], [0.9, 1.0], [1.7, 2.1], [4.3, 2.1], [5.5, 1.25]]);
+  const [mx, my] = stage(GEO_V, 1256, 1576 - SCROLL5);
+  const s = keys(u, [[0, 0.9], [0.9, 1.0], [1.7, 1.6], [4.3, 1.6], [5.5, 1.2]]);
   const ry = keys(u, [[0, -10], [1.7, 0], [4.3, 0], [5.5, -6]]), rx = keys(u, [[0, 6], [1.7, 0], [4.3, 0], [5.5, 4]]);
   const f = keys(u, [[0, 0], [0.9, 0.15], [1.7, 1], [4.3, 1], [5.5, 0.3]]);
   const [cx, cy] = caminho(u, [[0.4, 560, 260], [1.6, 1250, 548]]);
@@ -191,7 +195,7 @@ const CenaCompra: React.FC<{ u: number }> = ({ u }) => {
       <div style={{ position: "absolute", right: 60, top: 150, width: 120, height: 120, borderRadius: 120, background: `linear-gradient(135deg, ${C.rosa}, ${C.rosaEsc})`, display: "grid", placeItems: "center", opacity: sac, transform: `scale(${0.4 + sac * 0.6})`, boxShadow: `0 0 ${30 + sac * 30}px ${C.rosa}` }}>
         <svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8h12l1 12H5L6 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
       </div>
-      <Titulo top={150} size={70}><Palavra u={u} ini={0.1} saiEm={1.3}>Feito para o</Palavra><Palavra u={u} ini={0.3} rosa saiEm={1.3}>seu momento</Palavra></Titulo>
+      <Titulo top={150} size={70}><Palavra u={u} ini={0.1} saiEm={0.8}>Feito para o</Palavra><Palavra u={u} ini={0.3} rosa saiEm={0.8}>seu momento</Palavra></Titulo>
     </>
   );
 };
