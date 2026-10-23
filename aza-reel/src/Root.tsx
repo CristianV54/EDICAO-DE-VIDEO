@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Composition, continueRender, delayRender, staticFile } from "remotion";
-import { Still1, Still2, Still3 } from "./Cenas";
+import { Cena1, Still1, Still2, Still3 } from "./Cenas";
+import { useCurrentFrame } from "remotion";
 import { FPS, H, W } from "./tokens";
 
 const Com: React.FC<{ c: React.FC }> = ({ c: Cena }) => {
@@ -15,8 +16,10 @@ const Com: React.FC<{ c: React.FC }> = ({ c: Cena }) => {
   }, [h]);
   return <Cena />;
 };
+const Logo1: React.FC = () => { const t = useCurrentFrame() / FPS; return <Com c={() => <Cena1 t={t} />} />; };
 export const Root: React.FC = () => (
   <>
+    <Composition id="Logo" component={Logo1} width={W} height={H} fps={FPS} durationInFrames={Math.round(5 * FPS)} />
     <Composition id="Still1" component={() => <Com c={Still1} />} width={W} height={H} fps={FPS} durationInFrames={30} />
     <Composition id="Still2" component={() => <Com c={Still2} />} width={W} height={H} fps={FPS} durationInFrames={30} />
     <Composition id="Still3" component={() => <Com c={Still3} />} width={W} height={H} fps={FPS} durationInFrames={30} />
