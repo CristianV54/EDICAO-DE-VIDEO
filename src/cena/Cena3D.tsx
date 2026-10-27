@@ -179,17 +179,19 @@ const CasalAmigos: React.FC<{ frame: number }> = ({ frame }) => {
 };
 
 const REPOUSO = 0.25; // rotY de repouso do casal cliente (de frente para o espectador)
-const DUR_ANDA = 36; // 1,2 s de caminhada ate o lugar
+const DUR_ANDA = 36; // 1,2 s de caminhada ate o lugar (s06)
 // Janelas em que o casal cliente existe: ele so entra quando o plano de contexto do segmento comeca (os closes
 // mostram so a peca) e continua ate o fim do segmento. s10 mantem o lugar de s09; s12 em diante mantem o de s11.
 type Janela = { seg: number; lugar: number; ini: number; fim: number; anda: boolean };
+// s06: o casal entra caminhando pela direita enquanto a camera sai do close; s07 a s11: aparece em fade no lugar
+// 8 frames antes do plano de contexto, ja assentado quando o problema do segmento dispara.
 const JANELAS: Janela[] = [
-  { seg: 6, lugar: 6, ini: LINHAS[6].ctxIni - 4, fim: LINHAS[6].fim, anda: true },
-  { seg: 7, lugar: 7, ini: LINHAS[7].ctxIni - 4, fim: LINHAS[7].fim, anda: true },
-  { seg: 8, lugar: 8, ini: LINHAS[8].ctxIni - 4, fim: LINHAS[8].fim, anda: true },
-  { seg: 9, lugar: 9, ini: LINHAS[9].ctxIni - 4, fim: LINHAS[9].fim, anda: true },
-  { seg: 10, lugar: 9, ini: LINHAS[10].ctxIni - 4, fim: LINHAS[10].fim, anda: false },
-  { seg: 11, lugar: 11, ini: LINHAS[11].ctxIni - 4, fim: LINHAS[11].fim, anda: true },
+  { seg: 6, lugar: 6, ini: LINHAS[6].ctxIni - 26, fim: LINHAS[6].fim, anda: true },
+  { seg: 7, lugar: 7, ini: LINHAS[7].ctxIni - 8, fim: LINHAS[7].fim, anda: false },
+  { seg: 8, lugar: 8, ini: LINHAS[8].ctxIni - 8, fim: LINHAS[8].fim, anda: false },
+  { seg: 9, lugar: 9, ini: LINHAS[9].ctxIni - 8, fim: LINHAS[9].fim, anda: false },
+  { seg: 10, lugar: 9, ini: LINHAS[10].ctxIni - 8, fim: LINHAS[10].fim, anda: false },
+  { seg: 11, lugar: 11, ini: LINHAS[11].ctxIni - 8, fim: LINHAS[11].fim, anda: false },
   { seg: 12, lugar: 11, ini: LINHAS[12].ini, fim: LINHAS[14].fim + 100000, anda: false },
 ];
 
@@ -200,14 +202,15 @@ const CasalCliente: React.FC<{ frame: number }> = ({ frame }) => {
   const para = LUGAR_CLIENTE[j.lugar];
   const andando = j.anda && t < DUR_ANDA;
   const u = j.anda ? easeInOutCubic(t / DUR_ANDA) : 1;
-  // vem de 1,8 m a direita do lugar
-  let x = lerp(para[0] + 1.8, para[0], u);
-  const z = lerp(para[2] + 0.3, para[2], u);
-  const y = para[1];
-  const heading = girarPara([para[0] + 1.8, para[2] + 0.3], [para[0], para[2]]);
+  // s06 vem de 3 m a direita do lugar (fora do plano de close); nos outros aparece no proprio lugar
+  const LONGE = 3.0;
+  let x = lerp(para[0] + (j.anda ? LONGE : 0), para[0], u);
+  const z = para[2];
+  const y = j.anda ? TOPO * clamp01((6.4 - x) / 0.4) : para[1] + (j.seg === 12 ? 0 : (1 - clamp01(t / 8)) * 0.4);
+  const heading = girarPara([para[0] + LONGE, para[2]], [para[0], para[2]]);
   const fim = clamp01((t - (DUR_ANDA - 10)) / 10);
   let rotY = andando ? lerp(heading, REPOUSO, fim) : REPOUSO;
-  const aparece = j.anda ? clamp01(t / 8) : 1;
+  const aparece = clamp01(t / 8);
   const some = j.fim < LINHAS[14].fim ? 1 - clamp01((frame - (j.fim - 6)) / 6) : 1;
   const opac = Math.min(aparece, some);
   // s08: vira de costas em "desmarca" (140 graus) e recua 0,3; volta em "assinado"
