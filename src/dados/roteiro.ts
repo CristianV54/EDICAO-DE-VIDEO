@@ -30,7 +30,7 @@ export const N_PECAS = 13;
 // ancoras padrao das etiquetas: ato 1 sobre a camera do fotografo; ato 2 sobre a peca; casal cliente
 const ALTO = 3.7; // acima das cabecas (topo da cabeca em y 2,65)
 const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], ALTO, CAMERA_ATO1[2]];
-const sobrePeca = (n: number): V3 => [PECA[n][0], ALTO, PECA[n][2]];
+const sobrePeca = (n: number): V3 => [PECA[n][0], 3.0, PECA[n][2]]; // acima da peca, abaixo da altura das cabecas
 const SOBRE_CASAL = (lugar: number): V3 => [LUGAR_CLIENTE[lugar][0], ALTO, LUGAR_CLIENTE[lugar][2]];
 
 const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {

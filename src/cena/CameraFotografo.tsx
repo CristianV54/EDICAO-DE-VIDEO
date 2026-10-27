@@ -30,10 +30,10 @@ export const CameraFotografo: React.FC<{ frame: number }> = ({ frame }) => {
   // s02: lente do kit pisca no inicio; em "cinquenta" sai em arco e a 50mm rosqueia
   const piscaKit = frame >= L2.ini && frame < L2.prob && Math.floor((frame - L2.ini) / 6) % 2 === 0;
   const tSaida = clamp01((frame - L2.sol) / 14); // kit sai
-  const tEntra = clamp01((frame - L2.sol - 6) / 10); // 50mm chega
-  const tRosca = clamp01((frame - L2.sol - 16) / 9); // 50mm gira 90 graus
+  const tEntra = clamp01((frame - L2.sol - 4) / 10); // 50mm chega
+  const tRosca = clamp01((frame - L2.sol - 14) / 9); // 50mm gira 90 graus
   const kitVisivel = tSaida < 1;
-  const lente50Visivel = frame - L2.sol >= 6;
+  const lente50Visivel = frame - L2.sol >= 4;
 
   // s03: porta do slot abre 100 graus e os cartoes entram deslizando
   const tPorta = easeInOutCubic(clamp01((frame - L3.toque) / 5));
@@ -81,7 +81,7 @@ export const CameraFotografo: React.FC<{ frame: number }> = ({ frame }) => {
 
       {/* lente 50mm: chega pela frente e rosqueia */}
       {lente50Visivel && (
-        <group position={[0, 0.0, 0.36 + (1 - easeInOutCubic(tEntra)) * 1.2]} rotation={[0, 0, (1 - tRosca) * (Math.PI / 2)]}>
+        <group position={[0, 0.0, 0.36 + (1 - easeInOutCubic(tEntra)) * 0.6]} rotation={[0, 0, (1 - tRosca) * (Math.PI / 2)]}>
           <Cil r={0.21} h={0.3} c="#17181D" rot={[Math.PI / 2, 0, 0]} seg={22} />
           <Cil p={[0, 0, -0.1]} r={0.225} h={0.04} c={DOURADO} rot={[Math.PI / 2, 0, 0]} seg={22} />
           <Cil p={[0, 0, 0.1]} r={0.225} h={0.04} c={DOURADO} rot={[Math.PI / 2, 0, 0]} seg={22} />
