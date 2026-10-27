@@ -1,0 +1,15 @@
+s00  menor distancia 2.80  (fotografo / casal-amigos)  ok
+s01  menor distancia 2.64  (telao / casal-amigos)  ok
+s02  menor distancia 2.64  (telao / casal-amigos)  ok
+s03  menor distancia 2.64  (telao / casal-amigos)  ok
+s04  menor distancia 2.64  (telao / casal-amigos)  ok
+s05  menor distancia 2.33  (casal-amigos / peca5)  ok
+s06  menor distancia 1.14  (peca6 / casal-cliente)  ok
+s07  menor distancia 1.21  (peca7 / casal-cliente)  ok
+s08  menor distancia 1.20  (peca8 / casal-cliente)  ok
+s09  menor distancia 1.36  (peca9 / casal-cliente)  ok
+s10  menor distancia 1.35  (peca10 / casal-cliente)  ok
+s11  menor distancia 1.08  (fotografo / casal-cliente)  ok
+s12  menor distancia 1.08  (fotografo / casal-cliente)  ok
+s13  menor distancia 1.08  (fotografo / casal-cliente)  ok
+s14  menor distancia 1.08  (fotografo / casal-cliente)  ok
