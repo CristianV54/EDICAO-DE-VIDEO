@@ -44,7 +44,7 @@ const MesaEdicao: React.FC = () => {
     [0.3, 0.05, "#3DDC84", 0.35], [-0.35, -0.12, "#3B82F6", 0.45], [0.2, -0.12, "#D4A537", 0.5],
   ];
   return (
-    <group position={[8.5, 0, -4.6]}>
+    <group position={[9.5, 0, -8.6]}>
       <B p={[0, 1.0, 0]} s={[3, 0.12, 1.4]} c="#8B5E3C" />
       {[-1.35, 1.35].map((x) => [-0.55, 0.55].map((z) => <B key={`${x}${z}`} p={[x, 0.5, z]} s={[0.12, 1, 0.12]} c="#6F4A2F" />))}
       <B p={[0, 1.65, -0.3]} s={[1.5, 0.95, 0.08]} c="#17181D" r={0.04} />
@@ -70,7 +70,7 @@ const MesaEdicao: React.FC = () => {
 };
 
 const Planta: React.FC = () => (
-  <group position={[11.2, 0, -4.8]}>
+  <group position={[12.4, 0, -8.8]}>
     <Cil p={[0, 0.3, 0]} r={0.32} rTopo={0.4} h={0.6} c="#E07A3F" seg={10} />
     <Esf p={[0, 1.0, 0]} r={0.5} c="#4CAF6A" seg={7} />
     <Esf p={[0.3, 1.45, 0.1]} r={0.35} c="#5BC27A" seg={7} />
@@ -88,19 +88,19 @@ export const Ambiente: React.FC = () => (
     <Tabuas cor="#C9955F" par />
     <Tabuas cor="#BD8A55" par={false} />
     {/* parede de fundo (z = -6) e lateral esquerda (x = -11) */}
-    <mesh position={[0, 7, -6]} receiveShadow>
+    <mesh position={[0, 7, -11]} receiveShadow>
       <planeGeometry args={[80, 14]} />
       <meshStandardMaterial color="#EFE6D6" roughness={0.95} />
     </mesh>
-    <B p={[0, 0.14, -5.95]} s={[30, 0.28, 0.1]} c="#D9CCB6" r={0.02} />
-    <mesh position={[-11, 7, 9]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+    <B p={[0, 0.14, -10.95]} s={[40, 0.28, 0.1]} c="#D9CCB6" r={0.02} />
+    <mesh position={[-15, 7, 9]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
       <planeGeometry args={[30, 14]} />
       <meshStandardMaterial color="#EFE6D6" roughness={0.95} />
     </mesh>
-    <B p={[-10.95, 0.14, 9]} s={[0.1, 0.28, 30]} c="#D9CCB6" r={0.02} />
-    <Quadro p={[-6, 3.4, -5.9]} tom={0} />
-    <Quadro p={[-2.2, 3.7, -5.9]} tom={1} />
-    <Quadro p={[1.8, 3.4, -5.9]} tom={2} />
+    <B p={[-14.95, 0.14, 9]} s={[0.1, 0.28, 30]} c="#D9CCB6" r={0.02} />
+    <Quadro p={[-6, 3.4, -10.9]} tom={0} />
+    <Quadro p={[-2.2, 3.7, -10.9]} tom={1} />
+    <Quadro p={[1.8, 3.4, -10.9]} tom={2} />
     <MesaEdicao />
     <Planta />
   </group>

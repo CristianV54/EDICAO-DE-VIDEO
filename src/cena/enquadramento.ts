@@ -17,7 +17,7 @@ export type Janela = { x0: number; x1: number; y0: number; y1: number };
 // janelas uteis (px): com o card visivel o conteudo fica abaixo dele; sem card sobe ate y = 300
 export const JANELA_CARD: Janela = { x0: 50, x1: 1030, y0: 470, y1: 1540 };
 export const JANELA_LIVRE: Janela = { x0: 50, x1: 1030, y0: 300, y1: 1540 };
-export const JANELA_FINAL: Janela = { x0: 50, x1: 1030, y0: 700, y1: 1400 };
+export const JANELA_FINAL: Janela = { x0: 0, x1: 1080, y0: 640, y1: 1460 };
 export const JANELA_UTIL = JANELA_CARD;
 const MARGEM = 30;
 // metas de tamanho (px)
@@ -28,7 +28,7 @@ export const ALT_CENA = 0.4 * ALTURA_TELA; // cena: o fotografo mede ao menos 40
 export const ALT_ABERTURA = 0.55 * ALTURA_TELA; // s00: fotografo a 55% da altura da tela (1056 px)
 export const LARG_CENA_MIN = 0.75 * LARGURA_TELA; // cena: conjunto a 75% da largura (810 px) ...
 export const ALT_CENA_MIN = 0.4 * ALTURA_TELA; // ... ou personagem mais alto a 40% da altura (768 px)
-export const LARG_DETALHE = 0.6 * LARGURA_TELA;
+export const LARG_DETALHE = 0.45 * LARGURA_TELA;
 export const JANELA_CENA: Janela = { x0: -40, x1: 1120, y0: 520, y1: 1560 }; // cena: pode cortar ate 40 px nas laterais
 export const JANELA_V: Janela = { x0: 50, x1: 1030, y0: 520, y1: 1560 }; // planos que cortam na vertical: so a largura limita
 // legenda: nao pode cobrir cabecas, plaquinhas nem a placa de foto
@@ -40,7 +40,7 @@ const emPe = (p: V3, larg: number, prof: number, dz = 0): Caixa => ({ c: [p[0], 
 // pecas: tamanho acima do pedestal (largura, altura, profundidade); a caixa inclui o pedestal
 const PECA_TAM: Record<number, V3> = {
   1: [1.1, 0.75, 0.65], 2: [0.95, 0.5, 0.9], 3: [0.8, 1.25, 0.25], 4: [1.05, 1.25, 0.65], 5: [1.05, 1.35, 0.65], 6: [1.2, 1.0, 0.7],
-  7: [1.0, 1.0, 0.8], 8: [0.95, 0.75, 0.55], 9: [0.7, 1.3, 0.6], 10: [1.3, 1.95, 0.95], 11: [1.15, 1.05, 0.65], 12: [0.9, 0.05, 0.9], 13: [0.9, 0.05, 0.9],
+  7: [1.0, 1.0, 0.8], 8: [0.95, 0.75, 0.55], 9: [0.7, 1.3, 0.6], 10: [1.0, 1.95, 0.95], 11: [1.15, 1.05, 0.65], 12: [0.9, 0.05, 0.9], 13: [0.9, 0.05, 0.9],
 };
 export const caixaDe = (id: string): Caixa => {
   const m = id.match(/^([a-zA-Z]+)(\d+)$/);
@@ -90,7 +90,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "notebook": {
       const p = posMesa(n);
-      return { c: [p[0], Y_CASA + 0.45, p[2]], t: [0.95, 0.9, 0.7] };
+      return { c: [p[0], Y_CASA + 0.45, p[2]], t: [0.8, 0.9, 0.6] };
     }
   }
   throw new Error(`caixa desconhecida: ${id}`);
@@ -429,7 +429,6 @@ const personagensDe = (n: number): string[] => {
 };
 const extrasDe = (n: number): string[] => {
   const e: string[] = [];
-  if (n === 10) e.push("notebook10");
   return e;
 };
 const sid = (n: number) => `s${String(n).padStart(2, "0")}`;
@@ -487,7 +486,7 @@ export const planoClose = (n: number): Plano => {
 
 export const planoCena = (n: number): Plano => ({
   id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: JANELA_CENA, livreV: true,
-  principal: `fot${n}`, alturaPx: ALT_CENA * 1.04, // o fotografo mede 50% da altura da tela; peca e personagens entram pela largura; placa tem plano proprio
+  principal: `fot${n}`, alturaPx: ALT_CENA * 1.07, // o fotografo mede 50% da altura da tela; peca e personagens entram pela largura; placa tem plano proprio
   lista: [...personagensDe(n), ...extrasDe(n), `peca${n}`],
 });
 // plano da placa de foto: a moldura ocupa 70% da largura (nos momentos em que a foto muda)
@@ -532,11 +531,22 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
       e.push({ quando: R("ev", "problema", 0.1), plano: planoPlaca(8, "a"), trans: 0.3 });
       e.push({ quando: R("ev", "problema", 1.3), plano: planoCena(8), trans: 0.4 });
     }
+    if (n === 7) { // foto escura na placa (antes da troca da lente)
+      e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(7, "a"), trans: 0.3 });
+      e.push({ quando: R("ev", "problema", 1.5), plano: planoCena(7), trans: 0.4 });
+    }
+    if (n === 9) { // foto granulada na placa
+      e.push({ quando: R("ev", "segunda", 0.1), plano: planoPlaca(9, "a"), trans: 0.3 });
+      e.push({ quando: R("ev", "segunda", 1.3), plano: planoCena(9), trans: 0.4 });
+    }
     if (n === 12) {
       e.push({ quando: R("ev", "depoimento", -0.2), plano: { ...planoClose(12), id: "s12-balao" }, trans: 0.4 }); // estrelas acendendo
       e.push({ quando: R("ev", "solucao", 0), plano: PLANO_VOO, trans: 1.2 });
     }
-    if (n === 13) e.push({ quando: R("ev", "solucao", 0), plano: PLANO_PRONTO, trans: 1.0 });
+    if (n === 13) {
+      e.push({ quando: R("toque", undefined, 1.3), plano: planoCena(13), trans: 0.5 }); // balao da madrinha legivel
+      e.push({ quando: R("ev", "solucao", 0), plano: PLANO_PRONTO, trans: 1.0 });
+    }
     out.push(e);
   }
   out.push([{ quando: R("ev", "problema", 0), plano: PLANO_FINAL, trans: 1.6 }]);

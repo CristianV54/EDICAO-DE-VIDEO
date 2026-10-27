@@ -429,7 +429,7 @@ const E10: React.FC<{ f: number }> = ({ f }) => {
   const tres = f >= L.sol;
   const mesa = posMesa(10);
   const prog = clamp01((f - L.ev.descarrega) / Math.max(10, L.prob - L.ev.descarrega));
-  const op = rampa(f, L.ini, 12) * (1 - rampa(f, L.fim - 12, 12));
+  const op = rampa(f, L.chegada + 4, 12) * (1 - rampa(f, L.fim - 12, 12)); // a mesa so aparece depois que o fotografo chegou (ele passa por ali)
   const tex3 = useTex("tres_x");
   return (
     <>

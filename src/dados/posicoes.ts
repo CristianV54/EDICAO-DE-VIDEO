@@ -23,7 +23,7 @@ export const posPedestal = (n: number): V3 => [c(n)[0] + 0.4, Y_CASA + ALTURA_PE
 export const posPlaca = (n: number): V3 => [c(n)[0] - 0.52, Y_CASA, c(n)[1] - 0.45]; // fundo, centro a esquerda
 // fotografo na frente a esquerda; cliente(s) mais atras e mais a esquerda, fora da linha de visao da camera (da direita) para a peca
 export const posFot = (n: number): V3 => [c(n)[0] - 0.6, Y_CASA, c(n)[1] + 0.55];
-export const posCli = (n: number): V3 => [c(n)[0] - 0.5, Y_CASA, c(n)[1] + 0.1];
+export const posCli = (n: number): V3 => [c(n)[0] - 1.1, Y_CASA, c(n)[1] + 0.25]; // a esquerda do fotografo: da camera da direita os dois nao se cobrem
 export const posNoiva = (n: number): V3 => (n === 2 || (n >= 7 && n <= 9) ? [c(n)[0] - 0.95, Y_CASA, c(n)[1] + 0.1] : posCli(n));
 export const posNoivo = (n: number): V3 => [c(n)[0] - 0.35, Y_CASA, c(n)[1] + 0.1];
 export const posAmigoA = (n: number): V3 => posCli(n);
