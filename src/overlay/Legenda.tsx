@@ -20,7 +20,7 @@ export const Legenda: React.FC = () => {
   const escala = 1 + 0.12 * (1 - Math.min(1, Math.max(0, f / 4)));
   const fs = tamanhoQueCabe(w.texto, 110, LARGURA_SEGURA, 900, false, 10);
   return (
-    <div style={{ position: "absolute", left: 540 - LARGURA_SEGURA / 2, width: LARGURA_SEGURA, top: 1180, transform: `translateY(-50%) scale(${escala})`, textAlign: "center" }}>
+    <div style={{ position: "absolute", left: 540 - LARGURA_SEGURA / 2, width: LARGURA_SEGURA, top: 1240, transform: `translateY(-50%) scale(${escala})`, textAlign: "center" }}>
       <span style={{ fontFamily: MONTSERRAT, fontWeight: 900, fontSize: fs, color: "#FFFFFF", lineHeight: 1, whiteSpace: "nowrap", ...contorno(10, "#000000") }}>{w.texto}</span>
     </div>
   );

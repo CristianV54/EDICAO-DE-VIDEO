@@ -39,6 +39,7 @@ export const TOQUE_REL = (() => {
   return 30;
 })();
 
+export const CARD_SLIDE = 6; // frames para o card entrar/sair
 export const VEL_DIGITACAO = 22; // caracteres por segundo
 export const CAMINHADA_INDICADO = 66; // frames do casal indicado ate o lugar
 
@@ -61,6 +62,8 @@ export type Linha = {
   prob: number;
   segunda: number | null;
   sol: number;
+  ctxIni: number; // inicio do plano de contexto da camera
+  cardSai: number; // frame em que o card comeca a sair
 };
 
 export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
@@ -85,6 +88,10 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
   const prob = temPeca && !momentoNaAncora && !chegada ? Math.max(aProb, toque + sf(0.8)) : aProb;
   const toqueFinal = momentoNaAncora ? aSol : chegada ? prob + CAMINHADA_INDICADO : toque;
   const sol = temPeca && !momentoNaAncora ? Math.max(aSol, prob + sf(0.5 * k)) : aSol;
+  // contexto: s01..s12 trocam do close para o contexto 0,2 s antes do problema; s13 ja comeca em contexto
+  const ctxIni = r.id === "s13" ? ini : Math.max(ini + 6, prob - sf(0.2));
+  // o card sai em max(momento + 0,5 s, min(momento + 1,2 s, contexto - 0,3 s))
+  const cardSai = Math.max(toqueFinal + sf(0.5), Math.min(toqueFinal + sf(1.2), ctxIni - sf(0.3)));
   return {
     i,
     id: r.id,
@@ -104,6 +111,8 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
     prob,
     segunda: t.ancoras.segunda !== undefined ? sf(t.ancoras.segunda) : null,
     sol,
+    ctxIni,
+    cardSai,
   };
 });
 
@@ -120,4 +129,11 @@ export const ORIGEM_TEMPOS = (tempos as { origem: string }).origem;
 export const FRAMES_FLASH = [LINHAS[0].prob, LINHAS[4].sol];
 
 // frames efetivos de cada segmento (usados pelo script de stills, via calculateMetadata)
-export const MARCOS = LINHAS.map((L) => ({ id: L.id, ini: L.ini, fim: L.fim, toque: L.toque, prob: L.prob, sol: L.sol }));
+export const MARCOS = LINHAS.map((L) => ({ id: L.id, ini: L.ini, fim: L.fim, toque: L.toque, prob: L.prob, sol: L.sol, cardFim: L.cardSai + CARD_SLIDE }));
+
+// o card aparece nos segmentos s01 a s13, do inicio do segmento ate terminar de sair
+export const cardVisivel = (frame: number): boolean => {
+  const i = segDe(frame);
+  if (i < 1 || i > 13) return false;
+  return frame < LINHAS[i].cardSai + CARD_SLIDE;
+};

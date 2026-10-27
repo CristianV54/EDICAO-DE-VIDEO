@@ -26,6 +26,10 @@ export type PoseProps = {
   caminha?: number; // fase da caminhada em rad (0 = parado)
   opacidade?: number;
   acena?: number; // 0..1: braco direito levantado, balancando
+  // rotacao [x, z] de cada braco (substitui a pose padrao): usado em apontar, gesto de duvida, segurar o celular
+  bracos?: { esq?: [number, number]; dir?: [number, number] };
+  maoDir?: React.ReactNode; // objeto na ponta do braco direito
+  maoEsq?: React.ReactNode;
   balanco?: number; // inclinacao lateral do corpo (danca), rad
   cameraNode?: React.ReactNode; // conteudo da camera nas maos (substitui a camera padrao)
   escalaCamera?: number;
@@ -54,6 +58,10 @@ export const PERSONAGENS = {
     pele: "#E3AE86", cabelo: "#2C2018", camisa: "#3B5BA9", calca: "#3B5BA9", sapato: "#111111",
     gravata: "#FFFFFF",
   } as ParamsPersonagem,
+  // personagem curioso (s05)
+  curioso: {
+    pele: "#D9A27A", cabelo: "#241A14", camisa: "#9CA3AF", calca: "#3E5C8A", sapato: "#F4F4F2",
+  } as ParamsPersonagem,
   // casal indicado (s13)
   noivaIndicada: {
     pele: "#F0C4A0", cabelo: "#E3C27A", camisa: "#FFFFFF", calca: "#FFFFFF", sapato: "#FFFFFF",
@@ -68,7 +76,7 @@ export const PERSONAGENS = {
 // Constroi um personagem low-poly de caixas. Reutilizado pelo fotografo, noivos e novo cliente.
 export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
   const P = params;
-  const Personagem: React.FC<PoseProps> = ({ position, rotY = 0, escala = 1, olhar = 0, levanta = 0, caminha = 0, opacidade = 1, acena = 0, balanco = 0, cameraNode, escalaCamera = 1 }) => {
+  const Personagem: React.FC<PoseProps> = ({ position, rotY = 0, escala = 1, olhar = 0, levanta = 0, caminha = 0, opacidade = 1, acena = 0, balanco = 0, cameraNode, escalaCamera = 1, bracos, maoDir, maoEsq }) => {
     const frame = useCurrentFrame();
     const respira = 1 + 0.015 * Math.sin((frame / 90) * Math.PI * 2); // ciclo de 3 s a 30 fps
     const o = opacidade < 1 ? opacidade : undefined;
@@ -76,6 +84,12 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
     // bracos: com camera, ficam a frente; sem camera, balancam ao andar
     const anguloBraco = P.camera ? -0.95 + (-1.75 + 0.95) * levanta : 0;
     const cameraPos: Vec3 = [0, 1.25 + 0.45 * levanta, 0.46 + 0.04 * levanta];
+    const rotBraco = (lado: number): [number, number, number] => {
+      const ov = bracos?.[lado === 1 ? "dir" : "esq"];
+      if (ov) return [ov[0], 0, ov[1]];
+      if (lado === 1 && acena > 0) return [-0.3, 0, 2.45 + 0.35 * Math.sin(frame * 0.7) * acena];
+      return [P.camera ? anguloBraco : -lado * passo, 0, P.camera ? -lado * 0.36 : lado * 0.05];
+    };
     const manga = P.mangasDobradas ? P.camisa : P.camisa;
     const antebraco = P.mangasDobradas ? P.pele : P.camisa;
     return (
@@ -104,10 +118,11 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
           {P.camera && <B p={[0, 0.66, 0]} s={[0.46, 0.05, 0.3]} c="#111114" r={0.02} o={o} />}
           {/* bracos */}
           {[-1, 1].map((lado) => (
-            <group key={lado} position={[lado * 0.4, 0.6, 0]} rotation={lado === 1 && acena > 0 ? [-0.3, 0, 2.45 + 0.35 * Math.sin(frame * 0.7) * acena] : [P.camera ? anguloBraco : -lado * passo, 0, P.camera ? -lado * 0.36 : lado * 0.05]}>
+            <group key={lado} position={[lado * 0.4, 0.6, 0]} rotation={rotBraco(lado)}>
               <B p={[0, -0.14, 0]} s={[0.18, 0.3, 0.18]} c={manga} o={o} />
               <B p={[0, -0.42, 0]} s={[0.15, 0.3, 0.15]} c={antebraco} o={o} />
               <B p={[0, -0.6, 0]} s={[0.14, 0.1, 0.14]} c={P.pele} o={o} />
+              {(lado === 1 ? maoDir : maoEsq) && <group position={[0, -0.68, 0.04]}>{lado === 1 ? maoDir : maoEsq}</group>}
             </group>
           ))}
         </group>
@@ -145,5 +160,6 @@ export const Noiva = criarPersonagem(PERSONAGENS.noiva);
 export const Noivo = criarPersonagem(PERSONAGENS.noivo);
 export const NoivaCliente = criarPersonagem(PERSONAGENS.noivaCliente);
 export const NoivoCliente = criarPersonagem(PERSONAGENS.noivoCliente);
+export const Curioso = criarPersonagem(PERSONAGENS.curioso);
 export const NoivaIndicada = criarPersonagem(PERSONAGENS.noivaIndicada);
 export const NoivoIndicado = criarPersonagem(PERSONAGENS.noivoIndicado);

@@ -1,22 +1,22 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
 import { ROTEIRO } from "../dados/roteiro";
-import { FPS, LINHAS, easeInOutCubic, segDe } from "../util/tempo";
+import { CARD_SLIDE, FPS, LINHAS, cardVisivel, easeInOutCubic, segDe } from "../util/tempo";
 import { MONO } from "../util/texto";
 
-const SLIDE = 12;
 const DESLOCA = 560;
 
+// O card entra deslizando de cima no inicio de cada segmento (s01 a s13), digita, mostra o check no momento da peca
+// e sai deslizando para cima em max(momento + 0,5 s, min(momento + 1,2 s, contexto - 0,3 s)). Em s00 e s14 nao aparece.
 export const CardAnotacoes: React.FC = () => {
   const frame = useCurrentFrame();
-  const entra = LINHAS[1].ini;
-  const sai = LINHAS[14].prob;
-  if (frame < entra) return null;
-  const y = -(1 - easeInOutCubic((frame - entra) / SLIDE)) * DESLOCA - easeInOutCubic((frame - sai) / SLIDE) * DESLOCA;
-  if (y < -DESLOCA + 1 && frame >= sai) return null;
-
-  const i = Math.min(segDe(frame), 13);
+  if (!cardVisivel(frame)) return null;
+  const i = segDe(frame);
   const L = LINHAS[i];
+  const entra = easeInOutCubic((frame - L.ini) / CARD_SLIDE);
+  const sai = easeInOutCubic((frame - L.cardSai) / CARD_SLIDE);
+  const y = -(1 - entra) * DESLOCA - sai * DESLOCA;
+
   const tarefa = ROTEIRO[i].tarefa ?? "";
   const n = Math.min(L.nChars, Math.floor((Math.max(0, frame - L.cardIni) / FPS) * L.vel));
   const concluido = n >= L.nChars && frame >= L.toque;

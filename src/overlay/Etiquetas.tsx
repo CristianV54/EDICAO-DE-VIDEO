@@ -3,12 +3,13 @@ import { useCurrentFrame } from "remotion";
 import * as THREE from "three";
 import { ROTEIRO, Etiqueta, Quando } from "../dados/roteiro";
 import { cameraPorFrame } from "../cena/cameraPorFrame";
-import { LINHAS, LARGURA, ALTURA, entrada, segDe } from "../util/tempo";
+import { LINHAS, LARGURA, ALTURA, cardVisivel, entrada, segDe } from "../util/tempo";
 import { MONTSERRAT } from "../util/texto";
 
 const COR_BOLINHA = { problema: "#FF4D4D", solucao: "#3DDC84", cinza: "#9AA0AC" };
-const Y_MIN = 480; // abaixo do card de anotacoes
-const Y_MAX = 1500;
+const Y_MIN_CARD = 470; // card visivel: fica abaixo dele
+const Y_MIN_LIVRE = 300; // card oculto
+const Y_MAX = 1040; // acima da legenda (y 1240) e do titulo (y 1110)
 const X_MIN = 60;
 const X_MAX = 960;
 
@@ -55,7 +56,7 @@ export const Etiquetas: React.FC = () => {
   const p = projetar(frame, mundo);
   const larg = e.texto.length * 20 + 80;
   const x = Math.min(X_MAX - larg / 2, Math.max(X_MIN + larg / 2, p.x));
-  const y = Math.min(Y_MAX, Math.max(Y_MIN, p.y));
+  const y = Math.min(Y_MAX, Math.max(cardVisivel(frame) ? Y_MIN_CARD : Y_MIN_LIVRE, p.y));
   const escala = entrada(frame - ini, 6);
   return (
     <div

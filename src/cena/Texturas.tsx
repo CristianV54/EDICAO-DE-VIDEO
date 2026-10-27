@@ -18,6 +18,7 @@ const DEFS = {
   plq_backup: { t: "BACKUP", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
   plq_galeria: { t: "GALERIA", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
   plq_depoimento: { t: "DEPOIMENTO", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  interrog: { t: "?", fg: "#1A1A1A", bg: "#FFFFFF", w: 160, h: 160, peso: 900 },
   folha_proposta: { t: "PROPOSTA", fg: "#1A1A1A", w: 512, h: 128, peso: 900 },
   assinado: { t: "ASSINADO", fg: "#2BB673", w: 512, h: 160, peso: 900 },
 } satisfies Record<string, Def>;

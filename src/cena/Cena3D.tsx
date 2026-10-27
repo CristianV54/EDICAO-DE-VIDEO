@@ -11,14 +11,18 @@ import { Festa } from "./Festa";
 import { Telao } from "./Telao";
 import { Casal } from "./Casal";
 import { CameraFotografo } from "./CameraFotografo";
-import { Fotografo } from "./Personagem";
+import { Curioso, Fotografo } from "./Personagem";
+import { B } from "./primitivas";
+import { PlanoTex } from "./primitivas";
+import { useTex } from "./Texturas";
+import { PIXEL } from "./Pecas/P11Galeria";
 import { TexturasProvider } from "./Texturas";
 import { cameraPorFrame } from "./cameraPorFrame";
 import {
   CASAL_AMIGOS, ROT_CASAL_AMIGOS, ENTRADA_CLIENTE, FOTOGRAFO_ATO1, FOTOGRAFO_ATO2, INDICADO_DESTINO, INDICADO_ORIGEM,
-  LUGAR_CLIENTE, PECA, ROT_FOTOGRAFO_ATO1, ROT_FOTOGRAFO_ATO2, TOPO, V3,
+  CURIOSO, LUGAR_CLIENTE, PECA, ROT_FOTOGRAFO_ATO1, ROT_FOTOGRAFO_ATO2, TOPO, V3,
 } from "../dados/posicoes";
-import { CAMINHADA_INDICADO, LINHAS, clamp01, easeInOutCubic, lerp, segDe, springQueda, FPS } from "../util/tempo";
+import { CAMINHADA_INDICADO, LINHAS, clamp01, easeInOutCubic, entrada, lerp, segDe, springQueda, FPS } from "../util/tempo";
 
 const CameraRig: React.FC<{ frame: number }> = ({ frame }) => {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -72,7 +76,12 @@ const Luzes: React.FC<{ k: number }> = ({ k }) => {
 const PecaAto2: React.FC<{ n: number; frame: number }> = ({ n, frame }) => {
   const L = LINHAS[n];
   const Comp = PECAS_ATO2[n];
-  const props = { f: frame, fq: frame - L.toque, fp: frame - L.prob, fs: frame - L.sol, fseg: L.segunda === null ? -9999 : frame - L.segunda };
+  const props = {
+    f: frame, fq: frame - L.toque, fp: frame - L.prob, fs: frame - L.sol, fseg: L.segunda === null ? -9999 : frame - L.segunda,
+    // o contrato (peca 8) reage ao problema e a solucao do s09
+    fp9: n === 8 ? frame - LINHAS[9].prob : undefined,
+    fs9: n === 8 ? frame - LINHAS[9].sol : undefined,
+  };
   if (n === 13) {
     // coracao entre os dois casais, no momento da chegada do casal indicado
     if (frame < L.toque) return null;
@@ -215,7 +224,72 @@ const CasalCliente: React.FC<{ frame: number }> = ({ frame }) => {
   // olha para a peca do segmento (s06..s11)
   const i = segDe(frame);
   const olhar = i >= 6 && i <= 11 && !andando ? Math.max(-0.9, Math.min(0.9, girarPara([x, z], [PECA[i][0], PECA[i][2]]) - rotY)) : 0;
-  return <Casal tipo="cliente" position={[x, y, z]} rotY={rotY} caminha={caminha} olhar={olhar} />;
+  // s11: a noiva segura o celular com a foto pixelada na altura do peito, de "whatsapp" ate "galeria"
+  const celular = frame >= L11.prob && frame < L11.sol + 8;
+  const escCelular = !celular ? 0 : frame < L11.sol ? entrada(frame - L11.prob, 6) : 1 - clamp01((frame - L11.sol) / 8);
+  // s13: em "indica" o casal vira para o casal indicado e a noiva aponta com o braco estendido
+  const L13 = LINHAS[13];
+  let braco: [number, number] | undefined;
+  if (frame >= L13.prob) {
+    const alvoRot = girarPara([x, z], [INDICADO_DESTINO[0], INDICADO_DESTINO[2]]);
+    rotY = lerp(rotY, alvoRot, easeInOutCubic((frame - L13.prob) / 12));
+    if (frame < L13.toque + 20) braco = [-1.55, 0];
+  }
+  const noiva = braco
+    ? { bracos: { dir: braco } }
+    : escCelular > 0.01
+      ? { bracos: { dir: [-1.0, 0.1] as [number, number] }, maoDir: <CelularPixel escala={escCelular} /> }
+      : undefined;
+  return <Casal tipo="cliente" position={[x, y, z]} rotY={rotY} caminha={caminha} olhar={olhar} noiva={noiva} />;
+};
+
+// celular com a foto pixelada (blocos grandes), segurado na mao
+const CelularPixel: React.FC<{ escala: number }> = ({ escala }) => (
+  <group scale={escala} rotation={[-0.5, 0, 0]} position={[0, 0.02, 0.1]}>
+    <B s={[0.24, 0.4, 0.04]} c="#F7F5F0" r={0.03} />
+    {PIXEL.map((c, i) => (
+      <B key={i} p={[-0.07 + (i % 3) * 0.07, 0.12 - Math.floor(i / 3) * 0.075, 0.025]} s={[0.07, 0.075, 0.012]} c={c} r={0.003} sombra={false} />
+    ))}
+  </group>
+);
+
+// s05: personagem curioso (camiseta cinza, calca jeans) olha o album fechado e faz o gesto de "cade?" com um balao "?";
+// na solucao faz joinha; some com fade no fim do segmento
+const PersonagemCurioso: React.FC<{ frame: number }> = ({ frame }) => {
+  const L = LINHAS[5];
+  const interrog = useTex("interrog");
+  const entra = clamp01((frame - (L.prob - 15)) / 15);
+  const sai = 1 - clamp01((frame - (L.fim - 20)) / 20);
+  const op = Math.min(entra, sai);
+  if (op <= 0.01) return null;
+  const pergunta = frame >= L.prob && frame < L.sol;
+  const joinha = frame >= L.sol;
+  const rotY = -1.2;
+  const olhar = Math.max(-1.1, Math.min(1.1, girarPara([CURIOSO[0], CURIOSO[2]], [PECA[5][0], PECA[5][2]]) - rotY));
+  const bracos = pergunta
+    ? { esq: [-0.2, -2.2 + 0.15 * Math.sin(frame * 0.5)] as [number, number], dir: [-0.2, 2.2 - 0.15 * Math.sin(frame * 0.5)] as [number, number] }
+    : joinha
+      ? { dir: [-1.45, 0.2] as [number, number] }
+      : undefined;
+  const polegar = joinha ? (
+    <group>
+      <B s={[0.11, 0.1, 0.11]} c="#D9A27A" r={0.03} o={op < 1 ? op : undefined} />
+      <B p={[0, 0.1, 0]} s={[0.05, 0.1, 0.05]} c="#D9A27A" r={0.02} o={op < 1 ? op : undefined} />
+    </group>
+  ) : undefined;
+  const escBalao = pergunta ? entrada(frame - L.prob, 6) : 0;
+  return (
+    <group>
+      <Curioso position={CURIOSO} rotY={rotY} olhar={olhar} opacidade={op} bracos={bracos} maoDir={polegar} />
+      {escBalao > 0.01 && (
+        <group position={[CURIOSO[0], CURIOSO[1] + 2.75, CURIOSO[2]]} rotation={[0, 0.3, 0]} scale={escBalao}>
+          <B s={[0.55, 0.55, 0.06]} c="#FFFFFF" r={0.12} />
+          <B p={[-0.1, -0.33, 0]} s={[0.12, 0.12, 0.06]} c="#FFFFFF" rot={[0, 0, Math.PI / 4]} r={0.01} />
+          <PlanoTex p={[0, 0, 0.04]} w={0.42} h={0.42} tex={interrog} />
+        </group>
+      )}
+    </group>
+  );
 };
 
 const CasalIndicado: React.FC<{ frame: number }> = ({ frame }) => {
@@ -246,6 +320,7 @@ export const Cena3D: React.FC = () => {
       <Cabos frame={frame} />
       <ElencoFotografo frame={frame} />
       <CasalAmigos frame={frame} />
+      <PersonagemCurioso frame={frame} />
       <CasalCliente frame={frame} />
       <CasalIndicado frame={frame} />
       <Festa frame={frame} luz={k} />

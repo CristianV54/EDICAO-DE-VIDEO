@@ -24,18 +24,21 @@ export const PECA: Record<number, V3> = {
   9: [4.6, TOPO, 1.7],
   10: [2.6, TOPO, 1.9],
   11: [0.8, TOPO, 1.9],
-  12: [1.6, 2.9, 0.6], // balao no alto, sobre o casal cliente
+  12: [0.6, 2.9, 0.5], // balao no alto, sobre o casal cliente
 };
 
 // onde o casal cliente fica em cada segmento
 export const LUGAR_CLIENTE: Record<number, V3> = {
-  6: [3.0, TOPO, -1.2],
-  7: [3.9, TOPO, -1.2],
-  8: [3.4, TOPO, -0.3],
+  6: [3.2, TOPO, -0.9],
+  7: [3.7, TOPO, -1.0],
+  8: [3.3, TOPO, -0.7],
   9: [3.5, TOPO, 0.9],
-  11: [1.6, TOPO, 0.6],
+  11: [0.6, TOPO, 0.5],
 };
 export const ENTRADA_CLIENTE: V3 = [7.2, 0, -1.2]; // fora da plataforma, pela direita
+
+// personagem curioso (s05)
+export const CURIOSO: V3 = [2.0, TOPO, -1.2];
 
 // casal indicado (s13)
 export const INDICADO_ORIGEM: V3 = [5.9, TOPO, 0.75];
@@ -67,6 +70,7 @@ export const entidadesDoSegmento = (i: number): Entidade[] => {
   if (i >= 1) e.push({ nome: "telao", x: TELAO[0], z: TELAO[2] });
   e.push({ nome: "fotografo", x: (ato1 ? FOTOGRAFO_ATO1 : FOTOGRAFO_ATO2)[0], z: (ato1 ? FOTOGRAFO_ATO1 : FOTOGRAFO_ATO2)[2] });
   if (i <= 5) e.push({ nome: "casal-amigos", x: CASAL_AMIGOS[0], z: CASAL_AMIGOS[2] });
+  if (i === 5) e.push({ nome: "curioso", x: CURIOSO[0], z: CURIOSO[2] });
   for (let p = 5; p <= 11; p++) if (i >= p) e.push({ nome: `peca${p}`, x: PECA[p][0], z: PECA[p][2] });
   if (i >= 6) {
     const lugar = i <= 6 ? 6 : i === 7 ? 7 : i === 8 ? 8 : i <= 10 ? 9 : 11;

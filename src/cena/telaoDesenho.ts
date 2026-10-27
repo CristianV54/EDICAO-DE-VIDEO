@@ -113,9 +113,14 @@ const casal = (g: CanvasRenderingContext2D, cx: number, base: number, esc: numbe
 
 const CASAL_CLARO = { vestido: "#FFFFFF", terno: "#1F2A44", pele: "#E8B48A", cabeloA: "#5A3A26", cabeloB: "#2C2018" };
 
+const MARGEM_SELO = 40;
+// selo de canto: mantem 40 px de margem das bordas do desenho
 const selo = (g: CanvasRenderingContext2D, texto: string, x: number, y: number, cor: string) => {
   g.font = "900 44px Montserrat";
   const w = g.measureText(texto).width + 50;
+  if (x + w / 2 > W - MARGEM_SELO) x = W - MARGEM_SELO - w / 2;
+  if (y + 34 > H - MARGEM_SELO) y = H - MARGEM_SELO - 34;
+  if (x - w / 2 < MARGEM_SELO) x = MARGEM_SELO + w / 2;
   g.fillStyle = cor;
   g.beginPath();
   g.roundRect(x - w / 2, y - 34, w, 68, 22);

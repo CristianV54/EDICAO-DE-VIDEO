@@ -35,6 +35,12 @@ m.slice(0, 15).forEach((s) => {
   alvos.push({grupo: s.id, nome: `${s.id}_b_problema`, frame: f(s.prob + 0.3 * FPS)});
   alvos.push({grupo: s.id, nome: `${s.id}_c_solucao`, frame: f(s.sol + 0.3 * FPS)});
 });
+// card saindo (s01, s05, s09, s13): no instante em que termina de sair e no meio da saida
+for (const id of ['s01', 's05', 's09', 's13']) {
+  const s = m.find((x) => x.id === id);
+  alvos.push({grupo: 'card', nome: `card_${id}_a_saindo`, frame: f(s.cardFim - 3)});
+  alvos.push({grupo: 'card', nome: `card_${id}_b_saiu`, frame: f(s.cardFim)});
+}
 alvos.push({grupo: 'final', nome: 'final_a_para_1.8s', frame: f(m[14].prob + 1.8 * FPS)});
 alvos.push({grupo: 'final', nome: 'final_b_comenta_0.5s', frame: f(m[14].sol + 0.5 * FPS)});
 alvos.push({grupo: 'final', nome: 'final_c_ultimo_frame', frame: total - 1});

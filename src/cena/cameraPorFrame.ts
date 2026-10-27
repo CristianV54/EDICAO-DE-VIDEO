@@ -1,4 +1,5 @@
-import { DESLOCA_OLHAR, AZ_PLANO, FOV_CENA, PLANOS, Plano, V3 } from "../dados/roteiro";
+import { ETAPAS_SEG, AZ_ORBITA, FOV, poseResolvida, EtapaPlano } from "./enquadramento";
+import type { V3 } from "../dados/posicoes";
 import { LINHAS, easeInOutCubic, clamp01, lerp, sf } from "../util/tempo";
 
 export type Pose = { pos: V3; alvo: V3; fov: number };
@@ -6,44 +7,27 @@ export type Pose = { pos: V3; alvo: V3; fov: number };
 const mix3 = (a: V3, b: V3, t: number): V3 => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
 const mixPose = (a: Pose, b: Pose, t: number): Pose => ({ pos: mix3(a.pos, b.pos, t), alvo: mix3(a.alvo, b.alvo, t), fov: lerp(a.fov, b.fov, t) });
 
-const rad = (g: number) => (g * Math.PI) / 180;
+type Etapa = { inicio: number; fim: number; e: EtapaPlano; transicao: number };
 
-// posicao = alvo + d * (sin(az) cos(el), sin(el), cos(az) cos(el)); olha para alvo - (0, 0,08 d, 0)
-// Ajuste de enquadramento: em tela 9:16 o FOV vertical 45 mostra pouca largura, entao as distancias da tabela
-// do roteiro sao multiplicadas e a elevacao ganha uns graus (chao e tapete aparecem em volta). Planos abertos
-// (plataforma inteira) usam FOV 70 em vez de distancias enormes.
-const K_CLOSE = 1.3;
-const K_CONTEXTO = 1.45;
-const EL_EXTRA = 8;
-
-export const poseDoPlano = (p: Plano, azExtra: number, tipo: "close" | "contexto"): Pose => {
-  const aberto = p.fov !== undefined;
-  const d = aberto ? p.d : p.d * (tipo === "close" ? K_CLOSE : K_CONTEXTO);
-  const az = rad(p.az + azExtra);
-  const el = rad(aberto ? p.el : Math.min(p.el + EL_EXTRA, 42));
-  return {
-    pos: [p.alvo[0] + d * Math.sin(az) * Math.cos(el), p.alvo[1] + d * Math.sin(el), p.alvo[2] + d * Math.cos(az) * Math.cos(el)],
-    alvo: [p.alvo[0], p.alvo[1] - DESLOCA_OLHAR * d, p.alvo[2]],
-    fov: p.fov ?? FOV_CENA,
-  };
+const frameDe = (i: number, e: EtapaPlano): number => {
+  const L = LINHAS[i];
+  if (e.quando === "ini") return L.ini;
+  if (e.quando === "ctx") return L.ctxIni;
+  if (e.quando === "sol") return L.sol;
+  return L.prob;
 };
 
-type Etapa = { inicio: number; fim: number; plano: Plano; transicao: number; tipo: "close" | "contexto" };
-
-// Sequencia de planos: close do inicio ate (problema - 0,2 s), contexto dali ate o fim.
-// Excecoes: s00 e s13 trocam em "treze"/"pronto"; s14 so se mexe em "para".
+// sequencia global de etapas (cada plano vale ate o inicio do proximo)
 const ETAPAS: Etapa[] = (() => {
   const out: Etapa[] = [];
-  const T = sf(0.9);
-  LINHAS.forEach((L, i) => {
-    const pl = PLANOS[i];
-    if (i === 14) {
-      out.push({ inicio: L.prob, fim: L.fim + 100000, plano: pl.contexto, transicao: sf(1.6), tipo: "contexto" });
-      return;
-    }
-    const troca = i === 0 || i === 13 ? L.sol : Math.max(L.ini + 6, L.prob - sf(0.2));
-    out.push({ inicio: L.ini, fim: troca, plano: pl.close, transicao: T, tipo: "close" });
-    out.push({ inicio: troca, fim: L.fim, plano: pl.contexto, transicao: T, tipo: "contexto" });
+  ETAPAS_SEG.forEach((lista, i) => {
+    lista.forEach((e) => {
+      const ini = frameDe(i, e);
+      out.push({ inicio: ini, fim: 0, e, transicao: i === 14 ? sf(1.6) : e.quando === "ini" || e.quando === "ctx" ? sf(0.9) : sf(1.1) });
+    });
+  });
+  out.forEach((et, k) => {
+    et.fim = k + 1 < out.length ? out[k + 1].inicio : LINHAS[14].fim + 100000;
   });
   return out;
 })();
@@ -54,20 +38,23 @@ const etapaDe = (frame: number): number => {
   return k;
 };
 
+// azimute: orbita de AZ_ORBITA graus centrada em torno do az do plano
 const poseNaEtapa = (k: number, frame: number): Pose => {
-  const e = ETAPAS[k];
-  const dur = Math.min(e.fim - e.inicio, 24 * 30);
-  const prog = clamp01((frame - e.inicio) / Math.max(1, dur));
-  return poseDoPlano(e.plano, AZ_PLANO * prog, e.tipo);
+  const et = ETAPAS[k];
+  const dur = Math.min(et.fim - et.inicio, 24 * 30);
+  const prog = clamp01((frame - et.inicio) / Math.max(1, dur));
+  return poseResolvida(et.e.plano, -AZ_ORBITA / 2 + AZ_ORBITA * prog);
 };
 
 // Unica fonte da verdade da camera: usada pela cena 3D e pelas etiquetas 2D.
 export const cameraPorFrame = (frame: number): Pose => {
   const k = etapaDe(frame);
-  const e = ETAPAS[k];
+  const et = ETAPAS[k];
   const atual = poseNaEtapa(k, frame);
-  const t = frame - e.inicio;
-  if (k === 0 || t >= e.transicao) return atual;
-  const de = cameraPorFrame(e.inicio - 1);
-  return mixPose(de, atual, easeInOutCubic(t / e.transicao));
+  const t = frame - et.inicio;
+  if (k === 0 || t >= et.transicao) return atual;
+  const de = cameraPorFrame(et.inicio - 1);
+  return mixPose(de, atual, easeInOutCubic(t / et.transicao));
 };
+
+export { FOV };

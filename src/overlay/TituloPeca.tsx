@@ -15,7 +15,7 @@ export const TituloPeca: React.FC = () => {
   const escala = 0.6 + 0.4 * entrada(frame - L.ini, 7);
   const fs = tamanhoQueCabe(titulo, 104, LARGURA_SEGURA, 900, true, 7);
   return (
-    <div style={{ position: "absolute", left: 540 - LARGURA_SEGURA / 2, width: LARGURA_SEGURA, top: 1020, transform: `translateY(-50%) scale(${escala})`, opacity: opacidade, textAlign: "center" }}>
+    <div style={{ position: "absolute", left: 540 - LARGURA_SEGURA / 2, width: LARGURA_SEGURA, top: 1110, transform: `translateY(-50%) scale(${escala})`, opacity: opacidade, textAlign: "center" }}>
       <span style={{ fontFamily: MONTSERRAT, fontWeight: 900, fontStyle: "italic", fontSize: fs, color: "#F5C542", whiteSpace: "nowrap", lineHeight: 1, ...contorno(7, "#1A1A1A") }}>{titulo}</span>
     </div>
   );
