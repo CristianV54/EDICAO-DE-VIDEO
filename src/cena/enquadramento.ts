@@ -2,7 +2,6 @@
 // Cada plano declara az, el, tipo e uma lista "precisa aparecer" (caixas 3D de uma tabela de tamanhos).
 // A distancia d e o ponto de mira saem de uma busca binaria (20 iteracoes) com FOV fixo, calculada uma vez por plano (cache).
 import * as THREE from "three";
-import { CARD_SLIDE, LINHAS } from "../util/tempo";
 import {
   ALTURA_PED, ALTURA_PERSONAGEM, V3, Y_CASA, posAmigoA, posAmigoB, posCli, posFot, posNoiva, posNoivo, posMesa, posPlaca,
   posPedestal, TABULEIRO,
@@ -22,13 +21,16 @@ export const JANELA_FINAL: Janela = { x0: 50, x1: 1030, y0: 700, y1: 1400 };
 export const JANELA_UTIL = JANELA_CARD;
 const MARGEM = 30;
 // metas de tamanho (px)
-export const LARG_CLOSE = 0.55 * LARGURA_TELA; // peca: 55% da largura (594 px)
+export const LARG_CLOSE = 0.7 * LARGURA_TELA; // peca: 70% da largura (756 px), como na referencia (45% a 70%), pode cortar em cima e embaixo
 export const TOL_CLOSE = 0.05;
-export const ALT_CAMINHADA = 0.45 * ALTURA_TELA; // fotografo andando: 45% da altura da tela (864 px)
+export const ALT_CAMINHADA = 0.5 * ALTURA_TELA; // fotografo andando: 50% da altura da tela (960 px)
+export const ALT_CENA = 0.4 * ALTURA_TELA; // cena: o fotografo mede ao menos 40% da altura da tela (768 px); o resto pode cortar
 export const ALT_ABERTURA = 0.55 * ALTURA_TELA; // s00: fotografo a 55% da altura da tela (1056 px)
 export const LARG_CENA_MIN = 0.75 * LARGURA_TELA; // cena: conjunto a 75% da largura (810 px) ...
 export const ALT_CENA_MIN = 0.4 * ALTURA_TELA; // ... ou personagem mais alto a 40% da altura (768 px)
-export const LARG_DETALHE = 0.45 * LARGURA_TELA;
+export const LARG_DETALHE = 0.6 * LARGURA_TELA;
+export const JANELA_CENA: Janela = { x0: -40, x1: 1120, y0: 520, y1: 1560 }; // cena: pode cortar ate 40 px nas laterais
+export const JANELA_V: Janela = { x0: 50, x1: 1030, y0: 520, y1: 1560 }; // planos que cortam na vertical: so a largura limita
 // legenda: nao pode cobrir cabecas, plaquinhas nem a placa de foto
 export const BANDA_LEGENDA = { x0: 80, x1: 1000, y0: 1185, y1: 1295 };
 
@@ -126,6 +128,7 @@ export type Plano = {
   janela?: Janela;
   seguir?: { de: string; para: string }; // caminhada: a mira acompanha o fotografo
   casa?: number; // casa do segmento (plaquinha e placa de foto)
+  livreV?: boolean; // so a largura limita; em cima e embaixo pode cortar (como na referencia)
 };
 
 // ---------- calculo ----------
@@ -222,7 +225,7 @@ const PROGS = [0, 0.5, 1];
 
 function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removidos"> {
   const janela = plano.janela ?? JANELA_CARD;
-  const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: janela.y1 - janela.y0 - 2 * MARGEM };
+  const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: plano.livreV ? 1e9 : janela.y1 - janela.y0 - 2 * MARGEM };
   const todos = pontosDe(lista);
   const ptsP = plano.principal ? cantos(plano.principal) : null;
   const inicio = centroMundo(todos);
@@ -269,7 +272,7 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     const dentro = (a: THREE.Vector3) =>
       PROGS.every((pr) => {
         const u = retsEm(a, pr).u;
-        return u.xmin >= janela.x0 - 1 && u.xmax <= janela.x1 + 1 && u.ymin >= janela.y0 - 1 && u.ymax <= janela.y1 + 1;
+        return u.xmin >= janela.x0 - 1 && u.xmax <= janela.x1 + 1 && (plano.livreV || (u.ymin >= janela.y0 - 1 && u.ymax <= janela.y1 + 1));
       });
     alvoF = alvo.clone();
     deslocY = 0;
@@ -301,7 +304,7 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
   for (const id of lista) {
     const r = projetarPontos(cantos(id));
     caixas[id] = r;
-    if (r.xmin < janela.x0 - 0.5 || r.xmax > janela.x1 + 0.5 || r.ymin < janela.y0 - 0.5 || r.ymax > janela.y1 + 0.5) fora.push(id);
+    if (r.xmin < janela.x0 - 0.5 || r.xmax > janela.x1 + 0.5 || (!plano.livreV && (r.ymin < janela.y0 - 0.5 || r.ymax > janela.y1 + 0.5))) fora.push(id);
   }
   let limite: Resolvido["limite"] = "janela";
   if (p && plano.larguraPx) limite = Math.abs(p.xmax - p.xmin - plano.larguraPx) <= plano.larguraPx * TOL_CLOSE ? "largura" : "altura";
@@ -412,7 +415,7 @@ const R = (ref: Ref["ref"], nome?: string, desl = 0): Ref => ({ ref, nome, desl 
 const AZ_REP = (n: number) => (n >= 6 && n <= 10 ? -30 : 30); // caminhada: o fotografo anda em direcao a camera
 // close e cena: camera a direita (az +30) em todas as casas; o layout das casas (peca no fundo a direita, personagens a esquerda) foi feito para isso
 const AZ_VISTA = 30;
-const EL = 32;
+const EL = 38;
 
 // quem esta em cena em cada casa
 const personagensDe = (n: number): string[] => {
@@ -429,11 +432,10 @@ const extrasDe = (n: number): string[] => {
   if (n === 10) e.push("notebook10");
   return e;
 };
-const placaDe = (n: number): string[] => ([1, 7, 8, 9].indexOf(n) >= 0 ? [`placa${n}`] : []);
 const sid = (n: number) => `s${String(n).padStart(2, "0")}`;
 
 export const planoCaminhada = (n: number): Plano => ({
-  id: `${sid(n)}-caminhada`, tipo: "caminhada", az: AZ_REP(n), el: EL, lista: [`fot${n}`], principal: `fot${n}`, alturaPx: ALT_CAMINHADA, casa: n,
+  id: `${sid(n)}-caminhada`, tipo: "caminhada", az: AZ_REP(n), el: EL, lista: [`fot${n}`], principal: `fot${n}`, alturaPx: ALT_CAMINHADA, casa: n, livreV: true, janela: JANELA_V,
   seguir: n >= 2 ? { de: `fot${n - 1}`, para: `fot${n}` } : undefined,
 });
 
@@ -443,7 +445,7 @@ const baseClose = (n: number): Plano => {
   return {
     id: `${sid(n)}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, principal,
     lista: madr || n === 12 ? [principal] : [principal, `plaq${n}`],
-    larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.5 * ALTURA_TELA : undefined,
+    larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.6 * ALTURA_TELA : undefined, livreV: true, janela: JANELA_V,
   };
 };
 // close da peca: a lista e so a peca e a plaquinha. Se um personagem cobrir mais de 15% da peca, ou aparecer cortado na tela,
@@ -470,8 +472,7 @@ export const planoClose = (n: number): Plano => {
       }
     }
     const larg = r.principal ? r.principal.xmax - r.principal.xmin : 0;
-    const alt = r.principal ? r.principal.ymax - r.principal.ymin : 0;
-    const okTam = larg >= LARG_CLOSE * (1 - TOL_CLOSE) - 1 || alt >= (r.janela.y1 - r.janela.y0 - 2 * MARGEM) * 0.97;
+    const okTam = larg >= LARG_CLOSE * (1 - TOL_CLOSE) - 1;
     if (vis < 0.85 || !okTam) continue;
     const score = intr * 1000 + Math.abs(k);
     if (!melhor || score < melhor.score) melhor = { p, k, vis, intr, score };
@@ -484,22 +485,23 @@ export const planoClose = (n: number): Plano => {
   return melhor.p;
 };
 
-export const planoCena = (n: number): Plano => {
-  const L = LINHAS[n];
-  const cardFora = L.cardSai + CARD_SLIDE <= L.cenaIni;
-  return {
-    id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: cardFora ? JANELA_LIVRE : JANELA_CARD,
-    lista: [...personagensDe(n), ...extrasDe(n), ...placaDe(n), `peca${n}`],
-  };
-};
-export const planoDetalhe = (n: number): Plano => ({
-  id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_LIVRE, casa: n,
+export const planoCena = (n: number): Plano => ({
+  id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: JANELA_CENA, livreV: true,
+  principal: `fot${n}`, alturaPx: ALT_CENA * 1.04, // o fotografo mede 50% da altura da tela; peca e personagens entram pela largura; placa tem plano proprio
+  lista: [...personagensDe(n), ...extrasDe(n), `peca${n}`],
 });
-export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_LIVRE, casa: 1 };
+// plano da placa de foto: a moldura ocupa 70% da largura (nos momentos em que a foto muda)
+export const planoPlaca = (n: number, sufixo: string): Plano => ({
+  id: `${sid(n)}-placa${sufixo}`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, lista: [`tela${n}`], principal: `tela${n}`, larguraPx: LARG_CLOSE, livreV: true, janela: JANELA_V,
+});
+export const planoDetalhe = (n: number): Plano => ({
+  id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_V, livreV: true, casa: n,
+});
+export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_V, livreV: true, casa: 1 };
 export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_LIVRE };
 export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_LIVRE };
 export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL };
-export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_LIVRE, casa: 3 };
+export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_V, livreV: true, casa: 3 };
 
 export const ETAPAS_SEG: EtapaPlano[][] = (() => {
   const out: EtapaPlano[][] = [];
@@ -516,7 +518,19 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
     e.push({ quando: R("cena"), plano: planoCena(n), trans: 0.5 });
     if (n === 7 || n === 8 || n === 9) {
       e.push({ quando: R("ev", "solucao", -0.1), plano: planoDetalhe(n), trans: 0.3 });
-      e.push({ quando: R("ev", "solucao", 1.1), plano: planoCena(n), trans: 0.4 });
+      e.push({ quando: R("ev", "solucao", 1.1), plano: planoPlaca(n, ""), trans: 0.3 });
+      e.push({ quando: R("ev", "solucao", 2.5), plano: planoCena(n), trans: 0.4 });
+    }
+    // a placa de foto tem corte proprio quando a foto muda (s01: clique e manual; s08: foto corrompida)
+    if (n === 1) {
+      e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(1, "a"), trans: 0.3 });
+      e.push({ quando: R("ev", "problema", 1.4), plano: planoCena(1), trans: 0.4 });
+      e.push({ quando: R("ev", "solucao", 0.1), plano: planoPlaca(1, "b"), trans: 0.3 });
+      e.push({ quando: R("ev", "solucao", 1.4), plano: planoCena(1), trans: 0.4 });
+    }
+    if (n === 8) {
+      e.push({ quando: R("ev", "problema", 0.1), plano: planoPlaca(8, "a"), trans: 0.3 });
+      e.push({ quando: R("ev", "problema", 1.3), plano: planoCena(8), trans: 0.4 });
     }
     if (n === 12) {
       e.push({ quando: R("ev", "depoimento", -0.2), plano: { ...planoClose(12), id: "s12-balao" }, trans: 0.4 }); // estrelas acendendo
