@@ -47,7 +47,7 @@ export const CAIXAS: Record<string, Caixa> = {
   camera1: caixa([CAMERA_ATO1[0] + 0.12, CAMERA_ATO1[1] + 0.03, CAMERA_ATO1[2]], [1.0, 0.72, 0.78]),
   camera1Flash: caixa([CAMERA_ATO1[0] + 0.05, CAMERA_ATO1[1] + 0.3, CAMERA_ATO1[2]], [1.25, 1.3, 1.1]), // com o flash na sapata e as maos
   album: sobrePlataforma(PECA[5], [0.95, 0.55, 0.8]),
-  celular: sobrePlataforma(PECA[6], [1.0, 1.1, 0.5]),
+  celular: sobrePlataforma(PECA[6], [0.75, 1.1, 0.5]),
   proposta: sobrePlataforma(PECA[7], [1.4, 1.0, 0.6]),
   contrato: sobrePlataforma(PECA[8], [1.4, 1.0, 0.6]),
   maquininha: sobrePlataforma(PECA[9], [1.15, 0.95, 0.6]),
@@ -68,16 +68,15 @@ export type Plano = {
   principal?: string; // so no close: ocupa 45% da largura
   lista: string[]; // precisa aparecer
   janela?: Janela;
-  // contexto: a peca `visivel` nao pode ficar escondida atras destes personagens (o azimute e escolhido por busca)
-  visivel?: string;
-  oclusores?: string[];
+  // contexto: cada item de `visiveis` nao pode ficar escondido atras dos seus oclusores (o azimute e escolhido por busca)
+  visiveis?: { id: string; oclusores: string[] }[];
 };
-const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista: string[], principal?: string, janela?: Janela, visivel?: string, oclusores?: string[]): Plano => ({
-  id, tipo, az, el, lista, principal, janela, visivel, oclusores,
+const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista: string[], principal?: string, janela?: Janela, visiveis?: { id: string; oclusores: string[] }[]): Plano => ({
+  id, tipo, az, el, lista, principal, janela, visiveis,
 });
 // contexto das pecas do ato 2: a peca nao pode ficar atras do fotografo nem do casal
-const ctxPeca = (seg: string, az: number, el: number, lista: string[], peca: string, casal: string) =>
-  P(`${seg}-contexto`, "contexto", az, el, lista, undefined, undefined, peca, [casal, "fotografo2"]);
+const ctxPeca = (seg: string, az: number, el: number, lista: string[], peca: string, casal: string, extra: { id: string; oclusores: string[] }[] = []) =>
+  P(`${seg}-contexto`, "contexto", az, el, lista, undefined, undefined, [{ id: peca, oclusores: [casal, "fotografo2"] }, ...extra]);
 
 // Etapas de cada segmento: quando a camera troca de plano.
 export type Quando = "ini" | "ctx" | "sol" | "prob";
@@ -126,7 +125,7 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
   ],
   /* s10 */ [
     { quando: "ini", plano: P("s10-close", "close", 20, 30, ["hds"], "hds") },
-    { quando: "ctx", plano: ctxPeca("s10", 5, 38, ["hds", "cabos10", "fotografo2"], "hds", "casalCliente9") },
+    { quando: "ctx", plano: ctxPeca("s10", 5, 38, ["hds", "cabos10", "fotografo2"], "hds", "casalCliente9", [{ id: "fotografo2", oclusores: ["hds", "casalCliente9"] }]) },
   ],
   /* s11 */ [
     { quando: "ini", plano: P("s11-close", "close", 10, 30, ["tablet"], "tablet") },
@@ -246,16 +245,20 @@ const bloqueia = (cam: THREE.Vector3, alvo: THREE.Vector3, cil: ReturnType<typeo
   const ymax = Math.max(y(lo), y(hi));
   return ymax >= cil.y0 && ymin <= cil.y1;
 };
-// fracao dos 8 cantos + centro da peca que a camera enxerga sem personagem na frente
+// menor fracao (entre os itens exigidos) dos 8 cantos + centro que a camera enxerga sem oclusor na frente
 export const visibilidadeDe = (plano: Plano, camPos: THREE.Vector3): number => {
-  if (!plano.visivel || !plano.oclusores) return 1;
-  const pts = cantos(plano.visivel);
-  const { c } = CAIXAS[plano.visivel];
-  pts.push(new THREE.Vector3(c[0], c[1], c[2]));
-  const cils = plano.oclusores.map(cilindroDe);
-  let vistos = 0;
-  for (const p of pts) if (!cils.some((cl) => bloqueia(camPos, p, cl))) vistos++;
-  return vistos / pts.length;
+  if (!plano.visiveis) return 1;
+  let pior = 1;
+  for (const v of plano.visiveis) {
+    const pts = cantos(v.id);
+    const { c } = CAIXAS[v.id];
+    pts.push(new THREE.Vector3(c[0], c[1], c[2]));
+    const cils = v.oclusores.map(cilindroDe);
+    let vistos = 0;
+    for (const p of pts) if (!cils.some((cl) => bloqueia(camPos, p, cl))) vistos++;
+    pior = Math.min(pior, vistos / pts.length);
+  }
+  return pior;
 };
 
 function resolverComAz(plano: Plano, az: number): Resolvido {
@@ -264,18 +267,23 @@ function resolverComAz(plano: Plano, az: number): Resolvido {
 export const resolverPlano = (plano: Plano): Resolvido => {
   if (cache.has(plano.id)) return cache.get(plano.id)!;
   let melhor: Resolvido | null = null;
-  let melhorVis = -1;
-  if (plano.visivel && plano.oclusores) {
-    const ordem: number[] = [0];
-    for (let k = 1; k <= 12; k++) ordem.push(k, -k);
-    for (const k of ordem) {
+  let melhorScore = Infinity;
+  let reserva: Resolvido | null = null;
+  let reservaVis = -1;
+  if (plano.visiveis) {
+    // varre o azimute de -90 a +90 graus em passos de 5: o menor d (peca maior) entre os que enxergam tudo, com pequena
+    // penalidade por se afastar do azimute pedido
+    for (let k = -18; k <= 18; k++) {
       const r = resolverComAz(plano, plano.az + k * 5);
+      if (r.fora.length) continue;
       const vis = visibilidadeDe(plano, new THREE.Vector3(...r.pos));
-      if (r.fora.length === 0 && vis >= 0.99) { melhor = r; melhorVis = vis; break; }
-      if (r.fora.length === 0 && vis > melhorVis) { melhor = r; melhorVis = vis; }
+      if (vis >= 0.99) {
+        const score = r.d + 0.06 * Math.abs(k * 5);
+        if (score < melhorScore) { melhorScore = score; melhor = r; }
+      } else if (vis > reservaVis) { reservaVis = vis; reserva = r; }
     }
   }
-  const res = melhor ?? resolverPlanoBase(plano);
+  const res = melhor ?? reserva ?? resolverPlanoBase(plano);
   const final = { ...res, plano: { ...plano, az: res.plano.az } };
   cache.set(plano.id, final);
   return final;
@@ -323,8 +331,12 @@ function resolverPlanoBase(plano: Plano): Resolvido {
   if (plano.tipo === "close" && p) {
     const w = p.xmax - p.xmin;
     limite = Math.abs(w - LARGURA_CLOSE) <= LARGURA_CLOSE * TOLERANCIA ? "largura" : "altura";
-    // 45% da largura (486 px), tolerancia de 5% para os dois lados
-    if (Math.abs(w - LARGURA_CLOSE) > LARGURA_CLOSE * TOLERANCIA) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px, esperado 486 +- 5%)`);
+    // 45% da largura (486 px), tolerancia de 5% para os dois lados. Pecas altas e estreitas (celular) so chegam a menos que
+    // isso porque a altura da janela util (590 px) limita antes: nesse caso o limite e "altura" e nao e falha.
+    const h = p.ymax - p.ymin;
+    const limitadaPelaAltura = h >= util.h - 1;
+    if (limitadaPelaAltura && w < LARGURA_CLOSE * (1 - TOLERANCIA)) limite = "altura";
+    else if (Math.abs(w - LARGURA_CLOSE) > LARGURA_CLOSE * TOLERANCIA) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px, esperado 486 +- 5%)`);
   }
   const res: Resolvido = {
     plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora,
@@ -358,5 +370,15 @@ export const projetarComAz = (plano: Plano, azExtra: number): Record<string, Ret
   posicionar(alvo, r.d, r.plano.az + azExtra, plano.el);
   const out: Record<string, Retangulo> = {};
   for (const id of plano.lista) out[id] = projetarPontos(cantos(id));
+  return out;
+};
+
+// varredura de azimute (diagnostico): distancia d, visibilidade da peca e se coube na janela
+export const varrerAzimute = (plano: Plano, de = -90, ate = 90, passo = 5) => {
+  const out: { az: number; d: number; vis: number; ok: boolean }[] = [];
+  for (let az = de; az <= ate; az += passo) {
+    const r = resolverComAz(plano, az);
+    out.push({ az, d: r.d, vis: visibilidadeDe(plano, new THREE.Vector3(...r.pos)), ok: r.fora.length === 0 });
+  }
   return out;
 };

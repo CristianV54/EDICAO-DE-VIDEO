@@ -30,7 +30,7 @@ export const N_PECAS = 13;
 // ancoras padrao das etiquetas: ato 1 sobre a camera do fotografo; ato 2 sobre a peca; casal cliente
 const ALTO = 3.7; // acima das cabecas (topo da cabeca em y 2,65)
 const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], ALTO, CAMERA_ATO1[2]];
-const sobrePeca = (n: number): V3 => [PECA[n][0], 3.0, PECA[n][2]]; // acima da peca, abaixo da altura das cabecas
+const sobrePeca = (n: number, alto = 3.0): V3 => [PECA[n][0], alto, PECA[n][2]]; // acima da peca; `alto` maior para ficar acima das cabecas
 const SOBRE_CASAL = (lugar: number): V3 => [LUGAR_CLIENTE[lugar][0], ALTO, LUGAR_CLIENTE[lugar][2]];
 
 const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
@@ -97,15 +97,15 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s09: {
     titulo: "SINAL", tarefa: "cobrar 30% de sinal",
     etiquetas: [
-      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9) },
-      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9) },
+      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9, 4.7) },
+      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9, 4.7) },
     ],
   },
   s10: {
     titulo: "BACKUP", tarefa: "3 cópias de tudo",
     etiquetas: [
-      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], ALTO, PECA[10][2]] },
-      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], ALTO, PECA[10][2]] },
+      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], 4.7, PECA[10][2]] },
+      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], 4.7, PECA[10][2]] },
     ],
   },
   s11: {
@@ -124,7 +124,7 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   },
   s13: {
     titulo: "INDICAÇÃO", tarefa: "pedir indicação",
-    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: [3.2, ALTO, 0.75] }],
+    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: [3.2, 4.7, 0.75] }],
   },
   s14: { titulo: null, tarefa: null, etiquetas: [] },
 };

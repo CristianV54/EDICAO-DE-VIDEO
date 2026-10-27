@@ -24,10 +24,10 @@ for (const r of PLANOS_RESOLVIDOS) {
       if (c.xmin < j.x0 - 1 || c.xmax > j.x1 + 1 || c.ymin < j.y0 - 1 || c.ymax > j.y1 + 1) extremos.push(`${id} (az ${dz > 0 ? "+" : ""}${dz})`);
     }
   }
-  if (p.visivel && p.oclusores) {
+  if (p.visiveis) {
     const vis = visibilidadeDe(p, new THREE.Vector3(...r.pos));
-    console.log(`${"".padEnd(16)} visibilidade de ${p.visivel} (sem ${p.oclusores.join(", ")} na frente): ${(vis * 100).toFixed(0)}%  az escolhido ${p.az}`);
-    if (vis < 0.99) extremos.push(`${p.visivel} escondida (${(vis * 100).toFixed(0)}% visivel)`);
+    console.log(`${"".padEnd(16)} visibilidade de ${p.visiveis.map((v) => v.id).join(" e ")} (sem oclusor na frente): ${(vis * 100).toFixed(0)}%  az escolhido ${p.az}`);
+    if (vis < 0.99) extremos.push(`item escondido (${(vis * 100).toFixed(0)}% visivel)`);
   }
   if (r.fora.length || extremos.length || p.el < 25 || p.el > 40) {
     falhou = true;

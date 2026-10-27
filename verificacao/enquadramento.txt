@@ -20,33 +20,33 @@ s04-flash        close      30  35    9.35  largura    uniao x   298..  782  y  
 s05-close        close      30  20    6.47  largura    uniao x   297..  783  y   568..  962  (janela x 70..1010, y 470..1060)
                  principal album: x   297..  783  y   568..  962  largura 486 px = 45% da tela
 s05-contexto     contexto   30  20   21.00  contexto   uniao x   100..  980  y   501.. 1029  (janela x 70..1010, y 470..1060)
-s06-close        close      28  15    6.52  largura    uniao x   309..  771  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 principal celular: x   309..  771  y   500.. 1030  largura 462 px = 43% da tela
-s06-contexto     contexto   38 -45   19.12  contexto   uniao x   327..  753  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 visibilidade de celular (sem casalCliente6, fotografo2 na frente): 100%  az escolhido -45
+s06-close        close      28  15    6.39  altura     uniao x   356..  724  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal celular: x   356..  724  y   500.. 1030  largura 368 px = 34% da tela (limitada pela altura da janela)
+s06-contexto     contexto   38   5   14.60  contexto   uniao x   169..  911  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 visibilidade de celular (sem oclusor na frente): 100%  az escolhido 5
 s07-close        close      30  20    8.50  largura    uniao x   297..  783  y   554..  976  (janela x 70..1010, y 470..1060)
                  principal proposta: x   297..  783  y   554..  976  largura 486 px = 45% da tela
 s07-contexto     contexto   38  35   14.86  contexto   uniao x   100..  980  y   505.. 1025  (janela x 70..1010, y 470..1060)
-                 visibilidade de proposta (sem casalCliente7, fotografo2 na frente): 100%  az escolhido 35
+                 visibilidade de proposta (sem oclusor na frente): 100%  az escolhido 35
 s08-close        close      30  35    8.34  largura    uniao x   297..  783  y   533..  997  (janela x 70..1010, y 470..1060)
                  principal contrato: x   297..  783  y   533..  997  largura 486 px = 45% da tela
 s08-contexto     contexto   38   5   14.31  contexto   uniao x   159..  921  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 visibilidade de contrato (sem casalCliente8, fotografo2 na frente): 100%  az escolhido 5
+                 visibilidade de contrato (sem oclusor na frente): 100%  az escolhido 5
 s09-close        close      30  35    7.22  largura    uniao x   297..  783  y   517.. 1013  (janela x 70..1010, y 470..1060)
                  principal maquininha: x   297..  783  y   517.. 1013  largura 486 px = 45% da tela
-s09-contexto     contexto   38   5   17.41  contexto   uniao x   244..  836  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 visibilidade de maquininha (sem casalCliente9, fotografo2 na frente): 100%  az escolhido 5
+s09-contexto     contexto   38 -20   14.87  contexto   uniao x   138..  942  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 visibilidade de maquininha (sem oclusor na frente): 100%  az escolhido -20
 s10-close        close      30  20   11.80  largura    uniao x   297..  783  y   515.. 1015  (janela x 70..1010, y 470..1060)
                  principal hds: x   297..  783  y   515.. 1015  largura 486 px = 45% da tela
-s10-contexto     contexto   38   5   17.99  contexto   uniao x   384..  696  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 visibilidade de hds (sem casalCliente9, fotografo2 na frente): 100%  az escolhido 5
+s10-contexto     contexto   38 -85   13.10  contexto   uniao x   194..  887  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 visibilidade de hds e fotografo2 (sem oclusor na frente): 100%  az escolhido -85
 s11-close        close      30  10    6.64  largura    uniao x   297..  783  y   554..  976  (janela x 70..1010, y 470..1060)
                  principal tablet: x   297..  783  y   554..  976  largura 486 px = 45% da tela
 s11-contexto     contexto   38   5   17.05  contexto   uniao x   298..  782  y   500.. 1030  (janela x 70..1010, y 470..1060)
-                 visibilidade de tablet (sem casalCliente11, fotografo2 na frente): 100%  az escolhido 5
+                 visibilidade de tablet (sem oclusor na frente): 100%  az escolhido 5
 s12-close        close      28  10    7.83  largura    uniao x   263..  817  y   500.. 1030  (janela x 70..1010, y 470..1060)
                  principal balao: x   320..  783  y   500..  846  largura 464 px = 43% da tela
-s12-contexto     contexto   28  10   16.74  contexto   uniao x   225..  855  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s12-contexto     contexto   28  10   16.75  contexto   uniao x   235..  845  y   500.. 1030  (janela x 70..1010, y 470..1060)
 s13-contexto     contexto   30  30   17.86  contexto   uniao x   209..  871  y   500.. 1030  (janela x 70..1010, y 470..1060)
 s13-pronto       contexto   32  25   22.19  contexto   uniao x   162..  918  y   500.. 1030  (janela x 70..1010, y 470..1060)
 s14-final        contexto   35  20   28.23  contexto   uniao x   248..  832  y   730.. 1140  (janela x 70..1010, y 700..1170)
