@@ -9,17 +9,26 @@ const mixPose = (a: Pose, b: Pose, t: number): Pose => ({ pos: mix3(a.pos, b.pos
 const rad = (g: number) => (g * Math.PI) / 180;
 
 // posicao = alvo + d * (sin(az) cos(el), sin(el), cos(az) cos(el)); olha para alvo - (0, 0,08 d, 0)
-export const poseDoPlano = (p: Plano, azExtra: number): Pose => {
+// Ajuste de enquadramento: em tela 9:16 o FOV vertical 45 mostra pouca largura, entao as distancias da tabela
+// do roteiro sao multiplicadas e a elevacao ganha uns graus (chao e tapete aparecem em volta). Planos abertos
+// (plataforma inteira) usam FOV 70 em vez de distancias enormes.
+const K_CLOSE = 1.3;
+const K_CONTEXTO = 1.45;
+const EL_EXTRA = 8;
+
+export const poseDoPlano = (p: Plano, azExtra: number, tipo: "close" | "contexto"): Pose => {
+  const aberto = p.fov !== undefined;
+  const d = aberto ? p.d : p.d * (tipo === "close" ? K_CLOSE : K_CONTEXTO);
   const az = rad(p.az + azExtra);
-  const el = rad(p.el);
+  const el = rad(aberto ? p.el : Math.min(p.el + EL_EXTRA, 42));
   return {
-    pos: [p.alvo[0] + p.d * Math.sin(az) * Math.cos(el), p.alvo[1] + p.d * Math.sin(el), p.alvo[2] + p.d * Math.cos(az) * Math.cos(el)],
-    alvo: [p.alvo[0], p.alvo[1] - DESLOCA_OLHAR * p.d, p.alvo[2]],
-    fov: FOV_CENA,
+    pos: [p.alvo[0] + d * Math.sin(az) * Math.cos(el), p.alvo[1] + d * Math.sin(el), p.alvo[2] + d * Math.cos(az) * Math.cos(el)],
+    alvo: [p.alvo[0], p.alvo[1] - DESLOCA_OLHAR * d, p.alvo[2]],
+    fov: p.fov ?? FOV_CENA,
   };
 };
 
-type Etapa = { inicio: number; fim: number; plano: Plano; transicao: number };
+type Etapa = { inicio: number; fim: number; plano: Plano; transicao: number; tipo: "close" | "contexto" };
 
 // Sequencia de planos: close do inicio ate (problema - 0,2 s), contexto dali ate o fim.
 // Excecoes: s00 e s13 trocam em "treze"/"pronto"; s14 so se mexe em "para".
@@ -29,12 +38,12 @@ const ETAPAS: Etapa[] = (() => {
   LINHAS.forEach((L, i) => {
     const pl = PLANOS[i];
     if (i === 14) {
-      out.push({ inicio: L.prob, fim: L.fim + 100000, plano: pl.contexto, transicao: sf(1.6) });
+      out.push({ inicio: L.prob, fim: L.fim + 100000, plano: pl.contexto, transicao: sf(1.6), tipo: "contexto" });
       return;
     }
     const troca = i === 0 || i === 13 ? L.sol : Math.max(L.ini + 6, L.prob - sf(0.2));
-    out.push({ inicio: L.ini, fim: troca, plano: pl.close, transicao: T });
-    out.push({ inicio: troca, fim: L.fim, plano: pl.contexto, transicao: T });
+    out.push({ inicio: L.ini, fim: troca, plano: pl.close, transicao: T, tipo: "close" });
+    out.push({ inicio: troca, fim: L.fim, plano: pl.contexto, transicao: T, tipo: "contexto" });
   });
   return out;
 })();
@@ -49,7 +58,7 @@ const poseNaEtapa = (k: number, frame: number): Pose => {
   const e = ETAPAS[k];
   const dur = Math.min(e.fim - e.inicio, 24 * 30);
   const prog = clamp01((frame - e.inicio) / Math.max(1, dur));
-  return poseDoPlano(e.plano, AZ_PLANO * prog);
+  return poseDoPlano(e.plano, AZ_PLANO * prog, e.tipo);
 };
 
 // Unica fonte da verdade da camera: usada pela cena 3D e pelas etiquetas 2D.

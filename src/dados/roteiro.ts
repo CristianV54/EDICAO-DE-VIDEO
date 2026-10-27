@@ -135,26 +135,26 @@ export const ROTEIRO: ItemRoteiro[] = segmentos.map((s) => ({
 }));
 
 // ----- planos de camera (secao 9) -----
-export type Plano = { alvo: V3; d: number; az: number; el: number };
+export type Plano = { alvo: V3; d: number; az: number; el: number; fov?: number };
 export type PlanosSeg = { close: Plano; contexto: Plano };
-const P = (alvo: V3, d: number, az: number, el: number): Plano => ({ alvo, d, az, el });
+const P = (alvo: V3, d: number, az: number, el: number, fov?: number): Plano => ({ alvo, d, az, el, fov });
 
 export const PLANOS: PlanosSeg[] = [
-  { close: P([-2.0, 1.4, -0.9], 6.5, 35, 20), contexto: P([0, 0.8, 0], 13, 25, 28) },
+  { close: P([-2.0, 1.4, -0.9], 6.5, 35, 20), contexto: P([0.8, 0.8, 0], 15, 25, 28, 70) },
   { close: P(CAMERA_ATO1, 3.0, 40, 15), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
   { close: P(CAMERA_ATO1, 3.0, 40, 15), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
   { close: P(CAMERA_ATO1, 2.8, 50, 18), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
   { close: P(CAMERA_ATO1, 3.0, 35, 22), contexto: P([-1.8, 2.0, -1.4], 5.6, 25, 16) },
-  { close: P([1.0, 0.9, -2.3], 3.0, 20, 22), contexto: P([-0.5, 1.6, -2.4], 6.0, 15, 18) },
+  { close: P([1.0, 0.9, -2.3], 3.0, 20, 22), contexto: P([0.2, 1.5, -2.3], 6.0, 45, 18) },
   { close: P([2.7, 1.1, -2.3], 3.0, 15, 12), contexto: P([2.8, 1.0, -1.6], 4.8, 25, 18) },
-  { close: P([4.4, 0.9, -2.3], 2.8, 20, 20), contexto: P([3.6, 1.0, -1.5], 5.0, 30, 18) },
+  { close: P([4.4, 0.9, -2.3], 2.8, 50, 20), contexto: P([3.6, 1.0, -1.5], 5.0, 30, 18) },
   { close: P([4.6, 0.9, -0.3], 2.8, 35, 22), contexto: P([4.0, 1.0, -0.3], 4.8, 40, 18) },
   { close: P([4.6, 0.9, 1.7], 2.8, 35, 22), contexto: P([4.0, 1.0, 1.3], 4.8, 40, 18) },
-  { close: P([2.6, 1.2, 1.9], 3.2, 20, 18), contexto: P([2.3, 1.3, 0.8], 5.5, 20, 22) },
+  { close: P([2.6, 1.2, 1.9], 3.8, 20, 18), contexto: P([2.3, 1.3, 0.8], 5.5, 20, 22) },
   { close: P([0.8, 0.8, 1.9], 2.8, 10, 25), contexto: P([1.2, 1.0, 1.2], 4.6, 15, 20) },
   { close: P([1.6, 2.9, 0.6], 3.4, 10, 8), contexto: P([1.6, 2.2, 0.6], 4.5, 10, 12) },
-  { close: P([2.6, 1.2, 0.6], 6.5, 30, 22), contexto: P([0, 0.8, 0], 11, 25, 30) },
-  { close: P([0, 0.6, 0], 14, 20, 35), contexto: P([0, 0.6, 0], 14, 20, 35) },
+  { close: P([2.6, 1.2, 0.6], 6.5, 30, 22), contexto: P([1.2, 0.8, 0], 13, 25, 30, 70) },
+  { close: P([1.2, 0.6, -0.2], 14, 20, 35, 70), contexto: P([1.2, 0.6, -0.2], 14, 20, 35, 70) },
 ];
 export const FOV_CENA = 45;
 export const DESLOCA_OLHAR = 0.08; // o alvo fica acima do centro da tela

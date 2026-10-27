@@ -42,9 +42,9 @@ export const P08Contrato: React.FC<PecaProps> = ({ fs }) => {
         )}
       </group>
       {!assinando && (
-        <group position={[0.5, 0.1, 0.2]} rotation={[0, 0.6, Math.PI / 2]}>
+        <group position={[0.12, 0.13, 0.12]} rotation={[0, 0.25, Math.PI / 2]}>
           <Cil r={0.03} h={0.5} c="#3B82F6" seg={8} />
-          <Cil p={[0.27, 0, 0]} r={0.025} rTopo={0.006} h={0.08} c="#17181D" seg={8} />
+          <Cil p={[0.25, 0, 0]} r={0.025} rTopo={0.006} h={0.08} c="#17181D" seg={8} />
         </group>
       )}
     </group>

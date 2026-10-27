@@ -26,7 +26,7 @@ export const Festa: React.FC<{ frame: number; luz: number }> = ({ frame, luz }) 
       </mesh>
       {cores.map((c, i) => {
         const a = ang + (i * Math.PI * 2) / 3;
-        return <pointLight key={i} color={c} intensity={22 * f * Math.max(luz, 0.5)} distance={7} position={[CASAL_AMIGOS[0] + Math.cos(a) * 1.6, 1.6, CASAL_AMIGOS[2] + Math.sin(a) * 1.6]} />;
+        return <pointLight key={i} color={c} intensity={9 * f * Math.max(luz, 0.5)} distance={7} position={[CASAL_AMIGOS[0] + Math.cos(a) * 1.6, 1.6, CASAL_AMIGOS[2] + Math.sin(a) * 1.6]} />;
       })}
     </group>
   );

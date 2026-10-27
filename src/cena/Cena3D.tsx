@@ -169,7 +169,7 @@ const CasalAmigos: React.FC<{ frame: number }> = ({ frame }) => {
 };
 
 const REPOUSO = 0.25; // rotY de repouso do casal cliente (de frente para o espectador)
-const DUR_ANDA = 60;
+const DUR_ANDA = 45;
 type Trecho = { ini: number; de: V3; para: V3; dur: number };
 const trechosCliente = (): Trecho[] => {
   const L6 = LINHAS[6];
