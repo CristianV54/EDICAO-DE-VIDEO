@@ -40,6 +40,7 @@ export const TOQUE_REL = (() => {
 })();
 
 export const VEL_DIGITACAO = 22; // caracteres por segundo
+export const CAMINHADA_INDICADO = 66; // frames do casal indicado ate o lugar
 
 export type Linha = {
   i: number;
@@ -60,8 +61,6 @@ export type Linha = {
   prob: number;
   segunda: number | null;
   sol: number;
-  caboIni: number;
-  caboFim: number;
 };
 
 export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
@@ -79,9 +78,13 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
   const toque = quedaIni + TOQUE_REL;
   const aProb = sf(t.ancoras.problema);
   const aSol = sf(t.ancoras.solucao);
-  const prob = temPeca ? Math.max(aProb, toque + 3) : aProb;
-  const sol = temPeca && r.id !== "s04" ? Math.max(aSol, prob + sf(0.5 * k)) : aSol;
-  const dur = fim - ini;
+  // s02 e s04: o momento da peca e a propria ancora da solucao (50mm rosqueia, flash estoura)
+  const momentoNaAncora = r.id === "s02" || r.id === "s04";
+  // s13: o momento da peca e a chegada do casal indicado, que comeca a andar em "indica"
+  const chegada = r.id === "s13";
+  const prob = temPeca && !momentoNaAncora && !chegada ? Math.max(aProb, toque + sf(0.8)) : aProb;
+  const toqueFinal = momentoNaAncora ? aSol : chegada ? prob + CAMINHADA_INDICADO : toque;
+  const sol = temPeca && !momentoNaAncora ? Math.max(aSol, prob + sf(0.5 * k)) : aSol;
   return {
     i,
     id: r.id,
@@ -96,13 +99,11 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
     vel,
     nChars,
     digitaFim,
-    quedaIni,
-    toque,
+    quedaIni: momentoNaAncora || chegada ? toqueFinal - TOQUE_REL : quedaIni,
+    toque: toqueFinal,
     prob,
     segunda: t.ancoras.segunda !== undefined ? sf(t.ancoras.segunda) : null,
     sol,
-    caboIni: ini + Math.round(dur * 0.8),
-    caboFim: ini + Math.round(dur * 0.95),
   };
 });
 

@@ -1,60 +1,64 @@
-import { ROTEIRO, POS_PECA, TOPO_PLATAFORMA, Vec3 } from "../dados/roteiro";
-import { LINHAS, segDe, easeInOutCubic, clamp01, lerp, sf } from "../util/tempo";
+import { DESLOCA_OLHAR, AZ_PLANO, FOV_CENA, PLANOS, Plano, V3 } from "../dados/roteiro";
+import { LINHAS, easeInOutCubic, clamp01, lerp, sf } from "../util/tempo";
 
-export type Pose = { pos: Vec3; alvo: Vec3; fov: number };
+export type Pose = { pos: V3; alvo: V3; fov: number };
 
-const mix3 = (a: Vec3, b: Vec3, t: number): Vec3 => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
-const mixPose = (a: Pose, b: Pose, t: number): Pose => ({
-  pos: mix3(a.pos, b.pos, t),
-  alvo: mix3(a.alvo, b.alvo, t),
-  fov: lerp(a.fov, b.fov, t),
-});
+const mix3 = (a: V3, b: V3, t: number): V3 => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+const mixPose = (a: Pose, b: Pose, t: number): Pose => ({ pos: mix3(a.pos, b.pos, t), alvo: mix3(a.alvo, b.alvo, t), fov: lerp(a.fov, b.fov, t) });
 
-export const POSE_GANCHO: Pose = { pos: [-3.4, 2.6, 7.6], alvo: [-6.4, 1.15, 1.2], fov: 46 };
-export const POSE_PLATAFORMA_VAZIA: Pose = { pos: [-0.8, 9.5, 14.5], alvo: [-0.8, 0.4, 0.6], fov: 72 };
-export const POSE_FINAL: Pose = { pos: [-0.6, 10.5, 14.2], alvo: [-0.6, 1.6, 0.6], fov: 82 };
+const rad = (g: number) => (g * Math.PI) / 180;
 
-const ORBITA = 0.08;
-const FOV_CLOSE = 54; // vertical; em tela 9:16 o 40 do roteiro enquadra apertado demais
-const AJUSTE_ALVO_Y = 0.17; // mira acima do centro da peca: a peca fica no meio da tela, abaixo do card
-
-// Pose de close da peca do segmento i, com `prog` (0..1) do progresso no segmento (orbita lenta).
-export const poseCloseSeg = (i: number, prog: number): Pose => {
-  const cfg = ROTEIRO[i].cam ?? {};
-  const [px, pz] = POS_PECA[i - 1];
-  const d = cfg.alvoDelta ?? [0, 0, 0];
-  const alvo: Vec3 = [px + d[0], TOPO_PLATAFORMA + AJUSTE_ALVO_Y + d[1], pz + d[2]];
-  const ang = -ORBITA / 2 + ORBITA * prog;
-  const dist = cfg.dist ?? 3.8;
-  const alt = cfg.alt ?? 2.6;
+// posicao = alvo + d * (sin(az) cos(el), sin(el), cos(az) cos(el)); olha para alvo - (0, 0,08 d, 0)
+export const poseDoPlano = (p: Plano, azExtra: number): Pose => {
+  const az = rad(p.az + azExtra);
+  const el = rad(p.el);
   return {
-    pos: [alvo[0] + Math.sin(ang) * dist, TOPO_PLATAFORMA + alt, alvo[2] + Math.cos(ang) * dist],
-    alvo,
-    fov: cfg.fov ?? FOV_CLOSE,
+    pos: [p.alvo[0] + p.d * Math.sin(az) * Math.cos(el), p.alvo[1] + p.d * Math.sin(el), p.alvo[2] + p.d * Math.cos(az) * Math.cos(el)],
+    alvo: [p.alvo[0], p.alvo[1] - DESLOCA_OLHAR * p.d, p.alvo[2]],
+    fov: FOV_CENA,
   };
 };
 
-const aoFimDe = (i: number): Pose => {
-  if (i === 0) return POSE_PLATAFORMA_VAZIA;
-  if (i === 14) return POSE_FINAL;
-  return poseCloseSeg(i, 1);
+type Etapa = { inicio: number; fim: number; plano: Plano; transicao: number };
+
+// Sequencia de planos: close do inicio ate (problema - 0,2 s), contexto dali ate o fim.
+// Excecoes: s00 e s13 trocam em "treze"/"pronto"; s14 so se mexe em "para".
+const ETAPAS: Etapa[] = (() => {
+  const out: Etapa[] = [];
+  const T = sf(0.9);
+  LINHAS.forEach((L, i) => {
+    const pl = PLANOS[i];
+    if (i === 14) {
+      out.push({ inicio: L.prob, fim: L.fim + 100000, plano: pl.contexto, transicao: sf(1.6) });
+      return;
+    }
+    const troca = i === 0 || i === 13 ? L.sol : Math.max(L.ini + 6, L.prob - sf(0.2));
+    out.push({ inicio: L.ini, fim: troca, plano: pl.close, transicao: T });
+    out.push({ inicio: troca, fim: L.fim, plano: pl.contexto, transicao: T });
+  });
+  return out;
+})();
+
+const etapaDe = (frame: number): number => {
+  let k = 0;
+  for (let i = 0; i < ETAPAS.length; i++) if (frame >= ETAPAS[i].inicio) k = i;
+  return k;
 };
 
-export const cameraPorFrame = (frame: number): Pose => {
-  const i = segDe(frame);
-  const L = LINHAS[i];
-  const prog = clamp01((frame - L.ini) / Math.max(1, L.fim - L.ini));
+const poseNaEtapa = (k: number, frame: number): Pose => {
+  const e = ETAPAS[k];
+  const dur = Math.min(e.fim - e.inicio, 24 * 30);
+  const prog = clamp01((frame - e.inicio) / Math.max(1, dur));
+  return poseDoPlano(e.plano, AZ_PLANO * prog);
+};
 
-  if (i === 0) {
-    // plano medio no gancho; em "treze" recua para a plataforma vazia
-    const t = clamp01((frame - L.sol) / sf(1.1));
-    return mixPose(POSE_GANCHO, POSE_PLATAFORMA_VAZIA, easeInOutCubic(t));
-  }
-  if (i === 14) {
-    const t = clamp01((frame - L.prob) / sf(1.6));
-    return mixPose(aoFimDe(13), POSE_FINAL, easeInOutCubic(t));
-  }
-  const atual = poseCloseSeg(i, prog);
-  const t = clamp01((frame - L.ini) / Math.max(1, L.camFim - L.ini));
-  return mixPose(aoFimDe(i - 1), atual, easeInOutCubic(t));
+// Unica fonte da verdade da camera: usada pela cena 3D e pelas etiquetas 2D.
+export const cameraPorFrame = (frame: number): Pose => {
+  const k = etapaDe(frame);
+  const e = ETAPAS[k];
+  const atual = poseNaEtapa(k, frame);
+  const t = frame - e.inicio;
+  if (k === 0 || t >= e.transicao) return atual;
+  const de = cameraPorFrame(e.inicio - 1);
+  return mixPose(de, atual, easeInOutCubic(t / e.transicao));
 };

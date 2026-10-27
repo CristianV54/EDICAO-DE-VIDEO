@@ -1,24 +1,20 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
 import * as THREE from "three";
-import { ROTEIRO, POS_PECA, TOPO_PLATAFORMA, Etiqueta, Quando } from "../dados/roteiro";
+import { ROTEIRO, Etiqueta, Quando } from "../dados/roteiro";
 import { cameraPorFrame } from "../cena/cameraPorFrame";
 import { LINHAS, LARGURA, ALTURA, entrada, segDe } from "../util/tempo";
 import { MONTSERRAT } from "../util/texto";
 
 const COR_BOLINHA = { problema: "#FF4D4D", solucao: "#3DDC84", cinza: "#9AA0AC" };
-// altura da etiqueta acima do topo da plataforma (1,4 por padrao; menor para pecas baixas, maior para as altas)
-const ALTURA_ETIQUETA: Record<string, number> = {
-  s01: 1.3, s02: 1.2, s03: 1.2, s04: 1.7, s05: 0.9, s06: 1.4, s07: 1.2,
-  s08: 0.9, s09: 1.3, s10: 1.7, s11: 0.8, s12: 1.2, s13: 1.5,
-};
 const Y_MIN = 480; // abaixo do card de anotacoes
 const Y_MAX = 1500;
 const X_MIN = 60;
 const X_MAX = 960;
 
-const quandoFrame = (i: number, q: Quando): number | null => {
+const quandoFrame = (i: number, q: Quando, fracao?: number): number | null => {
   const L = LINHAS[i];
+  if (fracao !== undefined) return L.ini + Math.round(fracao * (L.fim - L.ini));
   if (q === "problema") return L.prob;
   if (q === "segunda") return L.segunda;
   return L.sol;
@@ -38,7 +34,7 @@ export const projetar = (frame: number, mundo: [number, number, number]) => {
 const ativa = (i: number, frame: number): { e: Etiqueta; ini: number } | null => {
   let achada: { e: Etiqueta; ini: number } | null = null;
   for (const e of ROTEIRO[i].etiquetas) {
-    const q = quandoFrame(i, e.quando);
+    const q = quandoFrame(i, e.quando, e.fracao);
     if (q === null || frame < q) continue;
     if (e.ate) {
       const fimQ = quandoFrame(i, e.ate);
@@ -55,12 +51,7 @@ export const Etiquetas: React.FC = () => {
   const a = ativa(i, frame);
   if (!a) return null;
   const { e, ini } = a;
-  let mundo: [number, number, number];
-  if (e.alvo && e.alvo !== "peca") mundo = e.alvo.mundo;
-  else {
-    const [x, z] = POS_PECA[i - 1];
-    mundo = [x, TOPO_PLATAFORMA + (ALTURA_ETIQUETA[ROTEIRO[i].id] ?? 1.4), z];
-  }
+  const mundo = e.alvo!;
   const p = projetar(frame, mundo);
   const larg = e.texto.length * 20 + 80;
   const x = Math.min(X_MAX - larg / 2, Math.max(X_MIN + larg / 2, p.x));

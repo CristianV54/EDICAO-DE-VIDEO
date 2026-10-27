@@ -31,7 +31,7 @@ const m = comp.props.marcos;
 const f = (frame) => Math.min(total - 1, Math.max(0, Math.round(frame)));
 const alvos = [];
 m.slice(0, 15).forEach((s) => {
-  alvos.push({grupo: s.id, nome: `${s.id}_a_inicio`, frame: f(s.ini + 1.5 * FPS)});
+  alvos.push({grupo: s.id, nome: `${s.id}_a_momento`, frame: f((s.id === 's00' || s.id === 's14' ? s.ini + 1.5 * FPS : s.toque + 0.3 * FPS))});
   alvos.push({grupo: s.id, nome: `${s.id}_b_problema`, frame: f(s.prob + 0.3 * FPS)});
   alvos.push({grupo: s.id, nome: `${s.id}_c_solucao`, frame: f(s.sol + 0.3 * FPS)});
 });

@@ -10,7 +10,15 @@ const DEFS = {
   rs: { t: "R$", fg: "#3DDC84", w: 256, h: 128, peso: 900 },
   trinta: { t: "30%", fg: "#F5C542", w: 256, h: 128, peso: 900 },
   sab: { t: "SÁB", fg: "#1A1A1A", w: 256, h: 128, peso: 900 },
-  proposta: { t: "PROPOSTA", fg: "#1A1A1A", w: 512, h: 128, peso: 900 },
+  plq_portfolio: { t: "PORTFÓLIO", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_instagram: { t: "INSTAGRAM", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_proposta: { t: "PROPOSTA", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_contrato: { t: "CONTRATO", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_sinal: { t: "SINAL", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_backup: { t: "BACKUP", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_galeria: { t: "GALERIA", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  plq_depoimento: { t: "DEPOIMENTO", fg: "#1A1A1A", bg: "#F7F5F0", w: 512, h: 160, peso: 800 },
+  folha_proposta: { t: "PROPOSTA", fg: "#1A1A1A", w: 512, h: 128, peso: 900 },
   assinado: { t: "ASSINADO", fg: "#2BB673", w: 512, h: 160, peso: 900 },
 } satisfies Record<string, Def>;
 
@@ -37,8 +45,18 @@ const desenhar = (d: Def): THREE.CanvasTexture => {
   c.height = d.h;
   const g = c.getContext("2d")!;
   if (d.bg) {
+    // plaquinha de cantos arredondados
+    const r = d.h * 0.28;
     g.fillStyle = d.bg;
-    g.fillRect(0, 0, d.w, d.h);
+    g.beginPath();
+    g.moveTo(r, 0);
+    g.arcTo(d.w, 0, d.w, d.h, r);
+    g.arcTo(d.w, d.h, 0, d.h, r);
+    g.arcTo(0, d.h, 0, 0, r);
+    g.arcTo(0, 0, d.w, 0, r);
+    g.closePath();
+    g.fill();
+    g.fillStyle = d.fg;
   }
   g.fillStyle = d.fg;
   g.textAlign = "center";

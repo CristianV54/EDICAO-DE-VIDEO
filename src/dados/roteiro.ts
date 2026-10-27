@@ -1,24 +1,20 @@
 import segmentos from "./segmentos.json";
+import { CAMERA_ATO1, PECA, TOPO, V3 } from "./posicoes";
 
 export type Quando = "problema" | "segunda" | "solucao";
 export type TipoEtiqueta = "problema" | "solucao" | "cinza";
-export type Vec3 = [number, number, number];
-export type Alvo = "peca" | { mundo: Vec3 };
+export type { V3 };
+export type Vec3 = V3;
 
 export type Etiqueta = {
   quando: Quando;
   texto: string;
   tipo: TipoEtiqueta;
-  alvo?: Alvo;
+  // ponto do mundo onde a etiqueta fica ancorada (padrao: acima da peca do segmento)
+  alvo?: V3;
   ate?: Quando;
-};
-
-export type CamCfg = {
-  dist?: number;
-  alt?: number;
-  fov?: number;
-  // deslocamento aplicado ao ponto observado (e a camera acompanha)
-  alvoDelta?: Vec3;
+  // se definido, a etiqueta nasce nesta fracao (0..1) da duracao do segmento em vez de na ancora
+  fracao?: number;
 };
 
 export type ItemRoteiro = {
@@ -27,113 +23,107 @@ export type ItemRoteiro = {
   titulo: string | null;
   tarefa: string | null;
   etiquetas: Etiqueta[];
-  cam?: CamCfg;
 };
 
-// (x, z) de cada peca na plataforma. Indice 0 = peca 1.
-export const POS_PECA: [number, number][] = [
-  [-4, -2], [-2, -2], [0, -2], [2, -2], [4, -2],
-  [-4, 0], [-2, 0], [0, 0], [2, 0], [4, 0],
-  [-3, 2], [0, 2], [3, 2],
-];
-export const TOPO_PLATAFORMA = 0.5;
+export const N_PECAS = 13;
+
+// ancoras padrao das etiquetas: ato 1 sobre a camera do fotografo; ato 2 sobre a peca; casal cliente
+const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], 2.95, CAMERA_ATO1[2]];
+const sobrePeca = (n: number, alto = 1.55): V3 => [PECA[n][0], TOPO + alto, PECA[n][2]];
+const SOBRE_CASAL = (x: number, z: number): V3 => [x, 3.0, z];
 
 const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s00: {
     titulo: null, tarefa: null,
-    etiquetas: [{ quando: "problema", texto: "FOTÓGRAFO?", tipo: "problema", alvo: { mundo: [-7, 2.55, 1.2] }, ate: "solucao" }],
+    etiquetas: [{ quando: "problema", texto: "FOTÓGRAFO?", tipo: "problema", alvo: [-3.4, 3.0, -0.6], ate: "solucao" }],
   },
   s01: {
     titulo: "CÂMERA", tarefa: "comprar uma câmera",
     etiquetas: [
-      { quando: "problema", texto: "MODO AUTO", tipo: "problema" },
-      { quando: "solucao", texto: "APRENDE O MANUAL", tipo: "solucao" },
+      { quando: "problema", texto: "MODO AUTO", tipo: "problema", alvo: SOBRE_CAMERA },
+      { quando: "solucao", texto: "APRENDE O MANUAL", tipo: "solucao", alvo: SOBRE_CAMERA },
     ],
   },
   s02: {
     titulo: "LENTE", tarefa: "trocar a lente do kit",
     etiquetas: [
-      { quando: "problema", texto: "FOTO ESCURA", tipo: "problema" },
-      { quando: "solucao", texto: "50MM", tipo: "solucao" },
+      { quando: "problema", texto: "FOTO ESCURA", tipo: "problema", alvo: SOBRE_CAMERA },
+      { quando: "solucao", texto: "50MM", tipo: "solucao", alvo: SOBRE_CAMERA },
     ],
   },
   s03: {
     titulo: "CARTÃO DUPLO", tarefa: "câmera com dois slots",
     etiquetas: [
-      { quando: "problema", texto: "CARTÃO CORROMPEU", tipo: "problema" },
-      { quando: "solucao", texto: "SLOT 2 SALVOU", tipo: "solucao" },
+      { quando: "problema", texto: "CARTÃO CORROMPEU", tipo: "problema", alvo: SOBRE_CAMERA },
+      { quando: "solucao", texto: "SLOT 2 SALVOU", tipo: "solucao", alvo: SOBRE_CAMERA },
     ],
   },
   s04: {
     titulo: "FLASH", tarefa: "comprar um flash",
     etiquetas: [
-      { quando: "segunda", texto: "ISO 12800", tipo: "problema" },
-      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao" },
+      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: SOBRE_CASAL(-0.6, -0.6) },
+      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: SOBRE_CASAL(-0.6, -0.6) },
     ],
   },
   s05: {
     titulo: "PORTFÓLIO", tarefa: "montar o portfólio",
     etiquetas: [
-      { quando: "problema", texto: "CADÊ SEU TRABALHO?", tipo: "problema" },
-      { quando: "solucao", texto: "20 MELHORES", tipo: "solucao" },
+      { quando: "problema", texto: "CADÊ SEU TRABALHO?", tipo: "problema", alvo: sobrePeca(5, 1.2) },
+      { quando: "solucao", texto: "20 MELHORES", tipo: "solucao", alvo: sobrePeca(5, 1.2) },
     ],
   },
   s06: {
     titulo: "INSTAGRAM", tarefa: "criar o perfil",
     etiquetas: [
-      { quando: "problema", texto: "NINGUÉM VIU", tipo: "problema" },
-      { quando: "solucao", texto: "NOVO DIRECT", tipo: "solucao" },
+      { quando: "problema", texto: "NINGUÉM VIU", tipo: "problema", alvo: sobrePeca(6, 1.6) },
+      { quando: "solucao", texto: "NOVO DIRECT", tipo: "solucao", alvo: SOBRE_CASAL(3.0, -1.2), fracao: 0.88 },
     ],
   },
   s07: {
     titulo: "PROPOSTA", tarefa: "fazer proposta em PDF",
     etiquetas: [
-      { quando: "problema", texto: "VISUALIZOU", tipo: "cinza" },
-      { quando: "solucao", texto: "QUERO FECHAR", tipo: "solucao" },
+      { quando: "problema", texto: "VISUALIZOU", tipo: "cinza", alvo: SOBRE_CASAL(3.9, -1.2) },
+      { quando: "solucao", texto: "QUERO FECHAR", tipo: "solucao", alvo: SOBRE_CASAL(3.9, -1.2) },
     ],
   },
   s08: {
     titulo: "CONTRATO", tarefa: "contrato assinado",
-    // os noivos ficam ao lado direito do contrato, na plataforma, para caberem no enquadramento
-    cam: { dist: 5.4, alt: 3.0, fov: 60, alvoDelta: [0.9, -0.15, 0] },
     etiquetas: [
-      { quando: "problema", texto: "DESMARCOU", tipo: "problema", alvo: { mundo: [1.65, 1.85, 0.3] } },
-      { quando: "solucao", texto: "TEM O QUE COBRAR", tipo: "solucao" },
+      { quando: "problema", texto: "DESMARCOU", tipo: "problema", alvo: SOBRE_CASAL(3.4, -0.3) },
+      { quando: "solucao", texto: "TEM O QUE COBRAR", tipo: "solucao", alvo: SOBRE_CASAL(3.4, -0.3) },
     ],
   },
   s09: {
     titulo: "SINAL", tarefa: "cobrar 30% de sinal",
     etiquetas: [
-      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema" },
-      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao" },
+      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9, 1.7) },
+      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9, 1.7) },
     ],
   },
   s10: {
     titulo: "BACKUP", tarefa: "3 cópias de tudo",
-    cam: { alvoDelta: [0, 0.2, 0] },
     etiquetas: [
-      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema" },
-      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao" },
+      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], 3.2, PECA[10][2]] },
+      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], 3.2, PECA[10][2]] },
     ],
   },
   s11: {
     titulo: "GALERIA", tarefa: "entregar em galeria",
     etiquetas: [
-      { quando: "problema", texto: "FOTO COMPRIMIDA", tipo: "problema" },
-      { quando: "solucao", texto: "GALERIA COM SENHA", tipo: "solucao" },
+      { quando: "problema", texto: "FOTO COMPRIMIDA", tipo: "problema", alvo: [PECA[11][0], 2.0, PECA[11][2]] },
+      { quando: "solucao", texto: "GALERIA COM SENHA", tipo: "solucao", alvo: [PECA[11][0], 2.0, PECA[11][2]] },
     ],
   },
   s12: {
     titulo: "DEPOIMENTO", tarefa: "pedir depoimento",
     etiquetas: [
-      { quando: "problema", texto: "SÓ VOCÊ SABE", tipo: "problema" },
-      { quando: "solucao", texto: "POSTOU", tipo: "solucao" },
+      { quando: "problema", texto: "SÓ VOCÊ SABE", tipo: "problema", alvo: [PECA[12][0], 3.8, PECA[12][2]] },
+      { quando: "solucao", texto: "POSTOU", tipo: "solucao", alvo: [PECA[12][0], 3.8, PECA[12][2]] },
     ],
   },
   s13: {
     titulo: "INDICAÇÃO", tarefa: "pedir indicação",
-    cam: { dist: 6.4, alt: 3.4, fov: 60, alvoDelta: [0.9, -0.1, 0.2] },
-    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: { mundo: [5.2, 2.75, 2.5] } }],
+    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: SOBRE_CASAL(3.2, 0.75) }],
   },
   s14: { titulo: null, tarefa: null, etiquetas: [] },
 };
@@ -144,4 +134,28 @@ export const ROTEIRO: ItemRoteiro[] = segmentos.map((s) => ({
   ...extra[s.id],
 }));
 
-export const N_PECAS = 13;
+// ----- planos de camera (secao 9) -----
+export type Plano = { alvo: V3; d: number; az: number; el: number };
+export type PlanosSeg = { close: Plano; contexto: Plano };
+const P = (alvo: V3, d: number, az: number, el: number): Plano => ({ alvo, d, az, el });
+
+export const PLANOS: PlanosSeg[] = [
+  { close: P([-2.0, 1.4, -0.9], 6.5, 35, 20), contexto: P([0, 0.8, 0], 13, 25, 28) },
+  { close: P(CAMERA_ATO1, 3.0, 40, 15), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
+  { close: P(CAMERA_ATO1, 3.0, 40, 15), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
+  { close: P(CAMERA_ATO1, 2.8, 50, 18), contexto: P([-2.4, 2.0, -1.6], 5.2, 30, 14) },
+  { close: P(CAMERA_ATO1, 3.0, 35, 22), contexto: P([-1.8, 2.0, -1.4], 5.6, 25, 16) },
+  { close: P([1.0, 0.9, -2.3], 3.0, 20, 22), contexto: P([-0.5, 1.6, -2.4], 6.0, 15, 18) },
+  { close: P([2.7, 1.1, -2.3], 3.0, 15, 12), contexto: P([2.8, 1.0, -1.6], 4.8, 25, 18) },
+  { close: P([4.4, 0.9, -2.3], 2.8, 20, 20), contexto: P([3.6, 1.0, -1.5], 5.0, 30, 18) },
+  { close: P([4.6, 0.9, -0.3], 2.8, 35, 22), contexto: P([4.0, 1.0, -0.3], 4.8, 40, 18) },
+  { close: P([4.6, 0.9, 1.7], 2.8, 35, 22), contexto: P([4.0, 1.0, 1.3], 4.8, 40, 18) },
+  { close: P([2.6, 1.2, 1.9], 3.2, 20, 18), contexto: P([2.3, 1.3, 0.8], 5.5, 20, 22) },
+  { close: P([0.8, 0.8, 1.9], 2.8, 10, 25), contexto: P([1.2, 1.0, 1.2], 4.6, 15, 20) },
+  { close: P([1.6, 2.9, 0.6], 3.4, 10, 8), contexto: P([1.6, 2.2, 0.6], 4.5, 10, 12) },
+  { close: P([2.6, 1.2, 0.6], 6.5, 30, 22), contexto: P([0, 0.8, 0], 11, 25, 30) },
+  { close: P([0, 0.6, 0], 14, 20, 35), contexto: P([0, 0.6, 0], 14, 20, 35) },
+];
+export const FOV_CENA = 45;
+export const DESLOCA_OLHAR = 0.08; // o alvo fica acima do centro da tela
+export const AZ_PLANO = 4; // graus de giro durante cada plano

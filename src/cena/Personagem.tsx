@@ -1,6 +1,6 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
-import { B, Cil, Cone, Esf } from "./primitivas";
+import { B, Cone, Esf } from "./primitivas";
 import type { Vec3 } from "../dados/roteiro";
 
 export type ParamsPersonagem = {
@@ -25,6 +25,10 @@ export type PoseProps = {
   levanta?: number; // 0..1: camera ao rosto
   caminha?: number; // fase da caminhada em rad (0 = parado)
   opacidade?: number;
+  acena?: number; // 0..1: braco direito levantado, balancando
+  balanco?: number; // inclinacao lateral do corpo (danca), rad
+  cameraNode?: React.ReactNode; // conteudo da camera nas maos (substitui a camera padrao)
+  escalaCamera?: number;
 };
 
 export const PERSONAGENS = {
@@ -32,6 +36,7 @@ export const PERSONAGENS = {
     pele: "#E8B48A", cabelo: "#3A2A1E", camisa: "#F4F4F2", calca: "#1E2230", sapato: "#FFFFFF",
     barba: true, mangasDobradas: true, camera: true,
   } as ParamsPersonagem,
+  // casal de amigos (ato 1)
   noiva: {
     pele: "#EBBB95", cabelo: "#5A3A26", camisa: "#FFFFFF", calca: "#FFFFFF", sapato: "#FFFFFF",
     vestido: "#FFFFFF", cabeloLongo: true,
@@ -40,26 +45,42 @@ export const PERSONAGENS = {
     pele: "#E3AE86", cabelo: "#2C2018", camisa: "#1F2A44", calca: "#1F2A44", sapato: "#111111",
     gravata: "#D4A537",
   } as ParamsPersonagem,
-  cliente: {
-    pele: "#D9A27A", cabelo: "#241A14", camisa: "#3B82F6", calca: "#3E5C8A", sapato: "#F4F4F2",
+  // casal cliente (ato 2)
+  noivaCliente: {
+    pele: "#EBBB95", cabelo: "#B5532E", camisa: "#FFFFFF", calca: "#FFFFFF", sapato: "#FFFFFF",
+    vestido: "#FFFFFF", cabeloLongo: true,
+  } as ParamsPersonagem,
+  noivoCliente: {
+    pele: "#E3AE86", cabelo: "#2C2018", camisa: "#3B5BA9", calca: "#3B5BA9", sapato: "#111111",
+    gravata: "#FFFFFF",
+  } as ParamsPersonagem,
+  // casal indicado (s13)
+  noivaIndicada: {
+    pele: "#F0C4A0", cabelo: "#E3C27A", camisa: "#FFFFFF", calca: "#FFFFFF", sapato: "#FFFFFF",
+    vestido: "#FFFFFF", cabeloLongo: true,
+  } as ParamsPersonagem,
+  noivoIndicado: {
+    pele: "#D9A27A", cabelo: "#241A14", camisa: "#6B7280", calca: "#6B7280", sapato: "#111111",
+    gravata: "#D4A537",
   } as ParamsPersonagem,
 };
 
 // Constroi um personagem low-poly de caixas. Reutilizado pelo fotografo, noivos e novo cliente.
 export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
   const P = params;
-  const Personagem: React.FC<PoseProps> = ({ position, rotY = 0, escala = 1, olhar = 0, levanta = 0, caminha = 0, opacidade = 1 }) => {
+  const Personagem: React.FC<PoseProps> = ({ position, rotY = 0, escala = 1, olhar = 0, levanta = 0, caminha = 0, opacidade = 1, acena = 0, balanco = 0, cameraNode, escalaCamera = 1 }) => {
     const frame = useCurrentFrame();
     const respira = 1 + 0.015 * Math.sin((frame / 90) * Math.PI * 2); // ciclo de 3 s a 30 fps
     const o = opacidade < 1 ? opacidade : undefined;
-    const balanco = caminha !== 0 ? Math.sin(caminha) * 0.6 : 0;
+    const passo = caminha !== 0 ? Math.sin(caminha) * 0.5 : 0;
     // bracos: com camera, ficam a frente; sem camera, balancam ao andar
     const anguloBraco = P.camera ? -0.95 + (-1.75 + 0.95) * levanta : 0;
-    const cameraPos: Vec3 = [0, 1.18 + 0.46 * levanta, 0.46 + 0.06 * levanta];
+    const cameraPos: Vec3 = [0, 1.25 + 0.45 * levanta, 0.46 + 0.04 * levanta];
     const manga = P.mangasDobradas ? P.camisa : P.camisa;
     const antebraco = P.mangasDobradas ? P.pele : P.camisa;
     return (
       <group position={position} rotation={[0, rotY, 0]} scale={escala}>
+        <group rotation={[0, 0, balanco]}>
         {/* pernas / saia */}
         {P.vestido ? (
           <>
@@ -69,7 +90,7 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
           </>
         ) : (
           [-1, 1].map((lado) => (
-            <group key={lado} position={[lado * 0.13, 0.85, 0]} rotation={[lado * balanco, 0, 0]}>
+            <group key={lado} position={[lado * 0.13, 0.85, 0]} rotation={[lado * passo, 0, 0]}>
               <B p={[0, -0.4, 0]} s={[0.2, 0.8, 0.23]} c={P.calca} o={o} />
               <B p={[0, -0.8, 0.05]} s={[0.22, 0.12, 0.34]} c={P.sapato} o={o} />
             </group>
@@ -83,7 +104,7 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
           {P.camera && <B p={[0, 0.66, 0]} s={[0.46, 0.05, 0.3]} c="#111114" r={0.02} o={o} />}
           {/* bracos */}
           {[-1, 1].map((lado) => (
-            <group key={lado} position={[lado * 0.4, 0.6, 0]} rotation={[P.camera ? anguloBraco : -lado * balanco, 0, P.camera ? -lado * 0.36 : lado * 0.05]}>
+            <group key={lado} position={[lado * 0.4, 0.6, 0]} rotation={lado === 1 && acena > 0 ? [-0.3, 0, 2.45 + 0.35 * Math.sin(frame * 0.7) * acena] : [P.camera ? anguloBraco : -lado * passo, 0, P.camera ? -lado * 0.36 : lado * 0.05]}>
               <B p={[0, -0.14, 0]} s={[0.18, 0.3, 0.18]} c={manga} o={o} />
               <B p={[0, -0.42, 0]} s={[0.15, 0.3, 0.15]} c={antebraco} o={o} />
               <B p={[0, -0.6, 0]} s={[0.14, 0.1, 0.14]} c={P.pele} o={o} />
@@ -92,11 +113,8 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
         </group>
         {/* camera preta nas maos */}
         {P.camera && (
-          <group position={cameraPos}>
-            <B s={[0.38, 0.24, 0.2]} c="#111114" r={0.03} />
-            <Cil p={[0, 0, 0.17]} r={0.09} h={0.18} c="#1B1C22" rot={[Math.PI / 2, 0, 0]} seg={14} />
-            <Cil p={[0, 0, 0.27]} r={0.1} h={0.03} c="#D4A537" rot={[Math.PI / 2, 0, 0]} seg={14} />
-            <B p={[-0.12, 0.15, 0]} s={[0.08, 0.05, 0.08]} c="#D4A537" r={0.01} />
+          <group position={cameraPos} scale={escalaCamera}>
+            {cameraNode ?? <B s={[0.38, 0.24, 0.2]} c="#111114" r={0.03} />}
           </group>
         )}
         {/* cabeca */}
@@ -115,6 +133,7 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
           <B p={[0.09, 0.07, 0.19]} s={[0.05, 0.06, 0.02]} c="#1A1A1A" r={0.01} o={o} />
           <B p={[0, 0.0, 0.2]} s={[0.05, 0.07, 0.04]} c={P.pele} r={0.015} o={o} />
         </group>
+        </group>
       </group>
     );
   };
@@ -124,4 +143,7 @@ export function criarPersonagem(params: ParamsPersonagem): React.FC<PoseProps> {
 export const Fotografo = criarPersonagem(PERSONAGENS.fotografo);
 export const Noiva = criarPersonagem(PERSONAGENS.noiva);
 export const Noivo = criarPersonagem(PERSONAGENS.noivo);
-export const Cliente = criarPersonagem(PERSONAGENS.cliente);
+export const NoivaCliente = criarPersonagem(PERSONAGENS.noivaCliente);
+export const NoivoCliente = criarPersonagem(PERSONAGENS.noivoCliente);
+export const NoivaIndicada = criarPersonagem(PERSONAGENS.noivaIndicada);
+export const NoivoIndicado = criarPersonagem(PERSONAGENS.noivoIndicado);
