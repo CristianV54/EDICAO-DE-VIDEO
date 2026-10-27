@@ -182,7 +182,8 @@ const DUR_ANDA = 45;
 type Trecho = { ini: number; de: V3; para: V3; dur: number };
 const trechosCliente = (): Trecho[] => {
   const L6 = LINHAS[6];
-  const entrada = Math.min(L6.segunda ?? L6.fim - DUR_ANDA - 2, L6.fim - DUR_ANDA - 2);
+  // o casal cliente entra quando o plano de contexto do s06 comeca (o contexto precisa mostra-lo)
+  const entrada = Math.min(L6.ctxIni, L6.fim - DUR_ANDA - 2);
   return [
     { ini: entrada, de: ENTRADA_CLIENTE, para: LUGAR_CLIENTE[6], dur: DUR_ANDA },
     { ini: LINHAS[7].ini, de: LUGAR_CLIENTE[6], para: LUGAR_CLIENTE[7], dur: DUR_ANDA },

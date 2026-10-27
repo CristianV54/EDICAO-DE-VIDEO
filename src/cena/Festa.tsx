@@ -21,8 +21,8 @@ export const Festa: React.FC<{ frame: number; luz: number }> = ({ frame, luz }) 
         <meshStandardMaterial color="#2A2C33" />
       </mesh>
       <mesh position={[GLOBO[0], y, GLOBO[2]]} rotation={[0, frame * 0.05, 0]} castShadow>
-        <icosahedronGeometry args={[0.38, 1]} />
-        <meshStandardMaterial color="#D8DCE6" metalness={0.85} roughness={0.2} flatShading emissive="#6B7280" emissiveIntensity={0.3} />
+        <icosahedronGeometry args={[0.55, 1]} />
+        <meshStandardMaterial color="#F2F5FB" metalness={0.5} roughness={0.25} flatShading emissive="#DDE5F5" emissiveIntensity={0.9} />
       </mesh>
       {cores.map((c, i) => {
         const a = ang + (i * Math.PI * 2) / 3;

@@ -14,7 +14,7 @@ export const GLOBO: V3 = [-0.6, 3.0, -0.6];
 
 // ----- ato 2: negocio -----
 export const FOTOGRAFO_ATO2: V3 = [2.0, TOPO, -0.4];
-export const ROT_FOTOGRAFO_ATO2 = 0.6;
+export const ROT_FOTOGRAFO_ATO2 = 0.2; // de frente para o espectador, a cabeca gira para a peca
 
 export const PECA: Record<number, V3> = {
   5: [1.0, TOPO, -2.3],

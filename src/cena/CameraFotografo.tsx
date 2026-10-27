@@ -36,8 +36,8 @@ export const CameraFotografo: React.FC<{ frame: number }> = ({ frame }) => {
   const lente50Visivel = frame - L2.sol >= 6;
 
   // s03: porta do slot abre 100 graus e os cartoes entram deslizando
-  const tPorta = easeInOutCubic(clamp01((frame - L3.toque) / 10));
-  const tCartoes = easeInOutCubic(clamp01((frame - L3.toque - 8) / 14));
+  const tPorta = easeInOutCubic(clamp01((frame - L3.toque) / 5));
+  const tCartoes = easeInOutCubic(clamp01((frame - L3.toque - 3) / 8));
   const cartaoEsq = frame >= L3.prob ? "#FF4D4D" : "#3B82F6";
   const cartaoDir = frame >= L3.sol ? "#3DDC84" : "#3B82F6";
 

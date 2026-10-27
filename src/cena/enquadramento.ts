@@ -29,7 +29,7 @@ const sobrePlataforma = (p: V3, t: V3): Caixa => caixa([p[0], TOPO + t[1] / 2, p
 export const CAIXAS: Record<string, Caixa> = {
   // personagens (alturas de cabeca aos pes); o fotografo inclui a camera na frente
   fotografo1: emPe(FOTOGRAFO_ATO1, 1.5, 1.1, [0.25, 0]),
-  fotografo2: emPe(FOTOGRAFO_ATO2, 1.3, 1.4, [0.25, 0.4]),
+  fotografo2: emPe(FOTOGRAFO_ATO2, 1.3, 1.4, [0.1, 0.35]),
   casalAmigos: emPe(CASAL_AMIGOS, 1.3, 1.4),
   curioso: emPe(CURIOSO, 1.2, 0.9, [0, 0], 2.5),
   casalCliente6: emPe(LUGAR_CLIENTE[6], 1.5, 1.2),
@@ -44,6 +44,7 @@ export const CAIXAS: Record<string, Caixa> = {
   telao: sobrePlataforma(TELAO, [2.6, 2.7, 0.3]),
   plataforma: caixa([0, 0.25, 0], [12.2, 0.5, 7.2]),
   camera1: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.15, CAMERA_ATO1[2]], [1.5, 1.4, 1.1]),
+  camera1Flash: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.5, CAMERA_ATO1[2]], [1.5, 2.1, 1.1]), // com o flash na sapata
   album: sobrePlataforma(PECA[5], [1.0, 0.75, 0.85]),
   celular: sobrePlataforma(PECA[6], [0.75, 1.25, 0.55]),
   proposta: sobrePlataforma(PECA[7], [0.95, 1.15, 0.7]),
@@ -84,9 +85,17 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
     { quando: "sol", plano: P("s00-treze", "contexto", 25, 32, ["plataforma"]) },
   ],
   /* s01 */ [{ quando: "ini", plano: closeCamera("s01", 40, 28) }, { quando: "ctx", plano: ctxAto1("s01") }],
-  /* s02 */ [{ quando: "ini", plano: closeCamera("s02", 40, 28) }, { quando: "ctx", plano: ctxAto1("s02") }],
+  /* s02 */ [
+    { quando: "ini", plano: closeCamera("s02", 40, 28) },
+    { quando: "ctx", plano: ctxAto1("s02") },
+    { quando: "sol", plano: closeCamera("s02-lente", 40, 28) }, // a 50mm rosqueia: volta ao close
+  ],
   /* s03 */ [{ quando: "ini", plano: closeCamera("s03", 50, 28) }, { quando: "ctx", plano: ctxAto1("s03") }],
-  /* s04 */ [{ quando: "ini", plano: closeCamera("s04", 35, 30) }, { quando: "ctx", plano: ctxAto1("s04") }],
+  /* s04 */ [
+    { quando: "ini", plano: closeCamera("s04", 35, 30) },
+    { quando: "ctx", plano: ctxAto1("s04") },
+    { quando: "sol", plano: P("s04-flash", "close", 35, 30, ["camera1Flash"], "camera1Flash") }, // o flash estoura: close
+  ],
   /* s05 */ [
     { quando: "ini", plano: P("s05-close", "close", 20, 30, ["album"], "album") },
     { quando: "ctx", plano: P("s05-contexto", "contexto", 20, 30, ["telao", "album", "fotografo1", "curioso"]) },
@@ -96,7 +105,7 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
     { quando: "ctx", plano: P("s06-contexto", "contexto", 25, 30, ["celular", "casalCliente6", "fotografo2"]) },
   ],
   /* s07 */ [
-    { quando: "ini", plano: P("s07-close", "close", 50, 30, ["proposta"], "proposta") },
+    { quando: "ini", plano: P("s07-close", "close", 65, 30, ["proposta"], "proposta") },
     { quando: "ctx", plano: P("s07-contexto", "contexto", 30, 30, ["proposta", "casalCliente7", "fotografo2"]) },
   ],
   /* s08 */ [
