@@ -1,0 +1,8 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# render final e temporarios ficam fora do git (o MP4 final entra com `git add -f`)
+out
+whisper.cpp
