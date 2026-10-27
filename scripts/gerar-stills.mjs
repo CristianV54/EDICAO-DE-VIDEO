@@ -41,8 +41,9 @@ const alvos = [];
 }
 m.slice(1, 14).forEach((s) => {
   const n = parseInt(s.id.slice(1), 10);
-  alvos.push({grupo: s.id, nome: `${s.id}_a_caminhada`, frame: f(n === 1 ? s.ini + 0.15 * FPS : s.ini + WALK / 2)});
-  alvos.push({grupo: s.id, nome: `${s.id}_b_close`, frame: f(s.chegada + 0.4 * FPS)});
+  alvos.push({grupo: s.id, nome: `${s.id}_a_caminhada`, frame: f(n === 1 ? s.ini + 0.9 * FPS : s.ini + WALK / 2)});
+  // o close so comeca quando a peca comeca a cair; a peca pousa em toque
+  alvos.push({grupo: s.id, nome: `${s.id}_b_close`, frame: f(s.toque + 0.4 * FPS)});
   alvos.push({grupo: s.id, nome: `${s.id}_c_problema`, frame: f(s.prob + 0.4 * FPS)});
   alvos.push({grupo: s.id, nome: `${s.id}_d_solucao`, frame: f(s.sol + 0.4 * FPS)});
   if (n === 7 || n === 8 || n === 9) {

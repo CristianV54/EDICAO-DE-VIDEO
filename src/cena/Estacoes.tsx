@@ -6,7 +6,7 @@ import { Fade } from "./Fade";
 import { useTex, NomeTex } from "./Texturas";
 import { amigos as _amigos, fotografo, maoNoivaMundo } from "./estadoElenco";
 import {
-  ALTURA_PED, ENTRADA_MADRINHA as _EM, V3, Y_CASA, centroCasa, posCelularCasa3, posCli, posFot, posPeca, posPedestal, posMesa, rotRepouso,
+  ALTURA_PED, ENTRADA_MADRINHA as _EM, V3, Y_CASA, centroCasa, posCelularCasa3, posCli, posFot, posPeca, posMesa, rotRepouso,
 } from "../dados/posicoes";
 import { LINHAS, TOQUE_REL, clamp01, easeInOutCubic, easeOutBack, entrada, lerp, springQueda } from "../util/tempo";
 
@@ -36,22 +36,17 @@ const Plaq: React.FC<{ tex: NomeTex }> = ({ tex }) => {
   );
 };
 
-// pedestal (sempre) + peca que cai do alto com spring no momento da peca
+// pedestal + peca: surgem juntos, caindo do alto com spring no momento da peca
 const Peca: React.FC<{ n: number; f: number; plq: NomeTex; children?: React.ReactNode }> = ({ n, f, plq, children }) => {
   const L = LINHAS[n];
-  const ped = posPedestal(n);
   const p = posPeca(n);
   const s = springQueda(f - L.quedaIni);
-  const visivel = f >= L.quedaIni;
+  if (f < L.quedaIni) return null;
   return (
-    <group>
-      <B p={ped} s={[0.9, ALTURA_PED, 0.9]} c="#E9DFC9" r={0.03} />
-      {visivel && (
-        <group position={[p[0], p[1] + (1 - s) * 4.5, p[2]]}>
-          <Plaq tex={plq} />
-          {children}
-        </group>
-      )}
+    <group position={[p[0], p[1] + (1 - s) * 4.5, p[2]]}>
+      <B p={[0, -ALTURA_PED / 2, 0]} s={[0.9, ALTURA_PED, 0.9]} c="#E9DFC9" r={0.03} />
+      <Plaq tex={plq} />
+      {children}
     </group>
   );
 };
@@ -150,7 +145,7 @@ const E03: React.FC<{ f: number }> = ({ f }) => {
         </Fade>
       </Peca>
       {f >= L.prob && f < L.ev.instagram + 8 && (
-        <group position={[base[0] - 1.0, base[1] - ALTURA_PED + 0.08, base[2] + 0.2]} scale={hd}>
+        <group position={[base[0] - 0.05, base[1] - ALTURA_PED + 0.08, base[2] + 0.75]} scale={hd}>
           <B s={[0.5, 0.14, 0.34]} c="#C5CAD3" r={0.03} />
           <B p={[0, 0.0, 0.175]} s={[0.4, 0.06, 0.01]} c="#8A90A0" r={0.003} sombra={false} />
           <group position={[0, 0.2, 0.14]}>
@@ -412,6 +407,7 @@ const E09: React.FC<{ f: number }> = ({ f }) => {
           <B p={[0, 0.0, 0.16]} s={[0.56, 0.26, 0.02]} c="#FFFFFF" r={0.02} e="#FFFFFF" ei={0.25 + e * 4} o={0.85} sombra={false} />
         </group>
       </Peca>
+      {f >= L.ini && f < L.fim && (
       <group position={[c[0], yBola, c[2]]} rotation={[0, f * 0.06, 0]}>
         <Fade op={1 - rampa(f, L.fim - 6, 6)}>
           <Cil p={[0, 3, 0]} r={0.012} h={6} c="#6B7078" seg={4} />
@@ -421,6 +417,7 @@ const E09: React.FC<{ f: number }> = ({ f }) => {
           </mesh>
         </Fade>
       </group>
+      )}
     </>
   );
 };

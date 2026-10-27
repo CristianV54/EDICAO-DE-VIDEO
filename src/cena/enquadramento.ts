@@ -2,6 +2,7 @@
 // Cada plano declara az, el, tipo e uma lista "precisa aparecer" (caixas 3D de uma tabela de tamanhos).
 // A distancia d e o ponto de mira saem de uma busca binaria (20 iteracoes) com FOV fixo, calculada uma vez por plano (cache).
 import * as THREE from "three";
+import { CARD_SLIDE, LINHAS } from "../util/tempo";
 import {
   ALTURA_PED, ALTURA_PERSONAGEM, V3, Y_CASA, posAmigoA, posAmigoB, posCli, posFot, posNoiva, posNoivo, posMesa, posPlaca,
   posPedestal, TABULEIRO,
@@ -14,13 +15,22 @@ export const AZ_ORBITA = 5; // graus de giro durante cada plano
 export const PUSH_IN = 0.06; // a distancia diminui 6% durante cada plano
 
 export type Janela = { x0: number; x1: number; y0: number; y1: number };
-export const JANELA_UTIL: Janela = { x0: 70, x1: 1010, y0: 470, y1: 1060 };
-export const JANELA_FINAL: Janela = { x0: 70, x1: 1010, y0: 700, y1: 1170 };
+// janelas uteis (px): com o card visivel o conteudo fica abaixo dele; sem card sobe ate y = 300
+export const JANELA_CARD: Janela = { x0: 50, x1: 1030, y0: 470, y1: 1540 };
+export const JANELA_LIVRE: Janela = { x0: 50, x1: 1030, y0: 300, y1: 1540 };
+export const JANELA_FINAL: Janela = { x0: 50, x1: 1030, y0: 700, y1: 1400 };
+export const JANELA_UTIL = JANELA_CARD;
 const MARGEM = 30;
-export const FRAC_LARGURA_CLOSE = 0.55; // peca ocupa 55% da largura (594 px)
-export const FRAC_LARGURA_DETALHE = 0.45; // camera na mao ocupa 45% da largura
-const TOLERANCIA = 0.05;
-export const FRAC_ALTURA_MIN_PERSONAGEM = 0.38; // personagem mais alto mede ao menos 38% da altura da janela
+// metas de tamanho (px)
+export const LARG_CLOSE = 0.55 * LARGURA_TELA; // peca: 55% da largura (594 px)
+export const TOL_CLOSE = 0.05;
+export const ALT_CAMINHADA = 0.45 * ALTURA_TELA; // fotografo andando: 45% da altura da tela (864 px)
+export const ALT_ABERTURA = 0.55 * ALTURA_TELA; // s00: fotografo a 55% da altura da tela (1056 px)
+export const LARG_CENA_MIN = 0.75 * LARGURA_TELA; // cena: conjunto a 75% da largura (810 px) ...
+export const ALT_CENA_MIN = 0.4 * ALTURA_TELA; // ... ou personagem mais alto a 40% da altura (768 px)
+export const LARG_DETALHE = 0.45 * LARGURA_TELA;
+// legenda: nao pode cobrir cabecas, plaquinhas nem a placa de foto
+export const BANDA_LEGENDA = { x0: 80, x1: 1000, y0: 1185, y1: 1295 };
 
 // ---------- tabela de caixas (centro, tamanho) em metros ----------
 type Caixa = { c: V3; t: V3 };
@@ -34,7 +44,7 @@ export const caixaDe = (id: string): Caixa => {
   const m = id.match(/^([a-zA-Z]+)(\d+)$/);
   if (!m) {
     if (id === "tabuleiro") return { c: [0, 0.3, 0], t: [TABULEIRO.largura + 0.3, 0.7, TABULEIRO.profundidade + 0.3] };
-    if (id === "seta") return { c: [1.4, 0.35, -1.05], t: [12.7, 0.6, 8.6] };
+    if (id === "seta") return { c: [1.2, 1.9, -0.9], t: [12.4, 2.6, 8.2] };
     throw new Error(`caixa desconhecida: ${id}`);
   }
   const n = parseInt(m[2], 10);
@@ -56,9 +66,17 @@ export const caixaDe = (id: string): Caixa => {
       const alt = ALTURA_PED + h;
       return { c: [p[0], Y_CASA + alt / 2, p[2]], t: [w, alt, Math.max(d, 0.9)] };
     }
+    case "plaq": { // plaquinha branca na frente do pedestal
+      const p = posPedestal(n);
+      return { c: [p[0], p[1], p[2] + 0.452], t: [0.7, 0.22, 0.02] };
+    }
     case "placa": {
+      const p = posPlaca(n); // cavalete alto: a moldura fica acima das cabecas
+      return { c: [p[0], p[1] + 1.15, p[2]], t: [1.2, 2.3, 0.4] };
+    }
+    case "tela": {
       const p = posPlaca(n);
-      return { c: [p[0], p[1] + 0.45, p[2]], t: [1.15, 0.9, 0.4] };
+      return { c: [p[0], p[1] + 1.8, p[2]], t: [1.1, 0.75, 0.05] };
     }
     case "balao": {
       const p = posCli(n);
@@ -75,9 +93,24 @@ export const caixaDe = (id: string): Caixa => {
   }
   throw new Error(`caixa desconhecida: ${id}`);
 };
+// caixa fisica (mais justa que a de enquadramento) usada como oclusor no teste de visibilidade
+export const corpoDe = (id: string): Caixa => {
+  const m = id.match(/^([a-zA-Z]+)(\d+)$/)!;
+  const n = parseInt(m[2], 10);
+  const pos: Record<string, V3> = { fot: posFot(n), noiva: posNoiva(n), noivo: posNoivo(n), cli: posCli(n), amigoA: posAmigoA(n), amigoB: posAmigoB(n), madrinha: posCli(n) };
+  const p = pos[m[1]];
+  return { c: [p[0], p[1] + ALTURA_PERSONAGEM / 2, p[2] + (m[1] === "fot" ? 0.1 : 0)], t: [0.55, ALTURA_PERSONAGEM, m[1] === "fot" ? 0.5 : 0.35] };
+};
 const EH_PERSONAGEM = /^(fot|noiva|noivo|cli|amigoA|amigoB|madrinha)\d+$/;
 const EH_PLACA = /^placa\d+$/;
 const EH_PECA = /^peca\d+$/;
+
+export const cabecaDe = (id: string): Caixa => {
+  const m = id.match(/^([a-zA-Z]+)(\d+)$/)!;
+  const c = corpoDe(id).c;
+  void m;
+  return { c: [c[0], c[1] + 0.67, c[2]], t: [0.5, 0.55, 0.5] };
+};
 
 // ---------- planos ----------
 export type TipoPlano = "close" | "cena" | "caminhada" | "detalhe" | "aberto";
@@ -87,20 +120,21 @@ export type Plano = {
   az: number;
   el: number; // 28 a 38
   lista: string[]; // precisa aparecer
-  principal?: string; // close e detalhe
-  fracLargura?: number;
-  fracAltura?: number; // abertura do s00: o personagem ocupa essa fracao da altura da janela
+  principal?: string; // close, detalhe, caminhada
+  larguraPx?: number; // meta de largura do principal
+  alturaPx?: number; // meta de altura do principal
   janela?: Janela;
-  seguir?: { de: string; para: string }; // caminhada: a mira acompanha o fotografo (caixa de origem e de destino)
+  seguir?: { de: string; para: string }; // caminhada: a mira acompanha o fotografo
+  casa?: number; // casa do segmento (plaquinha e placa de foto)
 };
 
 // ---------- calculo ----------
-const cantos = (id: string): THREE.Vector3[] => {
-  const { c, t } = caixaDe(id);
+const cantosCaixa = (b: Caixa): THREE.Vector3[] => {
   const out: THREE.Vector3[] = [];
-  for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) out.push(new THREE.Vector3(c[0] + (sx * t[0]) / 2, c[1] + (sy * t[1]) / 2, c[2] + (sz * t[2]) / 2));
+  for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) out.push(new THREE.Vector3(b.c[0] + (sx * b.t[0]) / 2, b.c[1] + (sy * b.t[1]) / 2, b.c[2] + (sz * b.t[2]) / 2));
   return out;
 };
+const cantos = (id: string): THREE.Vector3[] => cantosCaixa(caixaDe(id));
 export type Retangulo = { xmin: number; xmax: number; ymin: number; ymax: number };
 const camera = new THREE.PerspectiveCamera(FOV, LARGURA_TELA / ALTURA_TELA, 0.1, 500);
 const FOCAL_PX = ALTURA_TELA / 2 / Math.tan((FOV * Math.PI) / 360);
@@ -151,9 +185,23 @@ const centralizar = (alvo: THREE.Vector3, d: number, az: number, el: number, pts
   posicionar(alvo, d, az, el);
 };
 
+// itens que a legenda nao pode cobrir: cabecas dos personagens, plaquinha da peca e placa de foto
+const sensiveis = (lista: string[]): { nome: string; c: Caixa }[] => {
+  const out: { nome: string; c: Caixa }[] = [];
+  for (const id of lista) {
+    if (EH_PERSONAGEM.test(id)) out.push({ nome: `cabeca ${id}`, c: cabecaDe(id) });
+    const m = id.match(/^peca(\d+)$/);
+    if (m && parseInt(m[1], 10) <= 11) out.push({ nome: `plaquinha ${m[1]}`, c: caixaDe(`plaq${m[1]}`) });
+    const q = id.match(/^placa(\d+)$/);
+    if (q) out.push({ nome: `placa de foto ${q[1]}`, c: caixaDe(`tela${q[1]}`) });
+  }
+  return out;
+};
+const cruza = (r: Retangulo, b: typeof BANDA_LEGENDA) => r.xmax > b.x0 && r.xmin < b.x1 && r.ymax > b.y0 && r.ymin < b.y1;
+
 export type Resolvido = {
   plano: Plano;
-  d: number; // distancia no estado medio do plano (azimute + 2,5 graus, distancia x 0,97)
+  d: number; // distancia no inicio do plano (prog 0); no estado medio e d x 0,97
   alvo: V3;
   janela: Janela;
   uniao: Retangulo;
@@ -163,13 +211,17 @@ export type Resolvido = {
   fora: string[]; // caixas que ficaram fora da janela (vazio = ok)
   removidos: string[]; // itens tirados da lista pela regra de tamanho minimo
   alturaMaxPersonagem: number; // px do personagem mais alto da lista
+  larguraConjunto: number; // px do conjunto da lista
+  deslocY: number; // deslocamento vertical da mira (px na tela) para tirar a legenda de cima de cabecas/plaquinhas/placa
+  legendaCobre: string[]; // itens que ainda ficaram sob a legenda (vazio = ok)
 };
 
-const NUM_ITER = 20;
+const NUM_ITER = 22;
 const MID_D = 1 - PUSH_IN / 2;
+const PROGS = [0, 0.5, 1];
 
 function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removidos"> {
-  const janela = plano.janela ?? JANELA_UTIL;
+  const janela = plano.janela ?? JANELA_CARD;
   const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: janela.y1 - janela.y0 - 2 * MARGEM };
   const todos = pontosDe(lista);
   const ptsP = plano.principal ? cantos(plano.principal) : null;
@@ -180,23 +232,70 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     centralizar(alvo, d * MID_D, azMid, plano.el, todos, janela);
     return { alvo, u: projetarPontos(todos), p: ptsP ? projetarPontos(ptsP) : null };
   };
-  const larguraAlvo = (plano.fracLargura ?? 0) * LARGURA_TELA;
   const metrica = (d: number) => {
     const { u, p } = medir(d);
     let m = Math.max((u.xmax - u.xmin) / util.w, (u.ymax - u.ymin) / util.h);
-    if (p && plano.fracAltura) m = Math.max(m, (p.ymax - p.ymin) / (plano.fracAltura * (janela.y1 - janela.y0)));
-    else if (p && larguraAlvo) m = Math.max(m, (p.xmax - p.xmin) / larguraAlvo);
+    if (p && plano.alturaPx) m = Math.max(m, (p.ymax - p.ymin) / plano.alturaPx);
+    if (p && plano.larguraPx) m = Math.max(m, (p.xmax - p.xmin) / plano.larguraPx);
     return m;
   };
   let lo = 0.8;
-  let hi = 200;
+  let hi = 250;
   for (let i = 0; i < NUM_ITER; i++) {
     const mid = (lo + hi) / 2;
     if (metrica(mid) > 1) lo = mid;
     else hi = mid;
   }
-  const d = hi;
-  const { alvo, u, p } = medir(d);
+  const d0 = hi;
+  // legenda: desloca a mira na vertical (passos de 10 px) ate nenhuma cabeca, plaquinha ou placa ficar na banda y 1185 a 1295.
+  // Se o deslocamento nao cabe na janela, afasta a camera em passos de 3% e tenta de novo.
+  const sens = sensiveis(lista);
+  let d = d0;
+  let alvoF = new THREE.Vector3();
+  let deslocY = 0;
+  let cobre: string[] = [];
+  for (let k = 0; k <= 14; k++) {
+    d = d0 * (1 + 0.03 * k);
+    const alvo = medir(d).alvo;
+    const retsEm = (a: THREE.Vector3, prog: number) => {
+      posicionar(a, d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
+      return { u: projetarPontos(todos), s: sens.map((x) => ({ nome: x.nome, r: projetarPontos(cantosCaixa(x.c)) })) };
+    };
+    const legendaCobre = (a: THREE.Vector3) => {
+      const ruins = new Set<string>();
+      PROGS.forEach((pr) => retsEm(a, pr).s.forEach((x) => cruza(x.r, BANDA_LEGENDA) && ruins.add(x.nome)));
+      return [...ruins];
+    };
+    const dentro = (a: THREE.Vector3) =>
+      PROGS.every((pr) => {
+        const u = retsEm(a, pr).u;
+        return u.xmin >= janela.x0 - 1 && u.xmax <= janela.x1 + 1 && u.ymin >= janela.y0 - 1 && u.ymax <= janela.y1 + 1;
+      });
+    alvoF = alvo.clone();
+    deslocY = 0;
+    cobre = legendaCobre(alvoF);
+    if (cobre.length) {
+      posicionar(alvo, d * MID_D, azMid, plano.el);
+      const cima = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+      const cands: number[] = [];
+      for (let j = 1; j <= 60; j++) cands.push(j * 10, -j * 10);
+      cands.sort((x, y) => Math.abs(x) - Math.abs(y));
+      for (const dy of cands) {
+        const a = alvo.clone().addScaledVector(cima, (dy * d * MID_D) / FOCAL_PX);
+        if (!dentro(a)) continue;
+        if (legendaCobre(a).length === 0) {
+          alvoF = a;
+          deslocY = dy;
+          cobre = [];
+          break;
+        }
+      }
+    }
+    if (!cobre.length) break;
+  }
+  posicionar(alvoF, d * MID_D, azMid, plano.el);
+  const u = projetarPontos(todos);
+  const p = ptsP ? projetarPontos(ptsP) : null;
   const caixas: Record<string, Retangulo> = {};
   const fora: string[] = [];
   for (const id of lista) {
@@ -205,29 +304,66 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     if (r.xmin < janela.x0 - 0.5 || r.xmax > janela.x1 + 0.5 || r.ymin < janela.y0 - 0.5 || r.ymax > janela.y1 + 0.5) fora.push(id);
   }
   let limite: Resolvido["limite"] = "janela";
-  if (p && larguraAlvo) {
-    const w = p.xmax - p.xmin;
-    limite = Math.abs(w - larguraAlvo) <= larguraAlvo * TOLERANCIA ? "largura" : "altura";
-    // peca estreita e alta: a altura da janela limita antes dos 55% de largura (nao e falha)
-    if (w > larguraAlvo * (1 + TOLERANCIA)) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px acima do alvo)`);
-  }
+  if (p && plano.larguraPx) limite = Math.abs(p.xmax - p.xmin - plano.larguraPx) <= plano.larguraPx * TOL_CLOSE ? "largura" : "altura";
   let alturaMax = 0;
   for (const id of lista) if (EH_PERSONAGEM.test(id)) alturaMax = Math.max(alturaMax, caixas[id].ymax - caixas[id].ymin);
-  return { plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora, alvo: [alvo.x, alvo.y, alvo.z], alturaMaxPersonagem: alturaMax };
+  return {
+    plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora, alvo: [alvoF.x, alvoF.y, alvoF.z],
+    alturaMaxPersonagem: alturaMax, larguraConjunto: u.xmax - u.xmin, deslocY, legendaCobre: cobre,
+  };
 }
 
+// raycast: fracao da face voltada para a camera (grade 8 x 8) que nao esta coberta por um oclusor
+export const fracVisivel = (alvo: Caixa, ocluidores: Caixa[], cam: THREE.Vector3): number => {
+  const b = new THREE.Box3(new THREE.Vector3(alvo.c[0] - alvo.t[0] / 2, alvo.c[1] - alvo.t[1] / 2, alvo.c[2] - alvo.t[2] / 2), new THREE.Vector3(alvo.c[0] + alvo.t[0] / 2, alvo.c[1] + alvo.t[1] / 2, alvo.c[2] + alvo.t[2] / 2));
+  const c = b.getCenter(new THREE.Vector3());
+  const t = b.getSize(new THREE.Vector3());
+  const faces = [
+    { nz: 1, nx: 0 }, { nz: -1, nx: 0 }, { nz: 0, nx: 1 }, { nz: 0, nx: -1 },
+  ];
+  const dir = cam.clone().sub(c).normalize();
+  faces.sort((a, b2) => b2.nz * dir.z + b2.nx * dir.x - (a.nz * dir.z + a.nx * dir.x));
+  const f = faces[0];
+  const occ = ocluidores.map((o) => new THREE.Box3(new THREE.Vector3(o.c[0] - o.t[0] / 2, o.c[1] - o.t[1] / 2, o.c[2] - o.t[2] / 2), new THREE.Vector3(o.c[0] + o.t[0] / 2, o.c[1] + o.t[1] / 2, o.c[2] + o.t[2] / 2)));
+  let ok = 0;
+  for (let i = 0; i < 8; i++)
+    for (let j = 0; j < 8; j++) {
+      const a = ((i + 0.5) / 8 - 0.5) * 0.94;
+      const bb = ((j + 0.5) / 8 - 0.5) * 0.94;
+      const p = new THREE.Vector3(c.x, c.y + bb * t.y, c.z);
+      if (f.nz) {
+        p.x += a * t.x;
+        p.z += f.nz * (t.z / 2);
+      } else {
+        p.z += a * t.z;
+        p.x += f.nx * (t.x / 2);
+      }
+      const dd = p.clone().sub(cam);
+      const dist = dd.length();
+      const ray = new THREE.Ray(cam, dd.normalize());
+      let bloq = false;
+      for (const o of occ) {
+        const hit = ray.intersectBox(o, new THREE.Vector3());
+        if (hit && hit.distanceTo(cam) < dist - 0.02) bloq = true;
+      }
+      if (!bloq) ok++;
+    }
+  return ok / 64;
+};
+
 const cache = new Map<string, Resolvido>();
-// Regra de tamanho minimo (so no plano "cena"): o personagem mais alto precisa medir 38% da altura da janela.
-// Se nao medir, tira primeiro a placa de foto da lista e depois a peca principal.
+// Regra de tamanho minimo (so no plano "cena"): conjunto a 75% da largura da tela OU personagem mais alto a 40% da altura.
+// Se nenhum dos dois, tira primeiro a placa de foto da lista e depois a peca (registrado no log).
 export const resolverPlano = (plano: Plano): Resolvido => {
-  if (cache.has(plano.id)) return cache.get(plano.id)!;
+  const chave = `${plano.id}|${plano.az}`;
+  if (cache.has(chave)) return cache.get(chave)!;
   let lista = [...plano.lista];
   let removidos: string[] = [];
   let r = resolverLista(plano, lista);
-  const minimo = FRAC_ALTURA_MIN_PERSONAGEM * ((plano.janela ?? JANELA_UTIL).y1 - (plano.janela ?? JANELA_UTIL).y0);
+  const passa = (x: { alturaMaxPersonagem: number; larguraConjunto: number }) => x.alturaMaxPersonagem === 0 || x.alturaMaxPersonagem >= ALT_CENA_MIN || x.larguraConjunto >= LARG_CENA_MIN;
   if (plano.tipo === "cena") {
     for (const grupo of [EH_PLACA, EH_PECA]) {
-      if (r.alturaMaxPersonagem >= minimo || r.alturaMaxPersonagem === 0) break;
+      if (passa(r)) break;
       const tirar = lista.filter((id) => grupo.test(id));
       if (!tirar.length) continue;
       lista = lista.filter((id) => !grupo.test(id));
@@ -236,7 +372,7 @@ export const resolverPlano = (plano: Plano): Resolvido => {
     }
   }
   const final: Resolvido = { ...r, plano, removidos };
-  cache.set(plano.id, final);
+  cache.set(chave, final);
   return final;
 };
 
@@ -245,7 +381,7 @@ export const poseResolvida = (plano: Plano, prog: number): { pos: V3; alvo: V3; 
   const r = resolverPlano(plano);
   const az = ((plano.az + AZ_ORBITA * prog) * Math.PI) / 180;
   const el = (plano.el * Math.PI) / 180;
-  const d = (r.d * (1 - PUSH_IN * prog)) ;
+  const d = r.d * (1 - PUSH_IN * prog);
   const [tx, ty, tz] = r.alvo;
   return { pos: [tx + d * Math.sin(az) * Math.cos(el), ty + d * Math.sin(el), tz + d * Math.cos(az) * Math.cos(el)], alvo: r.alvo, fov: FOV };
 };
@@ -256,22 +392,29 @@ export const projetarEmProg = (plano: Plano, prog: number): Record<string, Retan
   const alvo = new THREE.Vector3(...r.alvo);
   posicionar(alvo, r.d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
   const out: Record<string, Retangulo> = {};
-  for (const id of plano.lista.filter((x) => !r.removidos.includes(x))) out[id] = projetarPontos(cantos(id));
+  for (const id of plano.lista.filter((x) => r.removidos.indexOf(x) < 0)) out[id] = projetarPontos(cantos(id));
   return out;
+};
+// projecao das caixas "sensiveis" e do conjunto em um prog (usado pelo log)
+export const sensiveisProjetados = (plano: Plano, prog: number): { nome: string; r: Retangulo }[] => {
+  const r = resolverPlano(plano);
+  const lista = plano.lista.filter((x) => r.removidos.indexOf(x) < 0);
+  const alvo = new THREE.Vector3(...r.alvo);
+  posicionar(alvo, r.d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
+  return sensiveis(lista).map((x) => ({ nome: x.nome, r: projetarPontos(cantosCaixa(x.c)) }));
 };
 
 // ---------- planos por segmento ----------
-export type Ref = { ref: "ini" | "chegada" | "cena" | "ev"; nome?: string; desl?: number };
+export type Ref = { ref: "ini" | "chegada" | "queda" | "toque" | "cena" | "ev"; nome?: string; desl?: number };
 export type EtapaPlano = { quando: Ref; plano: Plano; trans?: number }; // trans: segundos
 const R = (ref: Ref["ref"], nome?: string, desl = 0): Ref => ({ ref, nome, desl });
 
 const AZ_REP = (n: number) => (n >= 6 && n <= 10 ? -30 : 30); // caminhada: o fotografo anda em direcao a camera
-// close e cena: azimute negativo em todas as casas. O fotografo fica na frente a direita da peca (x + 0,6, z + 0,55),
-// entao com a camera a direita ele tampa a peca; vista da esquerda a peca fica livre.
-const AZ_VISTA = -30;
+// close e cena: camera a direita (az +30) em todas as casas; o layout das casas (peca no fundo a direita, personagens a esquerda) foi feito para isso
+const AZ_VISTA = 30;
 const EL = 32;
 
-// quem esta em cena em cada casa (ordem de prioridade para a regra de tamanho minimo: placa e peca saem primeiro)
+// quem esta em cena em cada casa
 const personagensDe = (n: number): string[] => {
   const p: string[] = [`fot${n}`];
   if (n === 2) p.push("amigoA2", "amigoB2");
@@ -284,52 +427,102 @@ const personagensDe = (n: number): string[] => {
 const extrasDe = (n: number): string[] => {
   const e: string[] = [];
   if (n === 10) e.push("notebook10");
-  if (n === 12) e.push("balao12");
   return e;
 };
-const placaDe = (n: number): string[] => ([1, 7, 8, 9].includes(n) ? [`placa${n}`] : []);
+const placaDe = (n: number): string[] => ([1, 7, 8, 9].indexOf(n) >= 0 ? [`placa${n}`] : []);
+const sid = (n: number) => `s${String(n).padStart(2, "0")}`;
 
 export const planoCaminhada = (n: number): Plano => ({
-  id: `s${String(n).padStart(2, "0")}-caminhada`, tipo: "caminhada", az: AZ_REP(n), el: EL, lista: [`fot${n}`],
+  id: `${sid(n)}-caminhada`, tipo: "caminhada", az: AZ_REP(n), el: EL, lista: [`fot${n}`], principal: `fot${n}`, alturaPx: ALT_CAMINHADA, casa: n,
   seguir: n >= 2 ? { de: `fot${n - 1}`, para: `fot${n}` } : undefined,
 });
-export const planoClose = (n: number): Plano => {
-  const principal = n === 13 ? "madrinha13" : `peca${n}`;
+
+const baseClose = (n: number): Plano => {
+  const madr = n === 13;
+  const principal = madr ? "madrinha13" : `peca${n}`;
   return {
-    id: `s${String(n).padStart(2, "0")}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, lista: n === 13 ? [principal] : [principal],
-    principal, fracLargura: n === 13 ? undefined : FRAC_LARGURA_CLOSE, fracAltura: n === 13 ? 0.7 : undefined,
+    id: `${sid(n)}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, principal,
+    lista: madr || n === 12 ? [principal] : [principal, `plaq${n}`],
+    larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.5 * ALTURA_TELA : undefined,
   };
 };
-export const planoCena = (n: number): Plano => ({
-  id: `s${String(n).padStart(2, "0")}-cena`, tipo: "cena", az: AZ_VISTA, el: EL,
-  lista: [...personagensDe(n), ...extrasDe(n), ...placaDe(n), `peca${n}`],
-});
+// close da peca: a lista e so a peca e a plaquinha. Se um personagem cobrir mais de 15% da peca, ou aparecer cortado na tela,
+// gira o azimute em passos de 10 graus (ate 30) e fica com o de menor intrusao de personagens no quadro.
+export const logAzClose: Record<number, string> = {};
+export const planoClose = (n: number): Plano => {
+  const base = baseClose(n);
+  if (n >= 12) return base;
+  const ocl = personagensDe(n).map((id) => corpoDe(id));
+  let melhor: { p: Plano; k: number; vis: number; intr: number; score: number } | null = null;
+  for (const k of [0, 10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60]) {
+    const p = { ...base, az: base.az + k };
+    const r = resolverPlano(p);
+    const vis = Math.min(...PROGS.map((pr) => fracVisivel(caixaDe(`peca${n}`), ocl, new THREE.Vector3(...poseResolvida(p, pr).pos))));
+    const alvo = new THREE.Vector3(...r.alvo);
+    let intr = 0;
+    for (const pr of PROGS) {
+      posicionar(alvo, r.d * (1 - PUSH_IN * pr), p.az + AZ_ORBITA * pr, p.el);
+      for (const id of personagensDe(n)) {
+        const q = projetarPontos(cantosCaixa(corpoDe(id)));
+        const w = Math.max(0, Math.min(q.xmax, LARGURA_TELA) - Math.max(q.xmin, 0));
+        const h = Math.max(0, Math.min(q.ymax, ALTURA_TELA) - Math.max(q.ymin, 0));
+        intr += (w * h) / (LARGURA_TELA * ALTURA_TELA) / PROGS.length;
+      }
+    }
+    const larg = r.principal ? r.principal.xmax - r.principal.xmin : 0;
+    const alt = r.principal ? r.principal.ymax - r.principal.ymin : 0;
+    const okTam = larg >= LARG_CLOSE * (1 - TOL_CLOSE) - 1 || alt >= (r.janela.y1 - r.janela.y0 - 2 * MARGEM) * 0.97;
+    if (vis < 0.85 || !okTam) continue;
+    const score = intr * 1000 + Math.abs(k);
+    if (!melhor || score < melhor.score) melhor = { p, k, vis, intr, score };
+  }
+  if (!melhor) {
+    logAzClose[n] = "nenhum azimute liberou 85% da peca com o tamanho minimo";
+    return base;
+  }
+  logAzClose[n] = `az ${melhor.p.az.toFixed(1)} (giro ${melhor.k}), peca visivel ${(melhor.vis * 100).toFixed(0)}%, personagens ocupam ${(melhor.intr * 100).toFixed(1)}% do quadro`;
+  return melhor.p;
+};
+
+export const planoCena = (n: number): Plano => {
+  const L = LINHAS[n];
+  const cardFora = L.cardSai + CARD_SLIDE <= L.cenaIni;
+  return {
+    id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: cardFora ? JANELA_LIVRE : JANELA_CARD,
+    lista: [...personagensDe(n), ...extrasDe(n), ...placaDe(n), `peca${n}`],
+  };
+};
 export const planoDetalhe = (n: number): Plano => ({
-  id: `s${String(n).padStart(2, "0")}-detalhe`, tipo: "detalhe", az: -24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, fracLargura: FRAC_LARGURA_DETALHE,
+  id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_LIVRE, casa: n,
 });
-export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: -22, el: 28, lista: ["fot1"], principal: "fot1", fracAltura: 0.55 };
-export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: -22, el: 34, lista: ["tabuleiro"] };
-export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: -22, el: 34, lista: ["tabuleiro", "seta"] };
-export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: -22, el: 36, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL };
-export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: -30, el: EL, lista: ["peca3"], principal: "peca3", fracLargura: FRAC_LARGURA_CLOSE };
+export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_LIVRE, casa: 1 };
+export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_LIVRE };
+export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_LIVRE };
+export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL };
+export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_LIVRE, casa: 3 };
 
 export const ETAPAS_SEG: EtapaPlano[][] = (() => {
   const out: EtapaPlano[][] = [];
   out.push([
     { quando: R("ini"), plano: PLANO_ABERTURA },
-    { quando: R("ev", "solucao", -0.2), plano: PLANO_TABULEIRO, trans: 1.4 },
+    { quando: R("ev", "solucao", 0), plano: PLANO_TABULEIRO, trans: 1.4 },
   ]);
   for (let n = 1; n <= 13; n++) {
     const e: EtapaPlano[] = [];
-    if (n >= 2) e.push({ quando: R("ini"), plano: planoCaminhada(n), trans: 0.4 });
-    e.push({ quando: R("chegada"), plano: planoClose(n), trans: 0.5 });
+    // caminhada (e fotografo parado nela) ate a peca comecar a cair
+    e.push({ quando: R("ini"), plano: planoCaminhada(n), trans: n === 1 ? 0.6 : 0.4 });
+    // o close so comeca quando a peca comeca a cair (s13: quando a madrinha chega)
+    e.push({ quando: R(n === 13 ? "toque" : "queda"), plano: planoClose(n), trans: 0.35 });
     e.push({ quando: R("cena"), plano: planoCena(n), trans: 0.5 });
     if (n === 7 || n === 8 || n === 9) {
       e.push({ quando: R("ev", "solucao", -0.1), plano: planoDetalhe(n), trans: 0.3 });
       e.push({ quando: R("ev", "solucao", 1.1), plano: planoCena(n), trans: 0.4 });
     }
-    if (n === 12) e.push({ quando: R("ev", "solucao", 0), plano: PLANO_VOO, trans: 1.2 });
-    if (n === 13) e.push({ quando: R("ev", "solucao", -0.2), plano: PLANO_PRONTO, trans: 1.0 });
+    if (n === 12) {
+      e.push({ quando: R("ev", "depoimento", -0.2), plano: { ...planoClose(12), id: "s12-balao" }, trans: 0.4 }); // estrelas acendendo
+      e.push({ quando: R("ev", "solucao", 0), plano: PLANO_VOO, trans: 1.2 });
+    }
+    if (n === 13) e.push({ quando: R("ev", "solucao", 0), plano: PLANO_PRONTO, trans: 1.0 });
     out.push(e);
   }
   out.push([{ quando: R("ev", "problema", 0), plano: PLANO_FINAL, trans: 1.6 }]);

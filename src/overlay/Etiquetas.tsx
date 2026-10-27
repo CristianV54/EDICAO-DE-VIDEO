@@ -1,9 +1,8 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
-import * as THREE from "three";
 import { ROTEIRO, Etiqueta } from "../dados/roteiro";
-import { cameraPorFrame } from "../cena/cameraPorFrame";
-import { LINHAS, LARGURA, ALTURA, cardVisivel, entrada, segDe } from "../util/tempo";
+import { projetar } from "../cena/projecao";
+import { LINHAS, cardVisivel, entrada, segDe } from "../util/tempo";
 import { MONTSERRAT } from "../util/texto";
 
 const COR_BOLINHA = { problema: "#FF4D4D", solucao: "#3DDC84", cinza: "#9AA0AC" };
@@ -16,17 +15,6 @@ const X_MAX = 960;
 const quandoFrame = (i: number, nome: string): number | null => {
   const v = LINHAS[i].ev[nome];
   return v === undefined ? null : v;
-};
-
-// projeta um ponto do mundo com uma camera recriada com os mesmos parametros da cena
-export const projetar = (frame: number, mundo: [number, number, number]) => {
-  const pose = cameraPorFrame(frame);
-  const cam = new THREE.PerspectiveCamera(pose.fov, LARGURA / ALTURA, 0.1, 1000);
-  cam.position.set(...pose.pos);
-  cam.lookAt(...pose.alvo);
-  cam.updateMatrixWorld();
-  const v = new THREE.Vector3(...mundo).project(cam);
-  return { x: (v.x * 0.5 + 0.5) * LARGURA, y: (-v.y * 0.5 + 0.5) * ALTURA };
 };
 
 const ativa = (i: number, frame: number): { e: Etiqueta; ini: number } | null => {

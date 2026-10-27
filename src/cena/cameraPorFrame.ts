@@ -16,6 +16,8 @@ const frameDe = (i: number, e: EtapaPlano): number => {
   let base = L.ini;
   if (r.ref === "chegada") base = L.chegada;
   else if (r.ref === "cena") base = L.cenaIni;
+  else if (r.ref === "queda") base = L.quedaIni;
+  else if (r.ref === "toque") base = L.toque;
   else if (r.ref === "ev") base = L.ev[r.nome ?? "problema"];
   return base + sf(r.desl ?? 0);
 };

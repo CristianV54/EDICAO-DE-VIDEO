@@ -25,7 +25,8 @@ export const N_PECAS = 13;
 
 const acimaDaCasa = (n: number): V3 => {
   const c = centroCasa(n);
-  return [c[0], 2.95, c[2] + 0.2];
+  // casas com placa de foto no cavalete alto: a etiqueta sai do lado da peca para nao cobrir a placa
+  return [c[0] + ([1, 7, 8, 9].indexOf(n) >= 0 ? 0.7 : 0), 2.95, c[2] + 0.2];
 };
 
 const E = (quando: string, texto: string, tipo: TipoEtiqueta, alvo?: V3, ate?: string): Etiqueta => ({ quando, texto, tipo, alvo, ate });

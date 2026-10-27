@@ -98,8 +98,8 @@ export const Tabuleiro: React.FC<{ frame: number }> = ({ frame }) => {
         const opFinal = 0.4 + 0.6 * easeInOutCubic(clamp01((frame - chegadaCasa(n)) / 8));
         return (
           <group key={n} position={[x, 0, z]}>
-            <B p={[0, Y_BASE + 0.04, 0]} s={[2.0, 0.08, 2.0]} c="#F7F5F0" r={0.04} o={opFinal < 1 ? opFinal : undefined} sombra={false} />
-            <mesh position={[-0.68, Y_CASA + 0.003, 0.68]} rotation={[-Math.PI / 2, 0, 0]}>
+            <B p={[0, Y_BASE + 0.02, 0]} s={[2.0, 0.04, 2.0]} c="#F7F5F0" r={0.015} o={opFinal < 1 ? opFinal : undefined} sombra={false} />
+            <mesh position={[-0.68, Y_CASA + 0.002, 0.68]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.4, 0.4]} />
               <meshBasicMaterial map={nums[i]} transparent opacity={opFinal} toneMapped={false} depthWrite={false} />
             </mesh>
@@ -126,15 +126,15 @@ export const Tabuleiro: React.FC<{ frame: number }> = ({ frame }) => {
             {pts.map((p, j) => {
               const acesa = frame >= ini + j * PASSO_PASTILHA;
               return (
-                <mesh key={j} position={[p[0], p[1] + 0.012, p[2]]} scale={acesa ? 1 + pisca * 0.5 : 1}>
-                  <cylinderGeometry args={[0.08, 0.08, 0.03, 12]} />
-                  <meshStandardMaterial color={acesa ? DOURADO : "#C9C2B0"} emissive={DOURADO} emissiveIntensity={acesa ? 0.8 + pisca * 1.6 : 0} roughness={0.6} />
+                <mesh key={j} position={[p[0], p[1] + 0.008, p[2]]} scale={acesa ? 1 + pisca * 0.5 : 1}>
+                  <cylinderGeometry args={[0.04, 0.04, 0.016, 12]} />
+                  <meshStandardMaterial color={acesa ? DOURADO : "#3B7BF2"} transparent opacity={acesa ? 1 : 0.3} emissive={DOURADO} emissiveIntensity={acesa ? 0.8 + pisca * 1.6 : 0} roughness={0.6} />
                 </mesh>
               );
             })}
             {bola && (
-              <mesh position={[a[0] + (b[0] - a[0]) * tb, a[1] + 0.12, a[2] + (b[2] - a[2]) * tb]}>
-                <sphereGeometry args={[0.1, 10, 8]} />
+              <mesh position={[a[0] + (b[0] - a[0]) * tb, a[1] + 0.1, a[2] + (b[2] - a[2]) * tb]}>
+                <sphereGeometry args={[0.07, 10, 8]} />
                 <meshStandardMaterial color={DOURADO} emissive={DOURADO} emissiveIntensity={1.6} />
               </mesh>
             )}
@@ -145,25 +145,26 @@ export const Tabuleiro: React.FC<{ frame: number }> = ({ frame }) => {
       {pontosSeta.slice(0, NSEG).map((p, k) => {
         const q = pontosSeta[k + 1];
         const acesa = seta * NSEG > k;
+        if (!acesa) return null;
         const dir = new THREE.Vector3().subVectors(q, p);
         const len = dir.length();
         const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
         return (
           <mesh key={k} position={[(p.x + q.x) / 2, (p.y + q.y) / 2, (p.z + q.z) / 2]} quaternion={quat} castShadow>
-            <cylinderGeometry args={[0.14, 0.14, len * 1.05, 10]} />
+            <cylinderGeometry args={[0.06, 0.06, len * 1.05, 10]} />
             <meshStandardMaterial color={acesa ? DOURADO : "#6F6A5C"} emissive={DOURADO} emissiveIntensity={acesa ? 1.2 : 0} roughness={0.5} />
           </mesh>
         );
       })}
-      {(() => {
+      {seta >= 1 && (() => {
         const p = pontosSeta[NSEG];
         const q = pontosSeta[NSEG - 1];
         const dir = new THREE.Vector3().subVectors(p, q).normalize();
         const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-        const pos = p.clone().addScaledVector(dir, 0.22);
+        const pos = p.clone().addScaledVector(dir, 0.12);
         return (
           <mesh position={pos} quaternion={quat} castShadow>
-            <coneGeometry args={[0.34, 0.5, 12]} />
+            <coneGeometry args={[0.16, 0.3, 12]} />
             <meshStandardMaterial color={seta >= 1 ? DOURADO : "#6F6A5C"} emissive={DOURADO} emissiveIntensity={seta >= 1 ? 1.2 : 0} />
           </mesh>
         );
