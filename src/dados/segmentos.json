@@ -1,11 +1,11 @@
 [
  {
   "id": "s00",
-  "texto": "Você comprou a câmera e já se acha fotógrafo. Só que, pra viver de fotografia, você precisa de treze peças. E a câmera é só a primeira.",
+  "texto": "Você comprou uma câmera e quer fotografar casamento. Só que, entre essa câmera e a sua primeira noiva, existem treze peças. Vou montar uma por uma.",
   "ancoras": {
    "problema": {
-    "palavra": "fotografo",
-    "frac": 0.25
+    "palavra": "casamento",
+    "frac": 0.3
    },
    "solucao": {
     "palavra": "treze",
@@ -15,194 +15,250 @@
  },
  {
   "id": "s01",
-  "texto": "A câmera. Sem ela não existe foto. Mas no automático, é ela que decide tudo. E foto que a câmera decide, o cliente não paga caro.",
+  "texto": "A câmera. Você deixa no automático, e a foto sai igualzinha à de celular. Aí você aprende o manual, e quem decide a luz passa a ser você.",
   "ancoras": {
    "problema": {
     "palavra": "automatico",
-    "frac": 0.4
+    "frac": 0.25
    },
    "solucao": {
-    "palavra": "caro",
-    "frac": 0.85
+    "palavra": "manual",
+    "frac": 0.6
    }
   }
  },
  {
   "id": "s02",
-  "texto": "A lente. A lente do kit não desfoca o fundo e escurece dentro da igreja. Uma cinquenta milímetros resolve as duas coisas.",
+  "texto": "Foto boa você já tem. Mas ninguém contrata sem ver trabalho. Então você chama uns amigos, faz um ensaio e monta o seu portfólio.",
   "ancoras": {
    "problema": {
-    "palavra": "escurece",
-    "frac": 0.45
+    "palavra": "ninguem",
+    "frac": 0.25
+   },
+   "amigos": {
+    "palavra": "amigos",
+    "frac": 0.6,
+    "depois": "problema"
    },
    "solucao": {
-    "palavra": "cinquenta",
-    "frac": 0.75
+    "palavra": "portfolio",
+    "frac": 0.85,
+    "depois": "amigos"
    }
   }
  },
  {
   "id": "s03",
-  "texto": "Cartão duplo. Cartão de memória corrompe. Se corromper no meio do casamento, você perdeu o sim. Com dois slots, a câmera grava tudo duas vezes.",
+  "texto": "Só que portfólio guardado no HD, ninguém vê. Você posta no Instagram, e pela primeira vez chega um direct: quanto custa?",
   "ancoras": {
    "problema": {
-    "palavra": "corrompe",
-    "frac": 0.3
+    "palavra": "hd",
+    "frac": 0.25
+   },
+   "instagram": {
+    "palavra": "instagram",
+    "frac": 0.5,
+    "depois": "problema"
    },
    "solucao": {
-    "palavra": "slots",
-    "frac": 0.75
+    "palavra": "direct",
+    "frac": 0.75,
+    "depois": "instagram"
    }
   }
  },
  {
   "id": "s04",
-  "texto": "O flash. Começou a festa, apagaram a luz, e a pista virou escuridão. Sem flash, você sobe o ISO e entrega foto granulada.",
+  "texto": "Você responde o preço num áudio. Ela visualiza e some. Na próxima, você manda uma proposta bonita, e ela pede pra fechar.",
   "ancoras": {
-   "problema": {
-    "palavra": "apagaram",
-    "frac": 0.3
+   "audio": {
+    "palavra": "audio",
+    "frac": 0.2
    },
-   "segunda": {
-    "palavra": "iso",
-    "depois": "problema",
-    "frac": 0.6
+   "problema": {
+    "palavra": "visualiza",
+    "frac": 0.35,
+    "depois": "audio"
    },
    "solucao": {
-    "frac": 0.88
+    "palavra": "proposta",
+    "frac": 0.7,
+    "depois": "problema"
    }
   }
  },
  {
   "id": "s05",
-  "texto": "Portfólio. Ninguém contrata fotógrafo sem ver trabalho. Fotografa amigos, faz ensaios, e separa as suas vinte melhores fotos.",
+  "texto": "Ela fechou pelo WhatsApp. Uma semana antes, desmarca e não quer pagar nada. Sem contrato, você não tem o que cobrar. Agora, tudo é assinado.",
   "ancoras": {
    "problema": {
-    "palavra": "ninguem",
-    "frac": 0.2
+    "palavra": "desmarca",
+    "frac": 0.3
+   },
+   "contrato": {
+    "palavra": "contrato",
+    "frac": 0.55,
+    "depois": "problema"
    },
    "solucao": {
-    "palavra": "separa",
-    "frac": 0.75
+    "palavra": "assinado",
+    "frac": 0.9,
+    "depois": "contrato"
    }
   }
  },
  {
   "id": "s06",
-  "texto": "Instagram. Portfólio guardado na gaveta, ninguém vê. O perfil é a sua vitrine, e é por ali que o primeiro cliente vai te chamar.",
+  "texto": "Mas contrato sem sinal é só promessa. Você cobra trinta por cento na assinatura, e a data fica reservada pra quem pagou.",
   "ancoras": {
    "problema": {
-    "palavra": "gaveta",
+    "palavra": "promessa",
     "frac": 0.25
    },
-   "solucao": {
-    "palavra": "vitrine",
-    "frac": 0.55
+   "trinta": {
+    "palavra": "trinta",
+    "frac": 0.45,
+    "depois": "problema"
    },
-   "segunda": {
-    "palavra": "cliente",
-    "depois": "problema",
-    "frac": 0.85
+   "solucao": {
+    "palavra": "reservada",
+    "frac": 0.75,
+    "depois": "trinta"
    }
   }
  },
  {
   "id": "s07",
-  "texto": "Proposta. O cliente pergunta o preço e você responde num áudio. Ele visualiza e some. Uma proposta bonita mostra valor antes do preço.",
+  "texto": "Chegou o dia. Igreja escura, e a lente do kit entrega foto preta. Você troca por uma cinquenta milímetros. Entra luz, e o fundo desfoca.",
   "ancoras": {
    "problema": {
-    "palavra": "visualiza",
-    "frac": 0.5
+    "palavra": "preta",
+    "frac": 0.35
    },
    "solucao": {
-    "palavra": "proposta",
-    "depois": "problema",
-    "frac": 0.75
+    "palavra": "cinquenta",
+    "frac": 0.6,
+    "depois": "problema"
    }
   }
  },
  {
   "id": "s08",
-  "texto": "Contrato. O casal desmarca na véspera e não quer pagar nada. Sem contrato assinado, você não tem o que cobrar.",
+  "texto": "Na hora do sim, o cartão de memória corrompe. Perdeu tudo? Não, porque a sua câmera tem dois slots e gravou tudo duas vezes.",
   "ancoras": {
+   "sim": {
+    "palavra": "sim",
+    "frac": 0.1
+   },
    "problema": {
-    "palavra": "desmarca",
-    "frac": 0.25
+    "palavra": "corrompe",
+    "frac": 0.3,
+    "depois": "sim"
    },
    "solucao": {
-    "palavra": "assinado",
-    "frac": 0.7
+    "palavra": "slots",
+    "frac": 0.75,
+    "depois": "problema"
    }
   }
  },
  {
   "id": "s09",
-  "texto": "O sinal. Contrato sem sinal é só promessa. Cobra trinta por cento na assinatura, e a data fica reservada pra quem pagou.",
+  "texto": "Começa a festa, apagam as luzes, e a pista vira breu. Sem flash, foto granulada. Com flash, o casal brilha no meio da pista.",
   "ancoras": {
+   "apagam": {
+    "palavra": "apagam",
+    "frac": 0.2
+   },
    "problema": {
-    "palavra": "promessa",
-    "frac": 0.3
+    "palavra": "breu",
+    "frac": 0.3,
+    "depois": "apagam"
+   },
+   "segunda": {
+    "palavra": "granulada",
+    "frac": 0.55,
+    "depois": "problema"
    },
    "solucao": {
-    "palavra": "reservada",
-    "frac": 0.75
+    "palavra": "flash",
+    "frac": 0.72,
+    "depois": "segunda"
    }
   }
  },
  {
   "id": "s10",
-  "texto": "Backup. O HD queimou com o casamento inteiro dentro. Regra simples: três cópias. Dois HDs e uma nuvem.",
+  "texto": "Você chega em casa, descarrega tudo, e o HD queima. Por isso a regra: três cópias. Dois HDs e uma nuvem.",
   "ancoras": {
+   "descarrega": {
+    "palavra": "descarrega",
+    "frac": 0.25
+   },
    "problema": {
-    "palavra": "queimou",
-    "frac": 0.2
+    "palavra": "queima",
+    "frac": 0.35,
+    "depois": "descarrega"
    },
    "solucao": {
     "palavra": "tres",
-    "frac": 0.65
+    "frac": 0.7,
+    "depois": "problema"
    }
   }
  },
  {
   "id": "s11",
-  "texto": "Galeria online. Mandar foto pelo WhatsApp destrói a qualidade. Galeria com senha, em alta resolução, é entrega de profissional.",
+  "texto": "Fotos editadas, você manda pelo WhatsApp. A noiva abre e reclama: tá tudo pixelado. Então você entrega numa galeria online, em alta.",
   "ancoras": {
-   "problema": {
+   "whatsapp": {
     "palavra": "whatsapp",
-    "frac": 0.3
+    "frac": 0.25
+   },
+   "problema": {
+    "palavra": "pixelado",
+    "frac": 0.5,
+    "depois": "whatsapp"
    },
    "solucao": {
     "palavra": "galeria",
-    "depois": "problema",
-    "frac": 0.6
+    "frac": 0.8,
+    "depois": "problema"
    }
   }
  },
  {
   "id": "s12",
-  "texto": "Depoimento. O cliente amou as fotos, mas só você sabe disso. Pede um depoimento e posta. Cliente novo confia em cliente antigo.",
+  "texto": "Ela chorou vendo as fotos. Só que ninguém ficou sabendo. Você pede um depoimento e posta no seu perfil.",
   "ancoras": {
    "problema": {
-    "palavra": "sabe",
+    "palavra": "ninguem",
     "frac": 0.35
+   },
+   "depoimento": {
+    "palavra": "depoimento",
+    "frac": 0.6,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "posta",
-    "frac": 0.65
+    "frac": 0.8,
+    "depois": "depoimento"
    }
   }
  },
  {
   "id": "s13",
-  "texto": "Indicação. O casal feliz indica o amigo, e o próximo cliente chega sem você pagar anúncio. Pronto, o ciclo fecha sozinho.",
+  "texto": "A madrinha vê o post e manda: você fotografa o meu casamento? Pronto. O ciclo fechou sozinho.",
   "ancoras": {
    "problema": {
-    "palavra": "indica",
-    "frac": 0.25
+    "palavra": "madrinha",
+    "frac": 0.05
    },
    "solucao": {
     "palavra": "pronto",
-    "frac": 0.75
+    "frac": 0.65,
+    "depois": "problema"
    }
   }
  },
@@ -216,7 +272,8 @@
    },
    "solucao": {
     "palavra": "comenta",
-    "frac": 0.6
+    "frac": 0.6,
+    "depois": "problema"
    }
   }
  }

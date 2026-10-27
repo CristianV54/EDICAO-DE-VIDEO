@@ -1,24 +1,21 @@
 import React from "react";
 import { useCurrentFrame } from "remotion";
 import * as THREE from "three";
-import { ROTEIRO, Etiqueta, Quando } from "../dados/roteiro";
+import { ROTEIRO, Etiqueta } from "../dados/roteiro";
 import { cameraPorFrame } from "../cena/cameraPorFrame";
 import { LINHAS, LARGURA, ALTURA, cardVisivel, entrada, segDe } from "../util/tempo";
 import { MONTSERRAT } from "../util/texto";
 
 const COR_BOLINHA = { problema: "#FF4D4D", solucao: "#3DDC84", cinza: "#9AA0AC" };
-const Y_MIN_CARD = 470; // card visivel: fica abaixo dele
+const Y_MIN_CARD = 600; // card visivel: abaixo do card e do titulo
 const Y_MIN_LIVRE = 300; // card oculto
 const Y_MAX = 1040; // acima da legenda (y 1240) e do titulo (y 1110)
 const X_MIN = 60;
 const X_MAX = 960;
 
-const quandoFrame = (i: number, q: Quando, fracao?: number): number | null => {
-  const L = LINHAS[i];
-  if (fracao !== undefined) return L.ini + Math.round(fracao * (L.fim - L.ini));
-  if (q === "problema") return L.prob;
-  if (q === "segunda") return L.segunda;
-  return L.sol;
+const quandoFrame = (i: number, nome: string): number | null => {
+  const v = LINHAS[i].ev[nome];
+  return v === undefined ? null : v;
 };
 
 // projeta um ponto do mundo com uma camera recriada com os mesmos parametros da cena
@@ -35,7 +32,7 @@ export const projetar = (frame: number, mundo: [number, number, number]) => {
 const ativa = (i: number, frame: number): { e: Etiqueta; ini: number } | null => {
   let achada: { e: Etiqueta; ini: number } | null = null;
   for (const e of ROTEIRO[i].etiquetas) {
-    const q = quandoFrame(i, e.quando, e.fracao);
+    const q = quandoFrame(i, e.quando);
     if (q === null || frame < q) continue;
     if (e.ate) {
       const fimQ = quandoFrame(i, e.ate);

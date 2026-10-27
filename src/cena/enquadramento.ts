@@ -1,158 +1,107 @@
 // Enquadramento automatico da camera (funcao pura, sem remotion).
-// Cada plano declara az, el, tipo e uma lista "precisa aparecer" (caixas 3D declaradas numa tabela de tamanhos).
-// A distancia d e o ponto de mira saem de uma busca binaria; o resultado e guardado em cache no carregamento.
+// Cada plano declara az, el, tipo e uma lista "precisa aparecer" (caixas 3D de uma tabela de tamanhos).
+// A distancia d e o ponto de mira saem de uma busca binaria (20 iteracoes) com FOV fixo, calculada uma vez por plano (cache).
 import * as THREE from "three";
 import {
-  CAMERA_ATO1, CASAL_AMIGOS, CURIOSO, FOTOGRAFO_ATO1, FOTOGRAFO_ATO2, INDICADO_DESTINO, LUGAR_CLIENTE, PECA, TELAO, TOPO, V3,
+  ALTURA_PED, ALTURA_PERSONAGEM, V3, Y_CASA, posAmigoA, posAmigoB, posCli, posFot, posNoiva, posNoivo, posMesa, posPlaca,
+  posPedestal, TABULEIRO,
 } from "../dados/posicoes";
 
 export const LARGURA_TELA = 1080;
 export const ALTURA_TELA = 1920;
 export const FOV = 40; // vertical, igual em todos os planos
-export const AZ_ORBITA = 4; // graus de giro durante cada plano
+export const AZ_ORBITA = 5; // graus de giro durante cada plano
+export const PUSH_IN = 0.06; // a distancia diminui 6% durante cada plano
 
 export type Janela = { x0: number; x1: number; y0: number; y1: number };
 export const JANELA_UTIL: Janela = { x0: 70, x1: 1010, y0: 470, y1: 1060 };
 export const JANELA_FINAL: Janela = { x0: 70, x1: 1010, y0: 700, y1: 1170 };
 const MARGEM = 30;
-const LARGURA_CLOSE = 0.45 * LARGURA_TELA; // 486 px
+export const FRAC_LARGURA_CLOSE = 0.55; // peca ocupa 55% da largura (594 px)
+export const FRAC_LARGURA_DETALHE = 0.45; // camera na mao ocupa 45% da largura
 const TOLERANCIA = 0.05;
-const ALTURA_PERSONAGEM = 2.15;
+export const FRAC_ALTURA_MIN_PERSONAGEM = 0.38; // personagem mais alto mede ao menos 38% da altura da janela
 
-// ---------- tabela de tamanhos (centro, tamanho) em metros ----------
+// ---------- tabela de caixas (centro, tamanho) em metros ----------
 type Caixa = { c: V3; t: V3 };
-const caixa = (c: V3, t: V3): Caixa => ({ c, t });
-const emPe = (p: V3, larg: number, prof: number, desloc: [number, number] = [0, 0], alt = ALTURA_PERSONAGEM): Caixa =>
-  caixa([p[0] + desloc[0], TOPO + alt / 2, p[2] + desloc[1]], [larg, alt, prof]);
-const sobrePlataforma = (p: V3, t: V3): Caixa => caixa([p[0], TOPO + t[1] / 2, p[2]], t);
-
-export const CAIXAS: Record<string, Caixa> = {
-  // personagens (alturas de cabeca aos pes); o fotografo inclui a camera na frente
-  fotografo1: emPe(FOTOGRAFO_ATO1, 1.5, 1.1, [0.25, 0]),
-  fotografo2: emPe(FOTOGRAFO_ATO2, 1.3, 1.4, [0.1, 0.35]),
-  casalAmigos: emPe(CASAL_AMIGOS, 1.3, 1.4),
-  curioso: emPe(CURIOSO, 1.2, 0.9, [0, 0], 2.5),
-  casalCliente6: emPe(LUGAR_CLIENTE[6], 1.5, 1.2),
-  casalCliente7: emPe(LUGAR_CLIENTE[7], 1.5, 1.2),
-  casalCliente8: emPe(LUGAR_CLIENTE[8], 1.5, 1.2),
-  casalCliente9: emPe(LUGAR_CLIENTE[9], 1.5, 1.2),
-  casalCliente11: emPe(LUGAR_CLIENTE[11], 1.9, 1.5, [0.2, 0.1]), // inclui o celular na mao da noiva
-  casalCliente13: emPe(LUGAR_CLIENTE[11], 1.6, 1.6),
-  casalIndicado: emPe(INDICADO_DESTINO, 1.6, 1.6),
-  cabecasCliente11: caixa([LUGAR_CLIENTE[11][0], TOPO + 1.85, LUGAR_CLIENTE[11][2]], [1.5, 0.6, 1.0]),
-  // cenario e pecas
-  telao: sobrePlataforma(TELAO, [2.6, 2.7, 0.3]),
-  plataforma: caixa([0, 0.25, 0], [12.2, 0.5, 7.2]),
-  // camera de verdade: corpo 0,75 x 0,55 x 0,42 (gira 90 graus), lente a frente, visor em cima
-  camera1: caixa([CAMERA_ATO1[0] + 0.12, CAMERA_ATO1[1] + 0.03, CAMERA_ATO1[2]], [1.0, 0.72, 0.78]),
-  camera1Flash: caixa([CAMERA_ATO1[0] + 0.05, CAMERA_ATO1[1] + 0.3, CAMERA_ATO1[2]], [1.25, 1.3, 1.1]), // com o flash na sapata e as maos
-  album: sobrePlataforma(PECA[5], [0.95, 0.55, 0.8]),
-  celular: sobrePlataforma(PECA[6], [0.75, 1.1, 0.5]),
-  proposta: sobrePlataforma(PECA[7], [1.4, 1.0, 0.6]),
-  contrato: sobrePlataforma(PECA[8], [1.4, 1.0, 0.6]),
-  maquininha: sobrePlataforma(PECA[9], [1.15, 0.95, 0.6]),
-  hds: sobrePlataforma(PECA[10], [1.9, 1.75, 0.9]),
-  cabos10: caixa([(FOTOGRAFO_ATO2[0] + PECA[10][0]) / 2, 1.3, (FOTOGRAFO_ATO2[2] + PECA[10][2]) / 2], [1.2, 1.2, 2.5]),
-  tablet: sobrePlataforma(PECA[11], [1.1, 0.8, 0.6]),
-  balao: caixa(PECA[12], [1.3, 0.9, 0.25]),
+const emPe = (p: V3, larg: number, prof: number, dz = 0): Caixa => ({ c: [p[0], p[1] + ALTURA_PERSONAGEM / 2, p[2] + dz], t: [larg, ALTURA_PERSONAGEM, prof] });
+// pecas: tamanho acima do pedestal (largura, altura, profundidade); a caixa inclui o pedestal
+const PECA_TAM: Record<number, V3> = {
+  1: [1.1, 0.75, 0.65], 2: [0.95, 0.5, 0.9], 3: [0.8, 1.25, 0.25], 4: [1.05, 1.25, 0.65], 5: [1.05, 1.35, 0.65], 6: [1.2, 1.0, 0.7],
+  7: [1.0, 1.0, 0.8], 8: [0.95, 0.75, 0.55], 9: [0.7, 1.3, 0.6], 10: [1.3, 1.95, 0.95], 11: [1.15, 1.05, 0.65], 12: [0.9, 0.05, 0.9], 13: [0.9, 0.05, 0.9],
 };
-// todas as pecas do ato 2 (uniao das caixas)
-export const PECAS_ATO2 = ["album", "celular", "proposta", "contrato", "maquininha", "hds", "tablet", "balao"];
+export const caixaDe = (id: string): Caixa => {
+  const m = id.match(/^([a-zA-Z]+)(\d+)$/);
+  if (!m) {
+    if (id === "tabuleiro") return { c: [0, 0.3, 0], t: [TABULEIRO.largura + 0.3, 0.7, TABULEIRO.profundidade + 0.3] };
+    if (id === "seta") return { c: [1.4, 0.35, -1.05], t: [12.7, 0.6, 8.6] };
+    throw new Error(`caixa desconhecida: ${id}`);
+  }
+  const n = parseInt(m[2], 10);
+  switch (m[1]) {
+    case "fot": return emPe(posFot(n), 0.75, 0.85, 0.15); // inclui a camera nas maos
+    case "noiva": return emPe(posNoiva(n), 0.7, 0.55);
+    case "noivo": return emPe(posNoivo(n), 0.6, 0.5);
+    case "cli": return emPe(posCli(n), 0.7, 0.55);
+    case "amigoA": return emPe(posAmigoA(n), 0.6, 0.5);
+    case "amigoB": return emPe(posAmigoB(n), 0.6, 0.5);
+    case "madrinha": return emPe(posCli(n), 0.7, 0.55);
+    case "peca": {
+      if (n === 12) { // balao de depoimento: do rosto da noiva ate o balao
+        const p = posCli(12);
+        return { c: [p[0], Y_CASA + 1.85, p[2]], t: [1.3, 1.6, 0.5] };
+      }
+      const [w, h, d] = PECA_TAM[n];
+      const p = posPedestal(n);
+      const alt = ALTURA_PED + h;
+      return { c: [p[0], Y_CASA + alt / 2, p[2]], t: [w, alt, Math.max(d, 0.9)] };
+    }
+    case "placa": {
+      const p = posPlaca(n);
+      return { c: [p[0], p[1] + 0.45, p[2]], t: [1.15, 0.9, 0.4] };
+    }
+    case "balao": {
+      const p = posCli(n);
+      return { c: [p[0], Y_CASA + 2.3, p[2]], t: [1.2, 0.75, 0.3] };
+    }
+    case "maoCam": {
+      const p = posFot(n);
+      return { c: [p[0], p[1] + 1.0, p[2] + 0.22], t: [0.45, 0.34, 0.4] };
+    }
+    case "notebook": {
+      const p = posMesa(n);
+      return { c: [p[0], Y_CASA + 0.45, p[2]], t: [0.95, 0.9, 0.7] };
+    }
+  }
+  throw new Error(`caixa desconhecida: ${id}`);
+};
+const EH_PERSONAGEM = /^(fot|noiva|noivo|cli|amigoA|amigoB|madrinha)\d+$/;
+const EH_PLACA = /^placa\d+$/;
+const EH_PECA = /^peca\d+$/;
 
 // ---------- planos ----------
+export type TipoPlano = "close" | "cena" | "caminhada" | "detalhe" | "aberto";
 export type Plano = {
   id: string;
+  tipo: TipoPlano;
   az: number;
-  el: number; // entre 25 e 40
-  tipo: "close" | "contexto";
-  principal?: string; // so no close: ocupa 45% da largura
+  el: number; // 28 a 38
   lista: string[]; // precisa aparecer
+  principal?: string; // close e detalhe
+  fracLargura?: number;
+  fracAltura?: number; // abertura do s00: o personagem ocupa essa fracao da altura da janela
   janela?: Janela;
-  // contexto: cada item de `visiveis` nao pode ficar escondido atras dos seus oclusores (o azimute e escolhido por busca)
-  visiveis?: { id: string; oclusores: string[] }[];
+  seguir?: { de: string; para: string }; // caminhada: a mira acompanha o fotografo (caixa de origem e de destino)
 };
-const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista: string[], principal?: string, janela?: Janela, visiveis?: { id: string; oclusores: string[] }[]): Plano => ({
-  id, tipo, az, el, lista, principal, janela, visiveis,
-});
-// contexto das pecas do ato 2: a peca nao pode ficar atras do fotografo nem do casal
-const ctxPeca = (seg: string, az: number, el: number, lista: string[], peca: string, casal: string, extra: { id: string; oclusores: string[] }[] = []) =>
-  P(`${seg}-contexto`, "contexto", az, el, lista, undefined, undefined, [{ id: peca, oclusores: [casal, "fotografo2"] }, ...extra]);
-
-// Etapas de cada segmento: quando a camera troca de plano.
-export type Quando = "ini" | "ctx" | "sol" | "prob";
-// desl: segundos somados ao instante; trans: duracao da transicao (s). Padrao 0 e 0,5 s (chega 0,2 s depois do inicio do contexto).
-export type EtapaPlano = { quando: Quando; plano: Plano; desl?: number; trans?: number };
-
-const closeCamera = (s: string, az: number, el: number) => P(`${s}-close`, "close", az, el, ["camera1"], "camera1");
-const ctxAto1 = (s: string) => P(`${s}-contexto`, "contexto", 30, 30, ["fotografo1", "telao", "casalAmigos"]);
-
-export const ETAPAS_SEG: EtapaPlano[][] = [
-  /* s00 */ [
-    { quando: "ini", plano: P("s00-abertura", "contexto", 35, 28, ["fotografo1", "casalAmigos"]) },
-    { quando: "sol", plano: P("s00-treze", "contexto", 25, 32, ["plataforma"]), desl: -0.3, trans: 0.8 },
-  ],
-  /* s01 */ [{ quando: "ini", plano: closeCamera("s01", 40, 28) }, { quando: "ctx", plano: ctxAto1("s01") }],
-  /* s02 */ [
-    { quando: "ini", plano: closeCamera("s02", 40, 28) },
-    { quando: "ctx", plano: ctxAto1("s02") },
-    { quando: "sol", plano: closeCamera("s02-lente", 40, 28), desl: -0.6, trans: 0.6 }, // a 50mm chega: volta ao close antes dela
-  ],
-  /* s03 */ [{ quando: "ini", plano: closeCamera("s03", 50, 28) }, { quando: "ctx", plano: ctxAto1("s03") }],
-  /* s04 */ [
-    { quando: "ini", plano: closeCamera("s04", 35, 30) },
-    { quando: "ctx", plano: ctxAto1("s04") },
-    { quando: "sol", plano: P("s04-flash", "close", 35, 30, ["camera1Flash"], "camera1Flash"), desl: -0.6, trans: 0.6 }, // o flash estoura: close
-  ],
-  /* s05 */ [
-    { quando: "ini", plano: P("s05-close", "close", 20, 30, ["album"], "album") },
-    { quando: "ctx", plano: P("s05-contexto", "contexto", 20, 30, ["telao", "album", "fotografo1", "curioso"]) },
-  ],
-  /* s06 */ [
-    { quando: "ini", plano: P("s06-close", "close", 15, 28, ["celular"], "celular") },
-    { quando: "ctx", plano: ctxPeca("s06", 5, 38, ["celular", "casalCliente6", "fotografo2"], "celular", "casalCliente6") },
-  ],
-  /* s07 */ [
-    { quando: "ini", plano: P("s07-close", "close", 20, 30, ["proposta"], "proposta") },
-    { quando: "ctx", plano: ctxPeca("s07", 5, 38, ["proposta", "casalCliente7", "fotografo2"], "proposta", "casalCliente7") },
-  ],
-  /* s08 */ [
-    { quando: "ini", plano: P("s08-close", "close", 35, 30, ["contrato"], "contrato") },
-    { quando: "ctx", plano: ctxPeca("s08", 5, 38, ["contrato", "casalCliente8", "fotografo2"], "contrato", "casalCliente8") },
-  ],
-  /* s09 */ [
-    { quando: "ini", plano: P("s09-close", "close", 35, 30, ["maquininha"], "maquininha") },
-    { quando: "ctx", plano: ctxPeca("s09", 5, 38, ["maquininha", "contrato", "casalCliente9", "fotografo2"], "maquininha", "casalCliente9") },
-  ],
-  /* s10 */ [
-    { quando: "ini", plano: P("s10-close", "close", 20, 30, ["hds"], "hds") },
-    { quando: "ctx", plano: ctxPeca("s10", 5, 38, ["hds", "cabos10", "fotografo2"], "hds", "casalCliente9", [{ id: "fotografo2", oclusores: ["hds", "casalCliente9"] }]) },
-  ],
-  /* s11 */ [
-    { quando: "ini", plano: P("s11-close", "close", 10, 30, ["tablet"], "tablet") },
-    { quando: "ctx", plano: ctxPeca("s11", 5, 38, ["tablet", "casalCliente11", "fotografo2"], "tablet", "casalCliente11") },
-  ],
-  /* s12 */ [
-    { quando: "ini", plano: P("s12-close", "close", 10, 28, ["balao", "cabecasCliente11"], "balao") },
-    { quando: "ctx", plano: P("s12-contexto", "contexto", 10, 28, ["balao", "casalCliente11", "celular"]) },
-  ],
-  /* s13 */ [
-    { quando: "ini", plano: P("s13-contexto", "contexto", 30, 30, ["casalCliente13", "casalIndicado", "fotografo2"]) },
-    { quando: "sol", plano: P("s13-pronto", "contexto", 25, 32, [...PECAS_ATO2, "fotografo2", "casalCliente13", "casalIndicado"]), desl: -0.3, trans: 0.6 },
-  ],
-  /* s14 */ [
-    { quando: "prob", plano: P("s14-final", "contexto", 20, 35, [...PECAS_ATO2, "casalCliente13", "casalIndicado", "fotografo2"], undefined, JANELA_FINAL) },
-  ],
-];
 
 // ---------- calculo ----------
 const cantos = (id: string): THREE.Vector3[] => {
-  const { c, t } = CAIXAS[id];
+  const { c, t } = caixaDe(id);
   const out: THREE.Vector3[] = [];
   for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) out.push(new THREE.Vector3(c[0] + (sx * t[0]) / 2, c[1] + (sy * t[1]) / 2, c[2] + (sz * t[2]) / 2));
   return out;
 };
-
-type Retangulo = { xmin: number; xmax: number; ymin: number; ymax: number };
+export type Retangulo = { xmin: number; xmax: number; ymin: number; ymax: number };
 const camera = new THREE.PerspectiveCamera(FOV, LARGURA_TELA / ALTURA_TELA, 0.1, 500);
 const FOCAL_PX = ALTURA_TELA / 2 / Math.tan((FOV * Math.PI) / 360);
 
@@ -175,12 +124,14 @@ const projetarPontos = (pts: THREE.Vector3[]): Retangulo => {
   }
   return r;
 };
-const centroMundo = (pts: THREE.Vector3[]) => {
-  const b = new THREE.Box3().setFromPoints(pts);
-  return b.getCenter(new THREE.Vector3());
+const centroMundo = (pts: THREE.Vector3[]) => new THREE.Box3().setFromPoints(pts).getCenter(new THREE.Vector3());
+const pontosDe = (ids: string[]) => {
+  const pts: THREE.Vector3[] = [];
+  ids.forEach((id) => pts.push(...cantos(id)));
+  return pts;
 };
 
-// desloca o ponto de mira (em paralelo ao plano da imagem) para centralizar o conjunto na janela; 3 repeticoes
+// desloca o ponto de mira para centralizar o conjunto na janela; 3 repeticoes (o deslocamento muda a projecao)
 const centralizar = (alvo: THREE.Vector3, d: number, az: number, el: number, pts: THREE.Vector3[], janela: Janela) => {
   const cx = (janela.x0 + janela.x1) / 2;
   const cy = (janela.y0 + janela.y1) / 2;
@@ -202,117 +153,43 @@ const centralizar = (alvo: THREE.Vector3, d: number, az: number, el: number, pts
 
 export type Resolvido = {
   plano: Plano;
-  d: number;
+  d: number; // distancia no estado medio do plano (azimute + 2,5 graus, distancia x 0,97)
   alvo: V3;
-  pos: V3;
   janela: Janela;
   uniao: Retangulo;
   principal?: Retangulo;
   caixas: Record<string, Retangulo>;
-  limite: "largura" | "altura" | "contexto";
+  limite: "largura" | "altura" | "janela";
   fora: string[]; // caixas que ficaram fora da janela (vazio = ok)
+  removidos: string[]; // itens tirados da lista pela regra de tamanho minimo
+  alturaMaxPersonagem: number; // px do personagem mais alto da lista
 };
 
 const NUM_ITER = 20;
-const cache = new Map<string, Resolvido>();
+const MID_D = 1 - PUSH_IN / 2;
 
-// ---------- oclusao: o raio da camera ate os cantos da peca nao pode atravessar o cilindro de um personagem ----------
-// corpo real do personagem: 67% da caixa declarada
-const cilindroDe = (id: string) => {
-  const { c, t } = CAIXAS[id];
-  return { x: c[0], z: c[2], r: (Math.max(t[0], t[2]) / 2) * 0.67, y0: c[1] - t[1] / 2, y1: c[1] + t[1] / 2 };
-};
-const bloqueia = (cam: THREE.Vector3, alvo: THREE.Vector3, cil: ReturnType<typeof cilindroDe>): boolean => {
-  const dx = alvo.x - cam.x;
-  const dz = alvo.z - cam.z;
-  const a = dx * dx + dz * dz;
-  if (a < 1e-9) return false;
-  const fx = cam.x - cil.x;
-  const fz = cam.z - cil.z;
-  const b = 2 * (fx * dx + fz * dz);
-  const c = fx * fx + fz * fz - cil.r * cil.r;
-  const disc = b * b - 4 * a * c;
-  if (disc < 0) return false;
-  const sq = Math.sqrt(disc);
-  const t1 = (-b - sq) / (2 * a);
-  const t2 = (-b + sq) / (2 * a);
-  const lo = Math.max(0, t1);
-  const hi = Math.min(1, t2);
-  if (lo > hi) return false;
-  // altura do raio dentro do intervalo [lo, hi]
-  const y = (t: number) => cam.y + (alvo.y - cam.y) * t;
-  const ymin = Math.min(y(lo), y(hi));
-  const ymax = Math.max(y(lo), y(hi));
-  return ymax >= cil.y0 && ymin <= cil.y1;
-};
-// menor fracao (entre os itens exigidos) dos 8 cantos + centro que a camera enxerga sem oclusor na frente
-export const visibilidadeDe = (plano: Plano, camPos: THREE.Vector3): number => {
-  if (!plano.visiveis) return 1;
-  let pior = 1;
-  for (const v of plano.visiveis) {
-    const pts = cantos(v.id);
-    const { c } = CAIXAS[v.id];
-    pts.push(new THREE.Vector3(c[0], c[1], c[2]));
-    const cils = v.oclusores.map(cilindroDe);
-    let vistos = 0;
-    for (const p of pts) if (!cils.some((cl) => bloqueia(camPos, p, cl))) vistos++;
-    pior = Math.min(pior, vistos / pts.length);
-  }
-  return pior;
-};
-
-function resolverComAz(plano: Plano, az: number): Resolvido {
-  return resolverPlanoBase({ ...plano, az });
-}
-export const resolverPlano = (plano: Plano): Resolvido => {
-  if (cache.has(plano.id)) return cache.get(plano.id)!;
-  let melhor: Resolvido | null = null;
-  let melhorScore = Infinity;
-  let reserva: Resolvido | null = null;
-  let reservaVis = -1;
-  if (plano.visiveis) {
-    // varre o azimute de -90 a +90 graus em passos de 5: o menor d (peca maior) entre os que enxergam tudo, com pequena
-    // penalidade por se afastar do azimute pedido
-    for (let k = -18; k <= 18; k++) {
-      const r = resolverComAz(plano, plano.az + k * 5);
-      if (r.fora.length) continue;
-      const vis = visibilidadeDe(plano, new THREE.Vector3(...r.pos));
-      if (vis >= 0.99) {
-        const score = r.d + 0.06 * Math.abs(k * 5);
-        if (score < melhorScore) { melhorScore = score; melhor = r; }
-      } else if (vis > reservaVis) { reservaVis = vis; reserva = r; }
-    }
-  }
-  const res = melhor ?? reserva ?? resolverPlanoBase(plano);
-  const final = { ...res, plano: { ...plano, az: res.plano.az } };
-  cache.set(plano.id, final);
-  return final;
-};
-
-function resolverPlanoBase(plano: Plano): Resolvido {
+function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removidos"> {
   const janela = plano.janela ?? JANELA_UTIL;
   const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: janela.y1 - janela.y0 - 2 * MARGEM };
-  const todos: THREE.Vector3[] = [];
-  plano.lista.forEach((id) => todos.push(...cantos(id)));
-  const ptsPrincipal = plano.principal ? cantos(plano.principal) : null;
+  const todos = pontosDe(lista);
+  const ptsP = plano.principal ? cantos(plano.principal) : null;
   const inicio = centroMundo(todos);
-
+  const azMid = plano.az + AZ_ORBITA / 2;
   const medir = (d: number) => {
     const alvo = inicio.clone();
-    centralizar(alvo, d, plano.az, plano.el, todos, janela);
-    const u = projetarPontos(todos);
-    const p = ptsPrincipal ? projetarPontos(ptsPrincipal) : null;
-    return { alvo, u, p };
+    centralizar(alvo, d * MID_D, azMid, plano.el, todos, janela);
+    return { alvo, u: projetarPontos(todos), p: ptsP ? projetarPontos(ptsP) : null };
   };
-  // metrica > 1 significa que ainda esta grande demais
+  const larguraAlvo = (plano.fracLargura ?? 0) * LARGURA_TELA;
   const metrica = (d: number) => {
     const { u, p } = medir(d);
-    const mUniao = Math.max((u.xmax - u.xmin) / util.w, (u.ymax - u.ymin) / util.h);
-    if (plano.tipo === "contexto" || !p) return mUniao;
-    return Math.max(mUniao, (p.xmax - p.xmin) / LARGURA_CLOSE, (p.ymax - p.ymin) / util.h);
+    let m = Math.max((u.xmax - u.xmin) / util.w, (u.ymax - u.ymin) / util.h);
+    if (p && plano.fracAltura) m = Math.max(m, (p.ymax - p.ymin) / (plano.fracAltura * (janela.y1 - janela.y0)));
+    else if (p && larguraAlvo) m = Math.max(m, (p.xmax - p.xmin) / larguraAlvo);
+    return m;
   };
   let lo = 0.8;
-  let hi = 150;
+  let hi = 200;
   for (let i = 0; i < NUM_ITER; i++) {
     const mid = (lo + hi) / 2;
     if (metrica(mid) > 1) lo = mid;
@@ -322,63 +199,146 @@ function resolverPlanoBase(plano: Plano): Resolvido {
   const { alvo, u, p } = medir(d);
   const caixas: Record<string, Retangulo> = {};
   const fora: string[] = [];
-  for (const id of plano.lista) {
+  for (const id of lista) {
     const r = projetarPontos(cantos(id));
     caixas[id] = r;
     if (r.xmin < janela.x0 - 0.5 || r.xmax > janela.x1 + 0.5 || r.ymin < janela.y0 - 0.5 || r.ymax > janela.y1 + 0.5) fora.push(id);
   }
-  let limite: Resolvido["limite"] = "contexto";
-  if (plano.tipo === "close" && p) {
+  let limite: Resolvido["limite"] = "janela";
+  if (p && larguraAlvo) {
     const w = p.xmax - p.xmin;
-    limite = Math.abs(w - LARGURA_CLOSE) <= LARGURA_CLOSE * TOLERANCIA ? "largura" : "altura";
-    // 45% da largura (486 px), tolerancia de 5% para os dois lados. Pecas altas e estreitas (celular) so chegam a menos que
-    // isso porque a altura da janela util (590 px) limita antes: nesse caso o limite e "altura" e nao e falha.
-    const h = p.ymax - p.ymin;
-    const limitadaPelaAltura = h >= util.h - 1;
-    if (limitadaPelaAltura && w < LARGURA_CLOSE * (1 - TOLERANCIA)) limite = "altura";
-    else if (Math.abs(w - LARGURA_CLOSE) > LARGURA_CLOSE * TOLERANCIA) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px, esperado 486 +- 5%)`);
+    limite = Math.abs(w - larguraAlvo) <= larguraAlvo * TOLERANCIA ? "largura" : "altura";
+    // peca estreita e alta: a altura da janela limita antes dos 55% de largura (nao e falha)
+    if (w > larguraAlvo * (1 + TOLERANCIA)) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px acima do alvo)`);
   }
-  const res: Resolvido = {
-    plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora,
-    alvo: [alvo.x, alvo.y, alvo.z],
-    pos: [camera.position.x, camera.position.y, camera.position.z],
-  };
-  return res;
+  let alturaMax = 0;
+  for (const id of lista) if (EH_PERSONAGEM.test(id)) alturaMax = Math.max(alturaMax, caixas[id].ymax - caixas[id].ymin);
+  return { plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora, alvo: [alvo.x, alvo.y, alvo.z], alturaMaxPersonagem: alturaMax };
 }
 
-// pose da camera para um plano, com o azimute deslocado (orbita lenta de AZ_ORBITA graus em volta de az)
-export const poseResolvida = (plano: Plano, azExtra: number): { pos: V3; alvo: V3; fov: number } => {
-  const r = resolverPlano(plano);
-  const az = ((r.plano.az + azExtra) * Math.PI) / 180; // azimute resolvido (a busca de oclusao pode te-lo mudado)
-  const el = (plano.el * Math.PI) / 180;
-  const [tx, ty, tz] = r.alvo;
-  return {
-    pos: [tx + r.d * Math.sin(az) * Math.cos(el), ty + r.d * Math.sin(el), tz + r.d * Math.cos(az) * Math.cos(el)],
-    alvo: r.alvo,
-    fov: FOV,
-  };
+const cache = new Map<string, Resolvido>();
+// Regra de tamanho minimo (so no plano "cena"): o personagem mais alto precisa medir 38% da altura da janela.
+// Se nao medir, tira primeiro a placa de foto da lista e depois a peca principal.
+export const resolverPlano = (plano: Plano): Resolvido => {
+  if (cache.has(plano.id)) return cache.get(plano.id)!;
+  let lista = [...plano.lista];
+  let removidos: string[] = [];
+  let r = resolverLista(plano, lista);
+  const minimo = FRAC_ALTURA_MIN_PERSONAGEM * ((plano.janela ?? JANELA_UTIL).y1 - (plano.janela ?? JANELA_UTIL).y0);
+  if (plano.tipo === "cena") {
+    for (const grupo of [EH_PLACA, EH_PECA]) {
+      if (r.alturaMaxPersonagem >= minimo || r.alturaMaxPersonagem === 0) break;
+      const tirar = lista.filter((id) => grupo.test(id));
+      if (!tirar.length) continue;
+      lista = lista.filter((id) => !grupo.test(id));
+      removidos = [...removidos, ...tirar];
+      r = resolverLista({ ...plano, lista }, lista);
+    }
+  }
+  const final: Resolvido = { ...r, plano, removidos };
+  cache.set(plano.id, final);
+  return final;
 };
 
-// calcula todos os planos no carregamento do modulo
-export const PLANOS_RESOLVIDOS: Resolvido[] = [];
-ETAPAS_SEG.forEach((et) => et.forEach((e) => PLANOS_RESOLVIDOS.push(resolverPlano(e.plano))));
+// pose em um ponto (prog 0..1) do plano: o azimute cresce 5 graus e a distancia diminui 6%
+export const poseResolvida = (plano: Plano, prog: number): { pos: V3; alvo: V3; fov: number } => {
+  const r = resolverPlano(plano);
+  const az = ((plano.az + AZ_ORBITA * prog) * Math.PI) / 180;
+  const el = (plano.el * Math.PI) / 180;
+  const d = (r.d * (1 - PUSH_IN * prog)) ;
+  const [tx, ty, tz] = r.alvo;
+  return { pos: [tx + d * Math.sin(az) * Math.cos(el), ty + d * Math.sin(el), tz + d * Math.cos(az) * Math.cos(el)], alvo: r.alvo, fov: FOV };
+};
 
-// retangulos projetados com o azimute deslocado (usado na verificacao dos extremos da orbita)
-export const projetarComAz = (plano: Plano, azExtra: number): Record<string, Retangulo> => {
+// retangulos projetados (prog 0, 0,5 ou 1) para a verificacao dos extremos da orbita
+export const projetarEmProg = (plano: Plano, prog: number): Record<string, Retangulo> => {
   const r = resolverPlano(plano);
   const alvo = new THREE.Vector3(...r.alvo);
-  posicionar(alvo, r.d, r.plano.az + azExtra, plano.el);
+  posicionar(alvo, r.d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
   const out: Record<string, Retangulo> = {};
-  for (const id of plano.lista) out[id] = projetarPontos(cantos(id));
+  for (const id of plano.lista.filter((x) => !r.removidos.includes(x))) out[id] = projetarPontos(cantos(id));
   return out;
 };
 
-// varredura de azimute (diagnostico): distancia d, visibilidade da peca e se coube na janela
-export const varrerAzimute = (plano: Plano, de = -90, ate = 90, passo = 5) => {
-  const out: { az: number; d: number; vis: number; ok: boolean }[] = [];
-  for (let az = de; az <= ate; az += passo) {
-    const r = resolverComAz(plano, az);
-    out.push({ az, d: r.d, vis: visibilidadeDe(plano, new THREE.Vector3(...r.pos)), ok: r.fora.length === 0 });
-  }
-  return out;
+// ---------- planos por segmento ----------
+export type Ref = { ref: "ini" | "chegada" | "cena" | "ev"; nome?: string; desl?: number };
+export type EtapaPlano = { quando: Ref; plano: Plano; trans?: number }; // trans: segundos
+const R = (ref: Ref["ref"], nome?: string, desl = 0): Ref => ({ ref, nome, desl });
+
+const AZ_REP = (n: number) => (n >= 6 && n <= 10 ? -30 : 30); // caminhada: o fotografo anda em direcao a camera
+// close e cena: azimute negativo em todas as casas. O fotografo fica na frente a direita da peca (x + 0,6, z + 0,55),
+// entao com a camera a direita ele tampa a peca; vista da esquerda a peca fica livre.
+const AZ_VISTA = -30;
+const EL = 32;
+
+// quem esta em cena em cada casa (ordem de prioridade para a regra de tamanho minimo: placa e peca saem primeiro)
+const personagensDe = (n: number): string[] => {
+  const p: string[] = [`fot${n}`];
+  if (n === 2) p.push("amigoA2", "amigoB2");
+  if (n >= 4 && n <= 6) p.push(`noiva${n}`);
+  if (n >= 7 && n <= 9) p.push(`noiva${n}`, `noivo${n}`);
+  if (n === 11 || n === 12) p.push(`noiva${n}`);
+  if (n === 13) p.push("madrinha13");
+  return p;
 };
+const extrasDe = (n: number): string[] => {
+  const e: string[] = [];
+  if (n === 10) e.push("notebook10");
+  if (n === 12) e.push("balao12");
+  return e;
+};
+const placaDe = (n: number): string[] => ([1, 7, 8, 9].includes(n) ? [`placa${n}`] : []);
+
+export const planoCaminhada = (n: number): Plano => ({
+  id: `s${String(n).padStart(2, "0")}-caminhada`, tipo: "caminhada", az: AZ_REP(n), el: EL, lista: [`fot${n}`],
+  seguir: n >= 2 ? { de: `fot${n - 1}`, para: `fot${n}` } : undefined,
+});
+export const planoClose = (n: number): Plano => {
+  const principal = n === 13 ? "madrinha13" : `peca${n}`;
+  return {
+    id: `s${String(n).padStart(2, "0")}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, lista: n === 13 ? [principal] : [principal],
+    principal, fracLargura: n === 13 ? undefined : FRAC_LARGURA_CLOSE, fracAltura: n === 13 ? 0.7 : undefined,
+  };
+};
+export const planoCena = (n: number): Plano => ({
+  id: `s${String(n).padStart(2, "0")}-cena`, tipo: "cena", az: AZ_VISTA, el: EL,
+  lista: [...personagensDe(n), ...extrasDe(n), ...placaDe(n), `peca${n}`],
+});
+export const planoDetalhe = (n: number): Plano => ({
+  id: `s${String(n).padStart(2, "0")}-detalhe`, tipo: "detalhe", az: -24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, fracLargura: FRAC_LARGURA_DETALHE,
+});
+export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: -22, el: 28, lista: ["fot1"], principal: "fot1", fracAltura: 0.55 };
+export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: -22, el: 34, lista: ["tabuleiro"] };
+export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: -22, el: 34, lista: ["tabuleiro", "seta"] };
+export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: -22, el: 36, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL };
+export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: -30, el: EL, lista: ["peca3"], principal: "peca3", fracLargura: FRAC_LARGURA_CLOSE };
+
+export const ETAPAS_SEG: EtapaPlano[][] = (() => {
+  const out: EtapaPlano[][] = [];
+  out.push([
+    { quando: R("ini"), plano: PLANO_ABERTURA },
+    { quando: R("ev", "solucao", -0.2), plano: PLANO_TABULEIRO, trans: 1.4 },
+  ]);
+  for (let n = 1; n <= 13; n++) {
+    const e: EtapaPlano[] = [];
+    if (n >= 2) e.push({ quando: R("ini"), plano: planoCaminhada(n), trans: 0.4 });
+    e.push({ quando: R("chegada"), plano: planoClose(n), trans: 0.5 });
+    e.push({ quando: R("cena"), plano: planoCena(n), trans: 0.5 });
+    if (n === 7 || n === 8 || n === 9) {
+      e.push({ quando: R("ev", "solucao", -0.1), plano: planoDetalhe(n), trans: 0.3 });
+      e.push({ quando: R("ev", "solucao", 1.1), plano: planoCena(n), trans: 0.4 });
+    }
+    if (n === 12) e.push({ quando: R("ev", "solucao", 0), plano: PLANO_VOO, trans: 1.2 });
+    if (n === 13) e.push({ quando: R("ev", "solucao", -0.2), plano: PLANO_PRONTO, trans: 1.0 });
+    out.push(e);
+  }
+  out.push([{ quando: R("ev", "problema", 0), plano: PLANO_FINAL, trans: 1.6 }]);
+  return out;
+})();
+
+export const TODOS_PLANOS: Plano[] = (() => {
+  const vistos = new Map<string, Plano>();
+  ETAPAS_SEG.forEach((l) => l.forEach((e) => vistos.set(e.plano.id, e.plano)));
+  return [...vistos.values()];
+})();
+export const PLANOS_RESOLVIDOS: Resolvido[] = TODOS_PLANOS.map(resolverPlano);

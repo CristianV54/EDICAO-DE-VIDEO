@@ -1,335 +1,87 @@
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { useCurrentFrame } from "remotion";
 import { useThree } from "@react-three/fiber";
-import * as THREE from "three";
-import { Ambiente } from "./Ambiente";
-import { Plataforma } from "./Plataforma";
-import { PECAS_ATO2 } from "./Pecas";
-import { Cabos } from "./Cabos";
-import { Confete } from "./Confete";
-import { Festa } from "./Festa";
-import { Telao } from "./Telao";
-import { Casal } from "./Casal";
-import { CameraFotografo } from "./CameraFotografo";
-import { Curioso, Fotografo } from "./Personagem";
-import { B } from "./primitivas";
-import { PlanoTex } from "./primitivas";
-import { useTex } from "./Texturas";
-import { PIXEL } from "./Pecas/P11Galeria";
+import type * as THREE from "three";
 import { TexturasProvider } from "./Texturas";
+import { Ambiente } from "./Ambiente";
+import { Tabuleiro } from "./Tabuleiro";
+import { Elenco } from "./Elenco";
+import { Estacoes } from "./Estacoes";
+import { PlacaFoto, CASAS_PLACA } from "./PlacaFoto";
+import { Confete } from "./Confete";
 import { cameraPorFrame } from "./cameraPorFrame";
-import {
-  CASAL_AMIGOS, ROT_CASAL_AMIGOS, FOTOGRAFO_ATO1, FOTOGRAFO_ATO2, INDICADO_DESTINO, INDICADO_ORIGEM,
-  CURIOSO, LUGAR_CLIENTE, PECA, ROT_FOTOGRAFO_ATO1, ROT_FOTOGRAFO_ATO2, TOPO, V3,
-} from "../dados/posicoes";
-import { CAMINHADA_INDICADO, LINHAS, clamp01, easeInOutCubic, entrada, lerp, segDe, springQueda, FPS } from "../util/tempo";
+import { centroCasa, posCelularCasa3, posFot } from "../dados/posicoes";
+import { luzFesta, luzFlash, luzFogo, luzGlobal } from "./luz";
+import { LINHAS } from "../util/tempo";
+import { B, Cil } from "./primitivas";
 
 const CameraRig: React.FC<{ frame: number }> = ({ frame }) => {
-  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  const { camera } = useThree();
   const pose = cameraPorFrame(frame);
-  useLayoutEffect(() => {
-    camera.position.set(...pose.pos);
-    camera.fov = pose.fov;
-    camera.lookAt(...pose.alvo);
-    camera.updateProjectionMatrix();
-    camera.updateMatrixWorld();
-  });
+  camera.position.set(...pose.pos);
+  camera.lookAt(...pose.alvo);
+  const c = camera as THREE.PerspectiveCamera;
+  if (c.fov !== pose.fov) {
+    c.fov = pose.fov;
+  }
+  c.updateProjectionMatrix();
   return null;
 };
 
-// fator de luz: 25% em "apagaram", 75% no estouro do flash, 100% ao fim do segmento (s04)
-export const fatorLuz = (frame: number) => {
-  const L = LINHAS[4];
-  if (frame < L.prob) return 1;
-  if (frame < L.sol) return lerp(1, 0.25, easeInOutCubic((frame - L.prob) / 15));
-  const volta = lerp(0.25, 0.75, clamp01((frame - L.sol) / 12));
-  return frame < L.fim - 6 ? volta : lerp(0.75, 1, clamp01((frame - (L.fim - 6)) / 30));
-};
-
-const Luzes: React.FC<{ k: number }> = ({ k }) => {
-  const escuro = 1 - (Math.min(k, 1) - 0.25) / 0.75;
-  const amb = new THREE.Color("#FFF1DC").lerp(new THREE.Color("#4A5CA8"), escuro * 0.75);
-  const dir = new THREE.Color("#FFFFFF").lerp(new THREE.Color("#6F86D8"), escuro * 0.7);
+// celular da casa 3 e um pedido: o balao de depoimento chega ate ele (ver Estacoes). Aqui ficam as luzes.
+const Luzes: React.FC<{ frame: number }> = ({ frame }) => {
+  const g = luzGlobal(frame);
+  const festa = luzFesta(frame);
+  const c9 = centroCasa(9);
+  const ang = (frame / 30) * 2.2;
+  const cores = ["#FF3DA5", "#2FD6FF", "#FFD25A"];
+  const fogo = posFot(10);
+  const sl = LINHAS[9].sol;
+  void sl;
   return (
     <>
-      <ambientLight color={amb} intensity={0.6 * k} />
+      <ambientLight intensity={0.85 * g} />
+      <hemisphereLight args={["#FFFFFF", "#B9A98A", 0.35 * g]} />
       <directionalLight
-        color={dir}
-        position={[6, 10, 6]}
-        intensity={1.3 * k}
+        position={[6, 14, 9]}
+        intensity={1.9 * g}
         castShadow
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[2048, 2048]}
         shadow-camera-left={-9}
         shadow-camera-right={9}
         shadow-camera-top={9}
         shadow-camera-bottom={-9}
         shadow-camera-near={1}
         shadow-camera-far={40}
-        shadow-bias={-0.0005}
+        shadow-bias={-0.0004}
       />
-      <hemisphereLight color="#FFF3DC" groundColor="#C9955F" intensity={0.5 * k} />
+      {cores.map((cor, k) => {
+        const a = ang + (k * Math.PI * 2) / 3;
+        return <pointLight key={k} color={cor} intensity={14 * festa} distance={7} decay={1.6} position={[c9[0] + Math.cos(a) * 1.7, 2.3, c9[2] + Math.sin(a) * 1.7]} />;
+      })}
+      <pointLight color="#FFFFFF" intensity={luzFlash(frame)} distance={9} decay={1.5} position={[c9[0] + 0.4, 1.6, c9[2] + 0.6]} />
+      <pointLight color="#FF2A2A" intensity={luzFogo(frame)} distance={4} decay={1.6} position={[fogo[0] - 0.3, 1.0, fogo[2] - 0.4]} />
     </>
   );
 };
 
-// ---------- ato 2: pecas ----------
-const PecaAto2: React.FC<{ n: number; frame: number }> = ({ n, frame }) => {
-  const L = LINHAS[n];
-  const Comp = PECAS_ATO2[n];
-  const props = {
-    f: frame, fq: frame - L.toque, fp: frame - L.prob, fs: frame - L.sol, fseg: L.segunda === null ? -9999 : frame - L.segunda,
-    // o contrato (peca 8) reage ao problema e a solucao do s09
-    fp9: n === 8 ? frame - LINHAS[9].prob : undefined,
-    fs9: n === 8 ? frame - LINHAS[9].sol : undefined,
-  };
-  if (n === 13) {
-    // coracao entre os dois casais, no momento da chegada do casal indicado
-    if (frame < L.toque) return null;
-    const mid: V3 = [(INDICADO_DESTINO[0] + LUGAR_CLIENTE[11][0]) / 2, TOPO + 1.45, (INDICADO_DESTINO[2] + LUGAR_CLIENTE[11][2]) / 2];
-    return (
-      <group position={mid}>
-        <Comp {...props} />
-      </group>
-    );
-  }
-  if (frame < L.quedaIni) return null;
-  const [x, y, z] = PECA[n];
-  const sp = springQueda(frame - L.quedaIni);
-  const dy = Math.max(0, 1 - sp) * 3;
-  const achata = frame - L.toque >= 0 && frame - L.toque < 3;
-  return (
-    <group position={[x, y + dy, z]} scale={achata ? [1.08, 0.85, 1.08] : [1, 1, 1]}>
-      <Comp {...props} />
-    </group>
-  );
-};
-
-// ---------- fotografo ----------
-const girarPara = (de: [number, number], para: [number, number]) => Math.atan2(para[0] - de[0], para[1] - de[1]);
-const ANGULO_ANDA = 90; // frames da caminhada do ato 1 para o ato 2
-
-type EstadoFotografo = { pos: V3; rotY: number; caminha: number };
-const estadoFotografo = (frame: number): EstadoFotografo => {
-  const ini = LINHAS[6].ini;
-  const t = frame - ini;
-  if (t < 0) return { pos: FOTOGRAFO_ATO1, rotY: ROT_FOTOGRAFO_ATO1, caminha: 0 };
-  if (t < ANGULO_ANDA) {
-    const u = easeInOutCubic(t / ANGULO_ANDA);
-    const pos: V3 = [lerp(FOTOGRAFO_ATO1[0], FOTOGRAFO_ATO2[0], u), TOPO, lerp(FOTOGRAFO_ATO1[2], FOTOGRAFO_ATO2[2], u)];
-    const rot = girarPara([FOTOGRAFO_ATO1[0], FOTOGRAFO_ATO1[2]], [FOTOGRAFO_ATO2[0], FOTOGRAFO_ATO2[2]]);
-    return { pos, rotY: rot, caminha: ((t / FPS) * Math.PI * 2) % (Math.PI * 2) || 0.001 };
-  }
-  const rot0 = girarPara([FOTOGRAFO_ATO1[0], FOTOGRAFO_ATO1[2]], [FOTOGRAFO_ATO2[0], FOTOGRAFO_ATO2[2]]);
-  const giro = easeInOutCubic((t - ANGULO_ANDA) / 15);
-  return { pos: FOTOGRAFO_ATO2, rotY: lerp(rot0, ROT_FOTOGRAFO_ATO2, giro), caminha: 0 };
-};
-
-const olharRel = (i: number, rotY: number, pos: V3): number => {
-  if (i < 5 || i === 14) return 0;
-  const alvo = i === 12 ? ([PECA[12][0], PECA[12][2]] as [number, number]) : i === 13 ? ([INDICADO_DESTINO[0], INDICADO_DESTINO[2]] as [number, number]) : ([PECA[i][0], PECA[i][2]] as [number, number]);
-  let rel = girarPara([pos[0], pos[2]], alvo) - rotY;
-  while (rel > Math.PI) rel -= Math.PI * 2;
-  while (rel < -Math.PI) rel += Math.PI * 2;
-  return Math.max(-1.1, Math.min(1.1, rel));
-};
-
-const ElencoFotografo: React.FC<{ frame: number }> = ({ frame }) => {
-  const i = segDe(frame);
-  const L0 = LINHAS[0];
-  const est = estadoFotografo(frame);
-  const sobe = clamp01((frame - (L0.prob - 18)) / 14);
-  const desce = clamp01((frame - (L0.prob + 12)) / 14);
-  const levanta = easeInOutCubic(sobe) * (1 - easeInOutCubic(desce));
-  const ini = LINHAS[i].ini;
-  const t = easeInOutCubic((frame - ini) / 15);
-  const olhar = lerp(olharRel(Math.max(0, i - 1), est.rotY, est.pos), olharRel(i, est.rotY, est.pos), t);
-  return (
-    <Fotografo
-      position={est.pos}
-      rotY={est.rotY}
-      olhar={olhar}
-      levanta={levanta}
-      caminha={est.caminha}
-      cameraNode={<CameraFotografo frame={frame} />}
-    />
-  );
-};
-
-// ---------- casais ----------
-const CasalAmigos: React.FC<{ frame: number }> = ({ frame }) => {
-  const L4 = LINHAS[4];
-  const L5 = LINHAS[5];
-  if (frame >= L5.fim) return null;
-  const fade = 1 - clamp01((frame - (L5.fim - 20)) / 20);
-  const dancando = frame >= L4.ini && frame < L4.fim;
-  const balanco = dancando ? 0.1 * Math.sin(frame * 0.3) : 0;
-  const dx = dancando ? 0.08 * Math.sin(frame * 0.3) : 0;
-  const acena = frame >= L5.fim - 70 ? 1 : 0;
-  return (
-    <Casal
-      tipo="amigos"
-      position={[CASAL_AMIGOS[0] + dx, CASAL_AMIGOS[1], CASAL_AMIGOS[2]]}
-      rotY={ROT_CASAL_AMIGOS}
-      fila={(25 * Math.PI) / 180}
-      balanco={balanco}
-      acena={acena}
-      opacidade={fade}
-    />
-  );
-};
-
-const REPOUSO = 0.25; // rotY de repouso do casal cliente (de frente para o espectador)
-const DUR_ANDA = 36; // 1,2 s de caminhada ate o lugar (s06)
-// Janelas em que o casal cliente existe: ele so entra quando o plano de contexto do segmento comeca (os closes
-// mostram so a peca) e continua ate o fim do segmento. s10 mantem o lugar de s09; s12 em diante mantem o de s11.
-type Janela = { seg: number; lugar: number; ini: number; fim: number; anda: boolean };
-// s06: o casal entra caminhando pela direita enquanto a camera sai do close; s07 a s11: aparece em fade no lugar
-// 8 frames antes do plano de contexto, ja assentado quando o problema do segmento dispara.
-const JANELAS: Janela[] = [
-  { seg: 6, lugar: 6, ini: LINHAS[6].ctxIni - 26, fim: LINHAS[6].fim, anda: true },
-  { seg: 7, lugar: 7, ini: LINHAS[7].ctxIni - 8, fim: LINHAS[7].fim, anda: false },
-  { seg: 8, lugar: 8, ini: LINHAS[8].ctxIni - 8, fim: LINHAS[8].fim, anda: false },
-  { seg: 9, lugar: 9, ini: LINHAS[9].ctxIni - 8, fim: LINHAS[9].fim, anda: false },
-  { seg: 10, lugar: 9, ini: LINHAS[10].ctxIni - 8, fim: LINHAS[10].fim, anda: false },
-  { seg: 11, lugar: 11, ini: LINHAS[11].ctxIni - 8, fim: LINHAS[11].fim, anda: false },
-  { seg: 12, lugar: 11, ini: LINHAS[12].ini, fim: LINHAS[14].fim + 100000, anda: false },
-];
-
-const CasalCliente: React.FC<{ frame: number }> = ({ frame }) => {
-  const j = JANELAS.find((w) => frame >= w.ini && frame < w.fim);
-  if (!j) return null;
-  const t = frame - j.ini;
-  const para = LUGAR_CLIENTE[j.lugar];
-  const andando = j.anda && t < DUR_ANDA;
-  const u = j.anda ? easeInOutCubic(t / DUR_ANDA) : 1;
-  // s06 vem de 3 m a direita do lugar (fora do plano de close); nos outros aparece no proprio lugar
-  const LONGE = 3.0;
-  let x = lerp(para[0] + (j.anda ? LONGE : 0), para[0], u);
-  const z = para[2];
-  const y = j.anda ? TOPO * clamp01((6.4 - x) / 0.4) : para[1] + (j.seg === 12 ? 0 : (1 - clamp01(t / 8)) * 0.4);
-  const heading = girarPara([para[0] + LONGE, para[2]], [para[0], para[2]]);
-  const fim = clamp01((t - (DUR_ANDA - 10)) / 10);
-  let rotY = andando ? lerp(heading, REPOUSO, fim) : REPOUSO;
-  const aparece = clamp01(t / 8);
-  const some = j.fim < LINHAS[14].fim ? 1 - clamp01((frame - (j.fim - 6)) / 6) : 1;
-  const opac = Math.min(aparece, some);
-  // s08: vira de costas em "desmarca" (140 graus) e recua 0,3; volta em "assinado"
-  const L8 = LINHAS[8];
-  const vira = easeInOutCubic((frame - L8.prob) / 12) * (1 - easeInOutCubic((frame - L8.sol) / 12));
-  if (j.seg === 8 && frame >= L8.prob && frame < L8.sol + 14) {
-    rotY += vira * ((140 * Math.PI) / 180);
-    x -= vira * 0.3;
-  }
-  // s11: vira para o tablet em "galeria"
-  const L11 = LINHAS[11];
-  if (frame >= L11.sol) rotY = lerp(REPOUSO, girarPara([LUGAR_CLIENTE[11][0], LUGAR_CLIENTE[11][2]], [PECA[11][0], PECA[11][2]]), easeInOutCubic((frame - L11.sol) / 14));
-  const caminha = andando ? ((t / FPS) * Math.PI * 2) % (Math.PI * 2) || 0.001 : 0;
-  // olha para a peca do segmento (s06..s11)
-  const i = segDe(frame);
-  const olhar = i >= 6 && i <= 11 && !andando ? Math.max(-0.9, Math.min(0.9, girarPara([x, z], [PECA[i][0], PECA[i][2]]) - rotY)) : 0;
-  // s11: a noiva segura o celular com a foto pixelada na altura do peito, de "whatsapp" ate "galeria"
-  const celular = frame >= L11.prob && frame < L11.sol + 8;
-  const escCelular = !celular ? 0 : frame < L11.sol ? entrada(frame - L11.prob, 6) : 1 - clamp01((frame - L11.sol) / 8);
-  // s13: em "indica" o casal vira para o casal indicado e a noiva aponta com o braco estendido
-  const L13 = LINHAS[13];
-  let braco: [number, number] | undefined;
-  if (frame >= L13.prob) {
-    const alvoRot = girarPara([x, z], [INDICADO_DESTINO[0], INDICADO_DESTINO[2]]);
-    rotY = lerp(rotY, alvoRot, easeInOutCubic((frame - L13.prob) / 12));
-    if (frame < L13.toque + 20) braco = [-1.55, 0];
-  }
-  const noiva = braco
-    ? { bracos: { dir: braco } }
-    : escCelular > 0.01
-      ? { bracos: { dir: [-1.0, 0.1] as [number, number] }, maoDir: <CelularPixel escala={escCelular} /> }
-      : undefined;
-  return <Casal tipo="cliente" position={[x, y, z]} rotY={rotY} caminha={caminha} olhar={olhar} noiva={noiva} opacidade={opac} />;
-};
-
-// celular com a foto pixelada (blocos grandes), segurado na mao
-const CelularPixel: React.FC<{ escala: number }> = ({ escala }) => (
-  <group scale={escala} rotation={[-0.5, 0, 0]} position={[0, 0.02, 0.1]}>
-    <B s={[0.24, 0.4, 0.04]} c="#F7F5F0" r={0.03} />
-    {PIXEL.map((c, i) => (
-      <B key={i} p={[-0.07 + (i % 3) * 0.07, 0.12 - Math.floor(i / 3) * 0.075, 0.025]} s={[0.07, 0.075, 0.012]} c={c} r={0.003} sombra={false} />
-    ))}
-  </group>
-);
-
-// s05: personagem curioso (camiseta cinza, calca jeans) olha o album fechado e faz o gesto de "cade?" com um balao "?";
-// na solucao faz joinha; some com fade no fim do segmento
-const PersonagemCurioso: React.FC<{ frame: number }> = ({ frame }) => {
-  const L = LINHAS[5];
-  const interrog = useTex("interrog");
-  const entra = clamp01((frame - (L.prob - 15)) / 15);
-  const sai = 1 - clamp01((frame - (L.fim - 20)) / 20);
-  const op = Math.min(entra, sai);
-  if (op <= 0.01) return null;
-  const pergunta = frame >= L.prob && frame < L.sol;
-  const joinha = frame >= L.sol;
-  const rotY = -1.2;
-  const olhar = Math.max(-1.1, Math.min(1.1, girarPara([CURIOSO[0], CURIOSO[2]], [PECA[5][0], PECA[5][2]]) - rotY));
-  const bracos = pergunta
-    ? { esq: [-0.2, -2.2 + 0.15 * Math.sin(frame * 0.5)] as [number, number], dir: [-0.2, 2.2 - 0.15 * Math.sin(frame * 0.5)] as [number, number] }
-    : joinha
-      ? { dir: [-1.45, 0.2] as [number, number] }
-      : undefined;
-  const polegar = joinha ? (
-    <group>
-      <B s={[0.11, 0.1, 0.11]} c="#D9A27A" r={0.03} o={op < 1 ? op : undefined} />
-      <B p={[0, 0.1, 0]} s={[0.05, 0.1, 0.05]} c="#D9A27A" r={0.02} o={op < 1 ? op : undefined} />
-    </group>
-  ) : undefined;
-  const escBalao = pergunta ? entrada(frame - L.prob, 6) : 0;
-  return (
-    <group>
-      <Curioso position={CURIOSO} rotY={rotY} olhar={olhar} opacidade={op} bracos={bracos} maoDir={polegar} />
-      {escBalao > 0.01 && (
-        <group position={[CURIOSO[0] + 0.55, CURIOSO[1] + 2.5, CURIOSO[2]]} rotation={[0, 0.3, 0]} scale={escBalao}>
-          <B s={[0.55, 0.55, 0.06]} c="#FFFFFF" r={0.12} />
-          <B p={[-0.1, -0.33, 0]} s={[0.12, 0.12, 0.06]} c="#FFFFFF" rot={[0, 0, Math.PI / 4]} r={0.01} />
-          <PlanoTex p={[0, 0, 0.04]} w={0.42} h={0.42} tex={interrog} />
-        </group>
-      )}
-    </group>
-  );
-};
-
-const CasalIndicado: React.FC<{ frame: number }> = ({ frame }) => {
-  const L = LINHAS[13];
-  const t = frame - L.prob;
-  if (t < 0) return null;
-  const u = easeInOutCubic(t / CAMINHADA_INDICADO);
-  const x = lerp(INDICADO_ORIGEM[0], INDICADO_DESTINO[0], u);
-  const andando = t < CAMINHADA_INDICADO;
-  const rotY = andando ? -Math.PI / 2 : lerp(-Math.PI / 2, -0.9, clamp01((t - CAMINHADA_INDICADO) / 14));
-  const caminha = andando ? ((t / FPS) * Math.PI * 2) % (Math.PI * 2) || 0.001 : 0;
-  return <Casal tipo="indicado" position={[x, TOPO, INDICADO_DESTINO[2]]} rotY={rotY} caminha={caminha} opacidade={clamp01(t / 8)} />;
-};
-
 export const Cena3D: React.FC = () => {
   const frame = useCurrentFrame();
-  const k = fatorLuz(frame);
+  void posCelularCasa3;
+  void B;
+  void Cil;
   return (
     <TexturasProvider>
       <CameraRig frame={frame} />
-      <Luzes k={k} />
+      <Luzes frame={frame} />
       <Ambiente />
-      <Plataforma />
-      <Telao frame={frame} />
-      {[5, 6, 7, 8, 9, 10, 11, 12, 13].map((n) => (
-        <PecaAto2 key={n} n={n} frame={frame} />
+      <Tabuleiro frame={frame} />
+      <Estacoes f={frame} />
+      {CASAS_PLACA.map((n) => (
+        <PlacaFoto key={n} n={n} f={frame} />
       ))}
-      <Cabos frame={frame} />
-      <ElencoFotografo frame={frame} />
-      <CasalAmigos frame={frame} />
-      <PersonagemCurioso frame={frame} />
-      <CasalCliente frame={frame} />
-      <CasalIndicado frame={frame} />
-      <Festa frame={frame} luz={k} />
+      <Elenco frame={frame} />
       <Confete frame={frame} />
     </TexturasProvider>
   );
 };
-
-void FOTOGRAFO_ATO1;

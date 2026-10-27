@@ -15,6 +15,7 @@ const SEGMENTOS = JSON.parse(fs.readFileSync(path.join(RAIZ, 'src/dados/segmento
 const CHARS_POR_SEG = 15;
 const PAUSA_PONTO = 0.35;
 const PAUSA_VIRGULA = 0.15;
+const PAUSA_INTERROGACAO = 0.25;
 const r3 = (n) => Math.round(n * 1000) / 1000;
 
 // ---------- normalizacao ----------
@@ -39,7 +40,8 @@ const limparLegenda = (w) => w.replace(/[.,:;!?"“”()]/g, '');
 
 // ---------- modo estimado (provisorio / fallback) ----------
 function pausaDe(token) {
-  if (/[.!?]$/.test(token)) return PAUSA_PONTO;
+  if (/[?]$/.test(token)) return PAUSA_INTERROGACAO;
+  if (/[.!]$/.test(token)) return PAUSA_PONTO;
   if (/[,:;]$/.test(token)) return PAUSA_VIRGULA;
   return 0;
 }
@@ -77,7 +79,7 @@ function resolverAncoras(def, inicio, fim, palavrasSeg, origemPalavras) {
   void norms;
   const out = {};
   const origem = {};
-  for (const nome of ['problema', 'segunda', 'solucao']) {
+  for (const nome of Object.keys(def)) {
     const d = def[nome];
     if (!d) continue;
     let t = null;

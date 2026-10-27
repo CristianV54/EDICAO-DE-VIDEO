@@ -1,81 +1,80 @@
-// Todas as posicoes da cena (metros, Y para cima). Topo da plataforma em y = 0,5.
+// Todas as posicoes da cena (metros, Y para cima). O tabuleiro tem 13 casas em serpentina.
 export type V3 = [number, number, number];
-export const TOPO = 0.5;
 
-export const PLATAFORMA = { largura: 12, altura: 0.5, profundidade: 7 };
+export const TABULEIRO = { largura: 12.4, altura: 0.4, profundidade: 8 };
+export const Y_BASE = TABULEIRO.altura; // topo da base
+export const Y_CASA = Y_BASE + 0.08; // topo das placas das casas
+export const ALTURA_PED = 0.25;
+export const ALTURA_PERSONAGEM = 1.7;
 
-// ----- ato 1: equipamento -----
-export const FOTOGRAFO_ATO1: V3 = [-3.4, TOPO, -0.6];
-export const ROT_FOTOGRAFO_ATO1 = Math.PI / 2; // virado para +X
-export const CASAL_AMIGOS: V3 = [-0.6, TOPO, -0.6];
-export const ROT_CASAL_AMIGOS = -Math.PI / 2 + (30 * Math.PI) / 180; // para o fotografo, girado 30 graus para o espectador
-export const TELAO: V3 = [-1.9, TOPO, -2.9];
-export const GLOBO: V3 = [-0.6, 3.0, -0.6];
+// centro (x, z) de cada casa; indice 0 = casa 1
+export const CASA: [number, number][] = [
+  [-4.6, -2.6], [-2.3, -2.6], [0, -2.6], [2.3, -2.6], [4.6, -2.6], // fundo, esquerda para direita
+  [4.6, 0], [2.3, 0], [0, 0], [-2.3, 0], [-4.6, 0], // meio, direita para esquerda
+  [-4.6, 2.6], [-2.3, 2.6], [0, 2.6], // frente, esquerda para direita
+];
+export const N_CASAS = 13;
+export const CASAS_COM_PLACA = [1, 7, 8, 9];
 
-// ----- ato 2: negocio -----
-export const FOTOGRAFO_ATO2: V3 = [2.0, TOPO, -0.4];
-export const ROT_FOTOGRAFO_ATO2 = 0.2; // de frente para o espectador, a cabeca gira para a peca
+const c = (n: number) => CASA[n - 1];
+export const centroCasa = (n: number): V3 => [c(n)[0], Y_CASA, c(n)[1]];
+export const posPeca = (n: number): V3 => [c(n)[0] + 0.4, Y_CASA + ALTURA_PED, c(n)[1] - 0.45]; // topo do pedestal
+export const posPedestal = (n: number): V3 => [c(n)[0] + 0.4, Y_CASA + ALTURA_PED / 2, c(n)[1] - 0.45];
+export const posPlaca = (n: number): V3 => [c(n)[0] - 0.52, Y_CASA, c(n)[1] - 0.45]; // 2 cm alem de x - 0,5: a moldura de 1,0 nao toca o pedestal e a distancia fica acima de 0,9
+export const posFot = (n: number): V3 => [c(n)[0] + 0.6, Y_CASA, c(n)[1] + 0.55];
+export const posCli = (n: number): V3 => [c(n)[0] - 0.6, Y_CASA, c(n)[1] + 0.55];
+// do casal cliente: de s07 a s09 a noiva e o noivo ficam lado a lado
+export const posNoiva = (n: number): V3 => (n >= 7 && n <= 9 ? [c(n)[0] - 0.75, Y_CASA, c(n)[1] + 0.55] : posCli(n));
+export const posNoivo = (n: number): V3 => [c(n)[0] - 0.3, Y_CASA, c(n)[1] + 0.6]; // 5 cm alem de z + 0,55: distancia ao fotografo acima de 0,9
+export const posMesa = (n: number): V3 => [c(n)[0] - 0.5, Y_CASA, c(n)[1] + 0.45]; // mesinha do notebook (s10), a esquerda do fotografo
+export const posAmigoA = (n: number): V3 => [c(n)[0] - 0.9, Y_CASA, c(n)[1] + 0.55];
+export const posAmigoB = (n: number): V3 => [c(n)[0] - 0.35, Y_CASA, c(n)[1] + 0.55];
+export const ENTRADA_MADRINHA: V3 = [6.9, Y_BASE, 3.5]; // entra pela frente direita do tabuleiro
 
-export const PECA: Record<number, V3> = {
-  5: [1.0, TOPO, -2.3],
-  6: [2.7, TOPO, -2.3],
-  7: [4.4, TOPO, -2.3],
-  8: [4.6, TOPO, -0.3],
-  9: [4.6, TOPO, 1.7],
-  10: [2.6, TOPO, 1.9],
-  11: [0.8, TOPO, 1.9],
-  12: [0.6, 2.9, 0.5], // balao no alto, sobre o casal cliente
+// direcao de repouso (rotY) para os personagens olharem para a camera (a -25 graus nos planos de close e cena)
+export const lado = (_n: number) => -1; // os planos de close e cena ficam a esquerda (azimute negativo): todos olham para la
+export const rotRepouso = (n: number) => lado(n) * 0.44;
+
+// trilha entre casas consecutivas: 5 pastilhas entre os pontos onde o fotografo para
+export const pastilhasDaTrilha = (n: number): V3[] => {
+  const a = posFot(n);
+  const b = posFot(n + 1);
+  return [1, 2, 3, 4, 5].map((k) => [a[0] + ((b[0] - a[0]) * k) / 6, Y_CASA, a[2] + ((b[2] - a[2]) * k) / 6]);
 };
 
-// onde o casal cliente fica em cada segmento
-export const LUGAR_CLIENTE: Record<number, V3> = {
-  6: [4.3, TOPO, -0.7],
-  7: [3.7, TOPO, -1.0],
-  8: [3.3, TOPO, -0.7],
-  9: [3.5, TOPO, 0.9],
-  11: [0.6, TOPO, 0.5],
-};
-export const ENTRADA_CLIENTE: V3 = [7.2, 0, -1.2]; // fora da plataforma, pela direita
-
-// personagem curioso (s05)
-export const CURIOSO: V3 = [2.0, TOPO, -1.2];
-
-// casal indicado (s13)
-export const INDICADO_ORIGEM: V3 = [5.9, TOPO, 0.75];
-export const INDICADO_DESTINO: V3 = [3.2, TOPO, 0.75];
-
-// camera do fotografo: ponto de apoio dos cabos e alvo dos planos de camera
-const camLocal = 0.46;
-export const CAMERA_ATO1: V3 = [FOTOGRAFO_ATO1[0] + camLocal * Math.sin(ROT_FOTOGRAFO_ATO1), 1.75, FOTOGRAFO_ATO1[2] + camLocal * Math.cos(ROT_FOTOGRAFO_ATO1)];
-export const CAMERA_ATO2: V3 = [FOTOGRAFO_ATO2[0] + camLocal * Math.sin(ROT_FOTOGRAFO_ATO2), 1.75, FOTOGRAFO_ATO2[2] + camLocal * Math.cos(ROT_FOTOGRAFO_ATO2)];
-
-// ----- cabos: pontas (a -> b) -----
-export const PONTAS_CABOS: { id: string; a: V3; b: V3 }[] = [
-  { id: "telao-album", a: [-1.0, 0.62, -2.7], b: [PECA[5][0] - 0.3, 0.75, PECA[5][2] + 0.1] },
-  { id: "album-celular", a: [PECA[5][0] + 0.3, 0.75, PECA[5][2] + 0.1], b: [PECA[6][0] - 0.25, 0.7, PECA[6][2] + 0.1] },
-  { id: "celular-proposta", a: [PECA[6][0] + 0.25, 0.7, PECA[6][2] + 0.1], b: [PECA[7][0] - 0.3, 0.7, PECA[7][2] + 0.1] },
-  { id: "proposta-contrato", a: [PECA[7][0], 0.6, PECA[7][2] + 0.45], b: [PECA[8][0], 0.6, PECA[8][2] - 0.45] },
-  { id: "contrato-maquininha", a: [PECA[8][0], 0.6, PECA[8][2] + 0.45], b: [PECA[9][0], 0.6, PECA[9][2] - 0.4] },
-  { id: "camera-hd1", a: [CAMERA_ATO2[0], 1.6, CAMERA_ATO2[2]], b: [PECA[10][0] - 0.45, 0.75, PECA[10][2] - 0.3] },
-  { id: "camera-hd2", a: [CAMERA_ATO2[0], 1.6, CAMERA_ATO2[2]], b: [PECA[10][0] + 0.45, 0.75, PECA[10][2] - 0.3] },
-  { id: "hd2-nuvem", a: [PECA[10][0] + 0.45, 0.75, PECA[10][2]], b: [PECA[10][0], 1.75, PECA[10][2]] },
-  { id: "nuvem-tablet", a: [PECA[10][0] - 0.3, 1.75, PECA[10][2]], b: [PECA[11][0] + 0.45, 0.75, PECA[11][2]] },
+// seta dourada do ciclo: sai da casa 13, contorna o tabuleiro pela direita e pelo fundo e chega na casa 1
+export const CAMINHO_SETA: V3[] = [
+  [1.4, Y_CASA + 0.12, 2.6],
+  [4.0, Y_CASA + 0.3, 3.0],
+  [6.9, 0.3, 2.8],
+  [7.4, 0.3, -0.5],
+  [7.0, 0.3, -4.7],
+  [2.5, 0.3, -5.0],
+  [-4.6, 0.3, -5.0],
+  [-4.6, 0.5, -3.8],
 ];
 
-// entidades para a checagem de distancia minima (casais contam como 1 entidade, pelo centro)
+// local do celular da casa 3 (onde o selo do depoimento chega)
+export const posCelularCasa3 = (): V3 => [c(3)[0] + 0.4, Y_CASA + ALTURA_PED + 0.75, c(3)[1] - 0.45];
+
+// ---------- entidades para a checagem de distancia minima ----------
 export type Entidade = { nome: string; x: number; z: number };
 export const entidadesDoSegmento = (i: number): Entidade[] => {
   const e: Entidade[] = [];
-  const ato1 = i <= 5;
-  if (i >= 1) e.push({ nome: "telao", x: TELAO[0], z: TELAO[2] });
-  e.push({ nome: "fotografo", x: (ato1 ? FOTOGRAFO_ATO1 : FOTOGRAFO_ATO2)[0], z: (ato1 ? FOTOGRAFO_ATO1 : FOTOGRAFO_ATO2)[2] });
-  if (i <= 5) e.push({ nome: "casal-amigos", x: CASAL_AMIGOS[0], z: CASAL_AMIGOS[2] });
-  if (i === 5) e.push({ nome: "curioso", x: CURIOSO[0], z: CURIOSO[2] });
-  for (let p = 5; p <= 11; p++) if (i >= p) e.push({ nome: `peca${p}`, x: PECA[p][0], z: PECA[p][2] });
-  if (i >= 6) {
-    const lugar = i <= 6 ? 6 : i === 7 ? 7 : i === 8 ? 8 : i <= 10 ? 9 : 11;
-    e.push({ nome: "casal-cliente", x: LUGAR_CLIENTE[lugar][0], z: LUGAR_CLIENTE[lugar][2] });
+  if (i >= 1) {
+    const n = Math.min(i, 13);
+    e.push({ nome: "fotografo", x: posFot(n)[0], z: posFot(n)[2] });
+    if (i >= 1) e.push({ nome: `peca${n}`, x: posPeca(n)[0], z: posPeca(n)[2] });
+    if (CASAS_COM_PLACA.includes(n)) e.push({ nome: `placa${n}`, x: posPlaca(n)[0], z: posPlaca(n)[2] });
+    if (i === 2) {
+      e.push({ nome: "amigo-a", x: posAmigoA(2)[0], z: posAmigoA(2)[2] });
+      e.push({ nome: "amigo-b", x: posAmigoB(2)[0], z: posAmigoB(2)[2] });
+    }
+    if (i >= 4 && i <= 9) e.push({ nome: "noiva", x: posNoiva(n)[0], z: posNoiva(n)[2] });
+    if (i >= 7 && i <= 9) e.push({ nome: "noivo", x: posNoivo(n)[0], z: posNoivo(n)[2] });
+    if (i === 11 || i === 12) e.push({ nome: "noiva", x: posCli(n)[0], z: posCli(n)[2] });
+    if (i === 13) e.push({ nome: "madrinha", x: posCli(13)[0], z: posCli(13)[2] });
+    if (i === 10) e.push({ nome: "mesa", x: posMesa(10)[0], z: posMesa(10)[2] });
   }
-  if (i >= 13) e.push({ nome: "casal-indicado", x: INDICADO_DESTINO[0], z: INDICADO_DESTINO[2] });
   return e;
 };

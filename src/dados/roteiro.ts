@@ -1,20 +1,16 @@
 import segmentos from "./segmentos.json";
-import { CAMERA_ATO1, LUGAR_CLIENTE, PECA, V3 } from "./posicoes";
+import { centroCasa, posCelularCasa3, posFot, V3 } from "./posicoes";
 
-export type Quando = "problema" | "segunda" | "solucao";
-export type TipoEtiqueta = "problema" | "solucao" | "cinza";
 export type { V3 };
 export type Vec3 = V3;
+export type TipoEtiqueta = "problema" | "solucao" | "cinza";
 
 export type Etiqueta = {
-  quando: Quando;
+  quando: string; // nome de uma ancora do segmento (problema, solucao, segunda, ...)
   texto: string;
   tipo: TipoEtiqueta;
-  // ponto do mundo onde a etiqueta fica ancorada (padrao: acima da peca do segmento)
-  alvo?: V3;
-  ate?: Quando;
-  // se definido, a etiqueta nasce nesta fracao (0..1) da duracao do segmento em vez de na ancora
-  fracao?: number;
+  alvo?: V3; // ponto do mundo onde a etiqueta fica ancorada (padrao: acima da casa do segmento)
+  ate?: string;
 };
 
 export type ItemRoteiro = {
@@ -27,110 +23,35 @@ export type ItemRoteiro = {
 
 export const N_PECAS = 13;
 
-// ancoras padrao das etiquetas: ato 1 sobre a camera do fotografo; ato 2 sobre a peca; casal cliente
-const ALTO = 3.7; // acima das cabecas (topo da cabeca em y 2,65)
-const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], ALTO, CAMERA_ATO1[2]];
-const sobrePeca = (n: number, alto = 3.0): V3 => [PECA[n][0], alto, PECA[n][2]]; // acima da peca; `alto` maior para ficar acima das cabecas
-const SOBRE_CASAL = (lugar: number): V3 => [LUGAR_CLIENTE[lugar][0], ALTO, LUGAR_CLIENTE[lugar][2]];
-
-const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
-  s00: {
-    titulo: null, tarefa: null,
-    etiquetas: [{ quando: "problema", texto: "FOTÓGRAFO?", tipo: "problema", alvo: [-3.4, ALTO, -0.6], ate: "solucao" }],
-  },
-  s01: {
-    titulo: "CÂMERA", tarefa: "comprar uma câmera",
-    etiquetas: [
-      { quando: "problema", texto: "MODO AUTO", tipo: "problema", alvo: SOBRE_CAMERA },
-      { quando: "solucao", texto: "APRENDE O MANUAL", tipo: "solucao", alvo: SOBRE_CAMERA },
-    ],
-  },
-  s02: {
-    titulo: "LENTE", tarefa: "trocar a lente do kit",
-    etiquetas: [
-      { quando: "problema", texto: "FOTO ESCURA", tipo: "problema", alvo: SOBRE_CAMERA },
-      { quando: "solucao", texto: "50MM", tipo: "solucao", alvo: SOBRE_CAMERA },
-    ],
-  },
-  s03: {
-    titulo: "CARTÃO DUPLO", tarefa: "câmera com dois slots",
-    etiquetas: [
-      { quando: "problema", texto: "CARTÃO CORROMPEU", tipo: "problema", alvo: SOBRE_CAMERA },
-      { quando: "solucao", texto: "SLOT 2 SALVOU", tipo: "solucao", alvo: SOBRE_CAMERA },
-    ],
-  },
-  s04: {
-    titulo: "FLASH", tarefa: "comprar um flash",
-    etiquetas: [
-      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: SOBRE_CAMERA },
-      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: SOBRE_CAMERA },
-    ],
-  },
-  s05: {
-    titulo: "PORTFÓLIO", tarefa: "montar o portfólio",
-    etiquetas: [
-      { quando: "problema", texto: "CADÊ SEU TRABALHO?", tipo: "problema", alvo: [0.9, 4.0, PECA[5][2]] },
-      { quando: "solucao", texto: "20 MELHORES", tipo: "solucao", alvo: [0.9, 4.0, PECA[5][2]] },
-    ],
-  },
-  s06: {
-    titulo: "INSTAGRAM", tarefa: "criar o perfil",
-    etiquetas: [
-      { quando: "problema", texto: "NINGUÉM VIU", tipo: "problema", alvo: sobrePeca(6) },
-      { quando: "solucao", texto: "NOVO DIRECT", tipo: "solucao", alvo: SOBRE_CASAL(6), fracao: 0.88 },
-    ],
-  },
-  s07: {
-    titulo: "PROPOSTA", tarefa: "fazer proposta em PDF",
-    etiquetas: [
-      { quando: "problema", texto: "VISUALIZOU", tipo: "cinza", alvo: SOBRE_CASAL(7) },
-      { quando: "solucao", texto: "QUERO FECHAR", tipo: "solucao", alvo: SOBRE_CASAL(7) },
-    ],
-  },
-  s08: {
-    titulo: "CONTRATO", tarefa: "contrato assinado",
-    etiquetas: [
-      { quando: "problema", texto: "DESMARCOU", tipo: "problema", alvo: SOBRE_CASAL(8) },
-      { quando: "solucao", texto: "TEM O QUE COBRAR", tipo: "solucao", alvo: SOBRE_CASAL(8) },
-    ],
-  },
-  s09: {
-    titulo: "SINAL", tarefa: "cobrar 30% de sinal",
-    etiquetas: [
-      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9, 4.7) },
-      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9, 4.7) },
-    ],
-  },
-  s10: {
-    titulo: "BACKUP", tarefa: "3 cópias de tudo",
-    etiquetas: [
-      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], 4.7, PECA[10][2]] },
-      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], 4.7, PECA[10][2]] },
-    ],
-  },
-  s11: {
-    titulo: "GALERIA", tarefa: "entregar em galeria",
-    etiquetas: [
-      { quando: "problema", texto: "FOTO COMPRIMIDA", tipo: "problema", alvo: SOBRE_CASAL(11) },
-      { quando: "solucao", texto: "GALERIA COM SENHA", tipo: "solucao", alvo: SOBRE_CASAL(11) },
-    ],
-  },
-  s12: {
-    titulo: "DEPOIMENTO", tarefa: "pedir depoimento",
-    etiquetas: [
-      { quando: "problema", texto: "SÓ VOCÊ SABE", tipo: "problema", alvo: [PECA[12][0], 4.5, PECA[12][2]] },
-      { quando: "solucao", texto: "POSTOU", tipo: "solucao", alvo: [PECA[12][0], 4.5, PECA[12][2]] },
-    ],
-  },
-  s13: {
-    titulo: "INDICAÇÃO", tarefa: "pedir indicação",
-    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: [3.2, 4.7, 0.75] }],
-  },
-  s14: { titulo: null, tarefa: null, etiquetas: [] },
+const acimaDaCasa = (n: number): V3 => {
+  const c = centroCasa(n);
+  return [c[0], 2.95, c[2] + 0.2];
 };
 
-export const ROTEIRO: ItemRoteiro[] = segmentos.map((s) => ({
+const E = (quando: string, texto: string, tipo: TipoEtiqueta, alvo?: V3, ate?: string): Etiqueta => ({ quando, texto, tipo, alvo, ate });
+
+const dados: Omit<ItemRoteiro, "id" | "texto">[] = [
+  { titulo: null, tarefa: null, etiquetas: [E("problema", "PRIMEIRO CASAMENTO?", "problema", [posFot(1)[0], 2.55, posFot(1)[2]], "solucao")] },
+  { titulo: "CÂMERA", tarefa: "aprender o modo manual", etiquetas: [E("problema", "MODO AUTO", "problema"), E("solucao", "MANUAL", "solucao")] },
+  { titulo: "PORTFÓLIO", tarefa: "montar o portfólio", etiquetas: [E("problema", "SEM TRABALHO PRA MOSTRAR", "problema"), E("solucao", "PORTFÓLIO PRONTO", "solucao")] },
+  { titulo: "INSTAGRAM", tarefa: "postar no Instagram", etiquetas: [E("problema", "NINGUÉM VÊ", "problema"), E("solucao", "PRIMEIRO DIRECT", "solucao")] },
+  { titulo: "PROPOSTA", tarefa: "fazer proposta em PDF", etiquetas: [E("problema", "VISUALIZOU", "cinza"), E("solucao", "QUERO FECHAR", "solucao")] },
+  { titulo: "CONTRATO", tarefa: "contrato assinado", etiquetas: [E("problema", "DESMARCOU", "problema"), E("solucao", "TEM O QUE COBRAR", "solucao")] },
+  { titulo: "SINAL", tarefa: "cobrar 30% de sinal", etiquetas: [E("problema", "SÓ PROMESSA", "problema"), E("solucao", "DATA RESERVADA", "solucao")] },
+  { titulo: "LENTE", tarefa: "trocar a lente do kit", etiquetas: [E("problema", "FOTO ESCURA", "problema"), E("solucao", "ENTRA LUZ", "solucao")] },
+  { titulo: "CARTÃO DUPLO", tarefa: "câmera com dois slots", etiquetas: [E("problema", "CARTÃO CORROMPEU", "problema"), E("solucao", "SLOT 2 SALVOU", "solucao")] },
+  { titulo: "FLASH", tarefa: "comprar um flash", etiquetas: [E("segunda", "FOTO GRANULADA", "problema"), E("solucao", "O CASAL BRILHA", "solucao")] },
+  { titulo: "BACKUP", tarefa: "3 cópias de tudo", etiquetas: [E("problema", "HD QUEIMOU", "problema"), E("solucao", "3 CÓPIAS", "solucao")] },
+  { titulo: "GALERIA", tarefa: "entregar em galeria", etiquetas: [E("problema", "TÁ PIXELADO", "problema"), E("solucao", "GALERIA EM ALTA", "solucao")] },
+  { titulo: "DEPOIMENTO", tarefa: "pedir depoimento", etiquetas: [E("problema", "NINGUÉM SABE", "problema"), E("solucao", "POSTADO", "solucao", [posCelularCasa3()[0], 2.9, posCelularCasa3()[2] + 0.3])] },
+  { titulo: "INDICAÇÃO", tarefa: "pedir indicação", etiquetas: [E("solucao", "PRÓXIMO CASAMENTO", "solucao")] },
+  { titulo: null, tarefa: null, etiquetas: [] },
+];
+
+export const ROTEIRO: ItemRoteiro[] = segmentos.map((s, i) => ({
   id: s.id,
   texto: s.texto,
-  ...extra[s.id],
+  titulo: dados[i].titulo,
+  tarefa: dados[i].tarefa,
+  etiquetas: dados[i].etiquetas.map((e) => ({ ...e, alvo: e.alvo ?? (i >= 1 && i <= 13 ? acimaDaCasa(i) : undefined) })),
 }));
