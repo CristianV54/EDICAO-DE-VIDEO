@@ -29,7 +29,7 @@ export const PECA: Record<number, V3> = {
 
 // onde o casal cliente fica em cada segmento
 export const LUGAR_CLIENTE: Record<number, V3> = {
-  6: [3.2, TOPO, -0.9],
+  6: [3.6, TOPO, -0.9],
   7: [3.7, TOPO, -1.0],
   8: [3.3, TOPO, -0.7],
   9: [3.5, TOPO, 0.9],

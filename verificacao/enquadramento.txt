@@ -1,0 +1,48 @@
+plano            tipo      el  az   d (m)  limite     caixa projetada (px)
+s00-abertura     contexto   28  35   16.49  contexto   uniao x   215..  865  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s00-treze        contexto   32  25   42.39  contexto   uniao x   100..  980  y   581..  949  (janela x 70..1010, y 470..1060)
+s01-close        close      28  40   10.40  largura    uniao x   297..  783  y   510.. 1020  (janela x 70..1010, y 470..1060)
+                 principal camera1: x   297..  783  y   510.. 1020  largura 486 px = 45% da tela
+s01-contexto     contexto   30  30   21.73  contexto   uniao x   271..  809  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s02-close        close      28  40   10.40  largura    uniao x   297..  783  y   510.. 1020  (janela x 70..1010, y 470..1060)
+                 principal camera1: x   297..  783  y   510.. 1020  largura 486 px = 45% da tela
+s02-contexto     contexto   30  30   21.73  contexto   uniao x   271..  809  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s02-lente-close  close      28  40   10.40  largura    uniao x   297..  783  y   510.. 1020  (janela x 70..1010, y 470..1060)
+                 principal camera1: x   297..  783  y   510.. 1020  largura 486 px = 45% da tela
+s03-close        close      28  50   10.13  largura    uniao x   297..  783  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal camera1: x   297..  783  y   500.. 1030  largura 486 px = 45% da tela
+s03-contexto     contexto   30  30   21.73  contexto   uniao x   271..  809  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s04-close        close      30  35   10.44  largura    uniao x   297..  783  y   508.. 1022  (janela x 70..1010, y 470..1060)
+                 principal camera1: x   297..  783  y   508.. 1022  largura 486 px = 45% da tela
+s04-contexto     contexto   30  30   21.73  contexto   uniao x   271..  809  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s04-flash        close      30  35   13.26  altura     uniao x   347..  733  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal camera1Flash: x   347..  733  y   500.. 1030  largura 385 px = 36% da tela (limitada pela altura da janela)
+s05-close        close      30  20    6.47  largura    uniao x   297..  783  y   568..  962  (janela x 70..1010, y 470..1060)
+                 principal album: x   297..  783  y   568..  962  largura 486 px = 45% da tela
+s05-contexto     contexto   30  20   21.00  contexto   uniao x   100..  980  y   501.. 1029  (janela x 70..1010, y 470..1060)
+s06-close        close      28  15    6.13  altura     uniao x   359..  721  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal celular: x   359..  721  y   500.. 1030  largura 361 px = 33% da tela (limitada pela altura da janela)
+s06-contexto     contexto   30 -25   16.96  contexto   uniao x   309..  771  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s07-close        close      30  65    6.66  altura     uniao x   349..  731  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal proposta: x   349..  731  y   500.. 1030  largura 381 px = 35% da tela (limitada pela altura da janela)
+s07-contexto     contexto   30 -25   17.30  contexto   uniao x   309..  771  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s08-close        close      30  35    6.64  altura     uniao x   328..  752  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal contrato: x   328..  752  y   500.. 1030  largura 424 px = 39% da tela (limitada pela altura da janela)
+s08-contexto     contexto   30 -25   16.05  contexto   uniao x   245..  835  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s09-close        close      30  35    7.22  largura    uniao x   297..  783  y   517.. 1013  (janela x 70..1010, y 470..1060)
+                 principal maquininha: x   297..  783  y   517.. 1013  largura 486 px = 45% da tela
+s09-contexto     contexto   30 -25   14.10  contexto   uniao x   108..  972  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s10-close        close      30  20   10.81  altura     uniao x   322..  758  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal hds: x   322..  758  y   500.. 1030  largura 437 px = 40% da tela (limitada pela altura da janela)
+s10-contexto     contexto   32 -25   16.95  contexto   uniao x   297..  783  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s11-close        close      30  10    6.66  largura    uniao x   297..  783  y   545..  985  (janela x 70..1010, y 470..1060)
+                 principal tablet: x   297..  783  y   545..  985  largura 486 px = 45% da tela
+s11-contexto     contexto   30  15   15.81  contexto   uniao x   258..  822  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s12-close        close      28  10    7.83  largura    uniao x   263..  817  y   500.. 1030  (janela x 70..1010, y 470..1060)
+                 principal balao: x   320..  783  y   500..  846  largura 464 px = 43% da tela
+s12-contexto     contexto   28  10   16.76  contexto   uniao x   237..  843  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s13-contexto     contexto   30  30   17.86  contexto   uniao x   209..  871  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s13-pronto       contexto   32  25   22.22  contexto   uniao x   178..  902  y   500.. 1030  (janela x 70..1010, y 470..1060)
+s14-final        contexto   35  20   28.25  contexto   uniao x   261..  819  y   730.. 1140  (janela x 70..1010, y 700..1170)
+
+31 planos, todos dentro da janela util

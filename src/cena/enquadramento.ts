@@ -45,14 +45,14 @@ export const CAIXAS: Record<string, Caixa> = {
   plataforma: caixa([0, 0.25, 0], [12.2, 0.5, 7.2]),
   camera1: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.15, CAMERA_ATO1[2]], [1.5, 1.4, 1.1]),
   camera1Flash: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.5, CAMERA_ATO1[2]], [1.5, 2.1, 1.1]), // com o flash na sapata
-  album: sobrePlataforma(PECA[5], [1.0, 0.75, 0.85]),
-  celular: sobrePlataforma(PECA[6], [0.75, 1.25, 0.55]),
-  proposta: sobrePlataforma(PECA[7], [0.95, 1.15, 0.7]),
-  contrato: sobrePlataforma(PECA[8], [1.0, 1.15, 0.7]),
-  maquininha: sobrePlataforma(PECA[9], [1.25, 0.95, 0.7]),
-  hds: sobrePlataforma(PECA[10], [1.6, 1.85, 0.95]),
+  album: sobrePlataforma(PECA[5], [0.95, 0.55, 0.8]),
+  celular: sobrePlataforma(PECA[6], [0.7, 1.05, 0.5]),
+  proposta: sobrePlataforma(PECA[7], [0.8, 1.0, 0.65]),
+  contrato: sobrePlataforma(PECA[8], [0.8, 1.0, 0.65]),
+  maquininha: sobrePlataforma(PECA[9], [1.15, 0.95, 0.6]),
+  hds: sobrePlataforma(PECA[10], [1.5, 1.75, 0.9]),
   cabos10: caixa([(FOTOGRAFO_ATO2[0] + PECA[10][0]) / 2, 1.3, (FOTOGRAFO_ATO2[2] + PECA[10][2]) / 2], [1.2, 1.2, 2.5]),
-  tablet: sobrePlataforma(PECA[11], [1.1, 0.95, 0.7]),
+  tablet: sobrePlataforma(PECA[11], [1.1, 0.85, 0.6]),
   balao: caixa(PECA[12], [1.3, 0.9, 0.25]),
 };
 // todas as pecas do ato 2 (uniao das caixas)
@@ -74,7 +74,8 @@ const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista
 
 // Etapas de cada segmento: quando a camera troca de plano.
 export type Quando = "ini" | "ctx" | "sol" | "prob";
-export type EtapaPlano = { quando: Quando; plano: Plano };
+// desl: segundos somados ao instante; trans: duracao da transicao (s). Padrao 0 e 0,5 s (chega 0,2 s depois do inicio do contexto).
+export type EtapaPlano = { quando: Quando; plano: Plano; desl?: number; trans?: number };
 
 const closeCamera = (s: string, az: number, el: number) => P(`${s}-close`, "close", az, el, ["camera1"], "camera1");
 const ctxAto1 = (s: string) => P(`${s}-contexto`, "contexto", 30, 30, ["fotografo1", "telao", "casalAmigos"]);
@@ -82,19 +83,19 @@ const ctxAto1 = (s: string) => P(`${s}-contexto`, "contexto", 30, 30, ["fotograf
 export const ETAPAS_SEG: EtapaPlano[][] = [
   /* s00 */ [
     { quando: "ini", plano: P("s00-abertura", "contexto", 35, 28, ["fotografo1", "casalAmigos"]) },
-    { quando: "sol", plano: P("s00-treze", "contexto", 25, 32, ["plataforma"]) },
+    { quando: "sol", plano: P("s00-treze", "contexto", 25, 32, ["plataforma"]), desl: -0.3, trans: 0.8 },
   ],
   /* s01 */ [{ quando: "ini", plano: closeCamera("s01", 40, 28) }, { quando: "ctx", plano: ctxAto1("s01") }],
   /* s02 */ [
     { quando: "ini", plano: closeCamera("s02", 40, 28) },
     { quando: "ctx", plano: ctxAto1("s02") },
-    { quando: "sol", plano: closeCamera("s02-lente", 40, 28) }, // a 50mm rosqueia: volta ao close
+    { quando: "sol", plano: closeCamera("s02-lente", 40, 28), desl: -0.6, trans: 0.6 }, // a 50mm chega: volta ao close antes dela
   ],
   /* s03 */ [{ quando: "ini", plano: closeCamera("s03", 50, 28) }, { quando: "ctx", plano: ctxAto1("s03") }],
   /* s04 */ [
     { quando: "ini", plano: closeCamera("s04", 35, 30) },
     { quando: "ctx", plano: ctxAto1("s04") },
-    { quando: "sol", plano: P("s04-flash", "close", 35, 30, ["camera1Flash"], "camera1Flash") }, // o flash estoura: close
+    { quando: "sol", plano: P("s04-flash", "close", 35, 30, ["camera1Flash"], "camera1Flash"), desl: -0.6, trans: 0.6 }, // o flash estoura: close
   ],
   /* s05 */ [
     { quando: "ini", plano: P("s05-close", "close", 20, 30, ["album"], "album") },
@@ -102,23 +103,23 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
   ],
   /* s06 */ [
     { quando: "ini", plano: P("s06-close", "close", 15, 28, ["celular"], "celular") },
-    { quando: "ctx", plano: P("s06-contexto", "contexto", 25, 30, ["celular", "casalCliente6", "fotografo2"]) },
+    { quando: "ctx", plano: P("s06-contexto", "contexto", -25, 30, ["celular", "casalCliente6", "fotografo2"]) },
   ],
   /* s07 */ [
     { quando: "ini", plano: P("s07-close", "close", 65, 30, ["proposta"], "proposta") },
-    { quando: "ctx", plano: P("s07-contexto", "contexto", 30, 30, ["proposta", "casalCliente7", "fotografo2"]) },
+    { quando: "ctx", plano: P("s07-contexto", "contexto", -25, 30, ["proposta", "casalCliente7", "fotografo2"]) },
   ],
   /* s08 */ [
     { quando: "ini", plano: P("s08-close", "close", 35, 30, ["contrato"], "contrato") },
-    { quando: "ctx", plano: P("s08-contexto", "contexto", 40, 30, ["contrato", "casalCliente8", "fotografo2"]) },
+    { quando: "ctx", plano: P("s08-contexto", "contexto", -25, 30, ["contrato", "casalCliente8", "fotografo2"]) },
   ],
   /* s09 */ [
     { quando: "ini", plano: P("s09-close", "close", 35, 30, ["maquininha"], "maquininha") },
-    { quando: "ctx", plano: P("s09-contexto", "contexto", 40, 30, ["maquininha", "contrato", "casalCliente9", "fotografo2"]) },
+    { quando: "ctx", plano: P("s09-contexto", "contexto", -25, 30, ["maquininha", "contrato", "casalCliente9", "fotografo2"]) },
   ],
   /* s10 */ [
     { quando: "ini", plano: P("s10-close", "close", 20, 30, ["hds"], "hds") },
-    { quando: "ctx", plano: P("s10-contexto", "contexto", 20, 32, ["hds", "cabos10", "fotografo2"]) },
+    { quando: "ctx", plano: P("s10-contexto", "contexto", -25, 32, ["hds", "cabos10", "fotografo2"]) },
   ],
   /* s11 */ [
     { quando: "ini", plano: P("s11-close", "close", 10, 30, ["tablet"], "tablet") },
@@ -130,7 +131,7 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
   ],
   /* s13 */ [
     { quando: "ini", plano: P("s13-contexto", "contexto", 30, 30, ["casalCliente13", "casalIndicado", "fotografo2"]) },
-    { quando: "sol", plano: P("s13-pronto", "contexto", 25, 32, [...PECAS_ATO2, "fotografo2", "casalCliente13", "casalIndicado"]) },
+    { quando: "sol", plano: P("s13-pronto", "contexto", 25, 32, [...PECAS_ATO2, "fotografo2", "casalCliente13", "casalIndicado"]), desl: -0.3, trans: 0.6 },
   ],
   /* s14 */ [
     { quando: "prob", plano: P("s14-final", "contexto", 20, 35, [...PECAS_ATO2, "casalCliente13", "casalIndicado", "fotografo2"], undefined, JANELA_FINAL) },

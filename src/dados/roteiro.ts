@@ -1,5 +1,5 @@
 import segmentos from "./segmentos.json";
-import { CAMERA_ATO1, LUGAR_CLIENTE, PECA, TOPO, V3 } from "./posicoes";
+import { CAMERA_ATO1, LUGAR_CLIENTE, PECA, V3 } from "./posicoes";
 
 export type Quando = "problema" | "segunda" | "solucao";
 export type TipoEtiqueta = "problema" | "solucao" | "cinza";
@@ -28,14 +28,15 @@ export type ItemRoteiro = {
 export const N_PECAS = 13;
 
 // ancoras padrao das etiquetas: ato 1 sobre a camera do fotografo; ato 2 sobre a peca; casal cliente
-const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], 2.95, CAMERA_ATO1[2]];
-const sobrePeca = (n: number, alto = 1.55): V3 => [PECA[n][0], TOPO + alto, PECA[n][2]];
-const SOBRE_CASAL = (lugar: number): V3 => [LUGAR_CLIENTE[lugar][0], 3.0, LUGAR_CLIENTE[lugar][2]];
+const ALTO = 3.7; // acima das cabecas (topo da cabeca em y 2,65)
+const SOBRE_CAMERA: V3 = [CAMERA_ATO1[0], ALTO, CAMERA_ATO1[2]];
+const sobrePeca = (n: number): V3 => [PECA[n][0], ALTO, PECA[n][2]];
+const SOBRE_CASAL = (lugar: number): V3 => [LUGAR_CLIENTE[lugar][0], ALTO, LUGAR_CLIENTE[lugar][2]];
 
 const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s00: {
     titulo: null, tarefa: null,
-    etiquetas: [{ quando: "problema", texto: "FOTÓGRAFO?", tipo: "problema", alvo: [-3.4, 3.0, -0.6], ate: "solucao" }],
+    etiquetas: [{ quando: "problema", texto: "FOTÓGRAFO?", tipo: "problema", alvo: [-3.4, ALTO, -0.6], ate: "solucao" }],
   },
   s01: {
     titulo: "CÂMERA", tarefa: "comprar uma câmera",
@@ -61,21 +62,21 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s04: {
     titulo: "FLASH", tarefa: "comprar um flash",
     etiquetas: [
-      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: [-0.6, 3.0, -0.6] },
-      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: [-0.6, 3.0, -0.6] },
+      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: [-0.6, ALTO, -0.6] },
+      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: [-0.6, ALTO, -0.6] },
     ],
   },
   s05: {
     titulo: "PORTFÓLIO", tarefa: "montar o portfólio",
     etiquetas: [
-      { quando: "problema", texto: "CADÊ SEU TRABALHO?", tipo: "problema", alvo: sobrePeca(5, 1.2) },
-      { quando: "solucao", texto: "20 MELHORES", tipo: "solucao", alvo: sobrePeca(5, 1.2) },
+      { quando: "problema", texto: "CADÊ SEU TRABALHO?", tipo: "problema", alvo: [0.9, 4.0, PECA[5][2]] },
+      { quando: "solucao", texto: "20 MELHORES", tipo: "solucao", alvo: [0.9, 4.0, PECA[5][2]] },
     ],
   },
   s06: {
     titulo: "INSTAGRAM", tarefa: "criar o perfil",
     etiquetas: [
-      { quando: "problema", texto: "NINGUÉM VIU", tipo: "problema", alvo: sobrePeca(6, 1.6) },
+      { quando: "problema", texto: "NINGUÉM VIU", tipo: "problema", alvo: sobrePeca(6) },
       { quando: "solucao", texto: "NOVO DIRECT", tipo: "solucao", alvo: SOBRE_CASAL(6), fracao: 0.88 },
     ],
   },
@@ -96,15 +97,15 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s09: {
     titulo: "SINAL", tarefa: "cobrar 30% de sinal",
     etiquetas: [
-      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9, 1.7) },
-      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9, 1.7) },
+      { quando: "problema", texto: "SÓ PROMESSA", tipo: "problema", alvo: sobrePeca(9) },
+      { quando: "solucao", texto: "DATA RESERVADA", tipo: "solucao", alvo: sobrePeca(9) },
     ],
   },
   s10: {
     titulo: "BACKUP", tarefa: "3 cópias de tudo",
     etiquetas: [
-      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], 3.2, PECA[10][2]] },
-      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], 3.2, PECA[10][2]] },
+      { quando: "problema", texto: "HD QUEIMOU", tipo: "problema", alvo: [PECA[10][0], ALTO, PECA[10][2]] },
+      { quando: "solucao", texto: "3 CÓPIAS", tipo: "solucao", alvo: [PECA[10][0], ALTO, PECA[10][2]] },
     ],
   },
   s11: {
@@ -117,13 +118,13 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s12: {
     titulo: "DEPOIMENTO", tarefa: "pedir depoimento",
     etiquetas: [
-      { quando: "problema", texto: "SÓ VOCÊ SABE", tipo: "problema", alvo: [PECA[12][0], 3.8, PECA[12][2]] },
-      { quando: "solucao", texto: "POSTOU", tipo: "solucao", alvo: [PECA[12][0], 3.8, PECA[12][2]] },
+      { quando: "problema", texto: "SÓ VOCÊ SABE", tipo: "problema", alvo: [PECA[12][0], 4.5, PECA[12][2]] },
+      { quando: "solucao", texto: "POSTOU", tipo: "solucao", alvo: [PECA[12][0], 4.5, PECA[12][2]] },
     ],
   },
   s13: {
     titulo: "INDICAÇÃO", tarefa: "pedir indicação",
-    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: [3.2, 3.0, 0.75] }],
+    etiquetas: [{ quando: "solucao", texto: "NOVO CLIENTE", tipo: "solucao", alvo: [3.2, ALTO, 0.75] }],
   },
   s14: { titulo: null, tarefa: null, etiquetas: [] },
 };

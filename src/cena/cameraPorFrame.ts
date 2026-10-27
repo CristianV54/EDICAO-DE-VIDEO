@@ -22,8 +22,8 @@ const ETAPAS: Etapa[] = (() => {
   const out: Etapa[] = [];
   ETAPAS_SEG.forEach((lista, i) => {
     lista.forEach((e) => {
-      const ini = frameDe(i, e);
-      out.push({ inicio: ini, fim: 0, e, transicao: i === 14 ? sf(1.6) : e.quando === "ini" || e.quando === "ctx" ? sf(0.9) : sf(1.1) });
+      const ini = frameDe(i, e) + sf(e.desl ?? 0);
+      out.push({ inicio: ini, fim: 0, e, transicao: i === 14 ? sf(1.6) : sf(e.trans ?? 0.5) });
     });
   });
   out.forEach((et, k) => {

@@ -4,7 +4,7 @@ s02  menor distancia 2.64  (telao / casal-amigos)  ok
 s03  menor distancia 2.64  (telao / casal-amigos)  ok
 s04  menor distancia 2.64  (telao / casal-amigos)  ok
 s05  menor distancia 1.49  (curioso / peca5)  ok
-s06  menor distancia 1.30  (fotografo / casal-cliente)  ok
+s06  menor distancia 1.66  (peca6 / casal-cliente)  ok
 s07  menor distancia 1.48  (peca7 / casal-cliente)  ok
 s08  menor distancia 1.33  (fotografo / casal-cliente)  ok
 s09  menor distancia 1.36  (peca9 / casal-cliente)  ok

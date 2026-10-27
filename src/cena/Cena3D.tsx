@@ -170,6 +170,7 @@ const CasalAmigos: React.FC<{ frame: number }> = ({ frame }) => {
       tipo="amigos"
       position={[CASAL_AMIGOS[0] + dx, CASAL_AMIGOS[1], CASAL_AMIGOS[2]]}
       rotY={ROT_CASAL_AMIGOS}
+      fila={(25 * Math.PI) / 180}
       balanco={balanco}
       acena={acena}
       opacidade={fade}
@@ -183,7 +184,7 @@ type Trecho = { ini: number; de: V3; para: V3; dur: number };
 const trechosCliente = (): Trecho[] => {
   const L6 = LINHAS[6];
   // o casal cliente entra quando o plano de contexto do s06 comeca (o contexto precisa mostra-lo)
-  const entrada = Math.min(L6.ctxIni, L6.fim - DUR_ANDA - 2);
+  const entrada = Math.max(L6.ini + 10, L6.ctxIni - DUR_ANDA + 8);
   return [
     { ini: entrada, de: ENTRADA_CLIENTE, para: LUGAR_CLIENTE[6], dur: DUR_ANDA },
     { ini: LINHAS[7].ini, de: LUGAR_CLIENTE[6], para: LUGAR_CLIENTE[7], dur: DUR_ANDA },
@@ -283,7 +284,7 @@ const PersonagemCurioso: React.FC<{ frame: number }> = ({ frame }) => {
     <group>
       <Curioso position={CURIOSO} rotY={rotY} olhar={olhar} opacidade={op} bracos={bracos} maoDir={polegar} />
       {escBalao > 0.01 && (
-        <group position={[CURIOSO[0], CURIOSO[1] + 2.75, CURIOSO[2]]} rotation={[0, 0.3, 0]} scale={escBalao}>
+        <group position={[CURIOSO[0] + 0.55, CURIOSO[1] + 2.5, CURIOSO[2]]} rotation={[0, 0.3, 0]} scale={escBalao}>
           <B s={[0.55, 0.55, 0.06]} c="#FFFFFF" r={0.12} />
           <B p={[-0.1, -0.33, 0]} s={[0.12, 0.12, 0.06]} c="#FFFFFF" rot={[0, 0, Math.PI / 4]} r={0.01} />
           <PlanoTex p={[0, 0, 0.04]} w={0.42} h={0.42} tex={interrog} />
