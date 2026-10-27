@@ -1,7 +1,8 @@
 // Verifica o enquadramento automatico: imprime, por plano, a distancia d calculada e a caixa projetada
 // (x min, x max, y min, y max) e falha se alguma caixa ficou fora da janela util.
 // Rodar: npx esbuild scripts/verificar-enquadramento.ts --bundle --platform=node --format=esm --outfile=out/enq.mjs && node out/enq.mjs
-import { ETAPAS_SEG, PLANOS_RESOLVIDOS, projetarComAz, AZ_ORBITA, Resolvido } from "../src/cena/enquadramento";
+import * as THREE from "three";
+import { ETAPAS_SEG, PLANOS_RESOLVIDOS, projetarComAz, AZ_ORBITA, Resolvido, visibilidadeDe } from "../src/cena/enquadramento";
 
 const f = (n: number) => n.toFixed(0).padStart(5);
 const R = (r: { xmin: number; xmax: number; ymin: number; ymax: number }) => `x ${f(r.xmin)}..${f(r.xmax)}  y ${f(r.ymin)}..${f(r.ymax)}`;
@@ -22,6 +23,11 @@ for (const r of PLANOS_RESOLVIDOS) {
       const j = r.janela;
       if (c.xmin < j.x0 - 1 || c.xmax > j.x1 + 1 || c.ymin < j.y0 - 1 || c.ymax > j.y1 + 1) extremos.push(`${id} (az ${dz > 0 ? "+" : ""}${dz})`);
     }
+  }
+  if (p.visivel && p.oclusores) {
+    const vis = visibilidadeDe(p, new THREE.Vector3(...r.pos));
+    console.log(`${"".padEnd(16)} visibilidade de ${p.visivel} (sem ${p.oclusores.join(", ")} na frente): ${(vis * 100).toFixed(0)}%  az escolhido ${p.az}`);
+    if (vis < 0.99) extremos.push(`${p.visivel} escondida (${(vis * 100).toFixed(0)}% visivel)`);
   }
   if (r.fora.length || extremos.length || p.el < 25 || p.el > 40) {
     falhou = true;

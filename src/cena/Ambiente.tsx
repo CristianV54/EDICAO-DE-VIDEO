@@ -4,19 +4,19 @@ import { B, Cil, Esf } from "./primitivas";
 
 const Tabuas: React.FC<{ cor: string; par: boolean }> = ({ cor, par }) => {
   const ref = useRef<THREE.InstancedMesh>(null);
-  const n = 30;
+  const n = 80;
   useLayoutEffect(() => {
     const m = new THREE.Matrix4();
     for (let i = 0; i < n; i++) {
       const idx = i * 2 + (par ? 0 : 1);
-      m.makeTranslation(-14.75 + idx * 0.5, 0.01, 0);
+      m.makeTranslation(-19.75 + idx * 0.5, 0.01, 0);
       ref.current!.setMatrixAt(i, m);
     }
     ref.current!.instanceMatrix.needsUpdate = true;
   }, [par]);
   return (
     <instancedMesh ref={ref} args={[undefined, undefined, n]} receiveShadow>
-      <boxGeometry args={[0.47, 0.02, 30]} />
+      <boxGeometry args={[0.47, 0.02, 80]} />
       <meshStandardMaterial color={cor} roughness={0.85} />
     </instancedMesh>
   );
@@ -82,14 +82,14 @@ export const Ambiente: React.FC = () => (
   <group>
     {/* chao */}
     <mesh position={[0, -0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[30, 30]} />
+      <planeGeometry args={[80, 80]} />
       <meshStandardMaterial color="#A9773F" roughness={0.9} />
     </mesh>
     <Tabuas cor="#C9955F" par />
     <Tabuas cor="#BD8A55" par={false} />
     {/* parede de fundo (z = -6) e lateral esquerda (x = -11) */}
     <mesh position={[0, 7, -6]} receiveShadow>
-      <planeGeometry args={[40, 14]} />
+      <planeGeometry args={[80, 14]} />
       <meshStandardMaterial color="#EFE6D6" roughness={0.95} />
     </mesh>
     <B p={[0, 0.14, -5.95]} s={[30, 0.28, 0.1]} c="#D9CCB6" r={0.02} />

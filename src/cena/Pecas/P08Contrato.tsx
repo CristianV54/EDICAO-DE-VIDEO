@@ -26,7 +26,7 @@ export const P08Contrato: React.FC<PecaProps> = ({ fs, fp9 = -9999, fs9 = -9999 
   const n = Math.floor(u * N);
   return (
     <group rotation={[0, -0.15, 0]}>
-      <B p={[0, 0.05, 0]} s={[0.8, 0.1, 0.5]} c="#3A3D47" r={0.04} />
+      <B p={[0, 0.05, 0]} s={[1.4, 0.1, 0.55]} c="#3A3D47" r={0.04} />
       <Plaquinha tex="plq_contrato" p={[0, 0.06, 0.27]} w={0.56} rot={[-0.6, 0, 0]} />
       <B p={[0, 0.42, -0.2]} s={[0.76, 0.8, 0.05]} c="#E9DFC9" r={0.02} rot={[-0.25, 0, 0]} />
       <group position={[0, 0.46, -0.1]} rotation={[-0.22, 0, 0]}>

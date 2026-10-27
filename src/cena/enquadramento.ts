@@ -43,16 +43,17 @@ export const CAIXAS: Record<string, Caixa> = {
   // cenario e pecas
   telao: sobrePlataforma(TELAO, [2.6, 2.7, 0.3]),
   plataforma: caixa([0, 0.25, 0], [12.2, 0.5, 7.2]),
-  camera1: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.15, CAMERA_ATO1[2]], [1.5, 1.4, 1.1]),
-  camera1Flash: caixa([CAMERA_ATO1[0] + 0.1, CAMERA_ATO1[1] + 0.5, CAMERA_ATO1[2]], [1.5, 2.1, 1.1]), // com o flash na sapata
+  // camera de verdade: corpo 0,75 x 0,55 x 0,42 (gira 90 graus), lente a frente, visor em cima
+  camera1: caixa([CAMERA_ATO1[0] + 0.12, CAMERA_ATO1[1] + 0.03, CAMERA_ATO1[2]], [1.0, 0.72, 0.78]),
+  camera1Flash: caixa([CAMERA_ATO1[0] + 0.05, CAMERA_ATO1[1] + 0.3, CAMERA_ATO1[2]], [1.25, 1.3, 1.1]), // com o flash na sapata e as maos
   album: sobrePlataforma(PECA[5], [0.95, 0.55, 0.8]),
-  celular: sobrePlataforma(PECA[6], [0.7, 1.05, 0.5]),
-  proposta: sobrePlataforma(PECA[7], [0.8, 1.0, 0.65]),
-  contrato: sobrePlataforma(PECA[8], [0.8, 1.0, 0.65]),
+  celular: sobrePlataforma(PECA[6], [1.0, 1.1, 0.5]),
+  proposta: sobrePlataforma(PECA[7], [1.4, 1.0, 0.6]),
+  contrato: sobrePlataforma(PECA[8], [1.4, 1.0, 0.6]),
   maquininha: sobrePlataforma(PECA[9], [1.15, 0.95, 0.6]),
-  hds: sobrePlataforma(PECA[10], [1.5, 1.75, 0.9]),
+  hds: sobrePlataforma(PECA[10], [1.9, 1.75, 0.9]),
   cabos10: caixa([(FOTOGRAFO_ATO2[0] + PECA[10][0]) / 2, 1.3, (FOTOGRAFO_ATO2[2] + PECA[10][2]) / 2], [1.2, 1.2, 2.5]),
-  tablet: sobrePlataforma(PECA[11], [1.1, 0.85, 0.6]),
+  tablet: sobrePlataforma(PECA[11], [1.1, 0.8, 0.6]),
   balao: caixa(PECA[12], [1.3, 0.9, 0.25]),
 };
 // todas as pecas do ato 2 (uniao das caixas)
@@ -67,10 +68,16 @@ export type Plano = {
   principal?: string; // so no close: ocupa 45% da largura
   lista: string[]; // precisa aparecer
   janela?: Janela;
+  // contexto: a peca `visivel` nao pode ficar escondida atras destes personagens (o azimute e escolhido por busca)
+  visivel?: string;
+  oclusores?: string[];
 };
-const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista: string[], principal?: string, janela?: Janela): Plano => ({
-  id, tipo, az, el, lista, principal, janela,
+const P = (id: string, tipo: "close" | "contexto", az: number, el: number, lista: string[], principal?: string, janela?: Janela, visivel?: string, oclusores?: string[]): Plano => ({
+  id, tipo, az, el, lista, principal, janela, visivel, oclusores,
 });
+// contexto das pecas do ato 2: a peca nao pode ficar atras do fotografo nem do casal
+const ctxPeca = (seg: string, az: number, el: number, lista: string[], peca: string, casal: string) =>
+  P(`${seg}-contexto`, "contexto", az, el, lista, undefined, undefined, peca, [casal, "fotografo2"]);
 
 // Etapas de cada segmento: quando a camera troca de plano.
 export type Quando = "ini" | "ctx" | "sol" | "prob";
@@ -103,27 +110,27 @@ export const ETAPAS_SEG: EtapaPlano[][] = [
   ],
   /* s06 */ [
     { quando: "ini", plano: P("s06-close", "close", 15, 28, ["celular"], "celular") },
-    { quando: "ctx", plano: P("s06-contexto", "contexto", -25, 30, ["celular", "casalCliente6", "fotografo2"]) },
+    { quando: "ctx", plano: ctxPeca("s06", 5, 38, ["celular", "casalCliente6", "fotografo2"], "celular", "casalCliente6") },
   ],
   /* s07 */ [
-    { quando: "ini", plano: P("s07-close", "close", 65, 30, ["proposta"], "proposta") },
-    { quando: "ctx", plano: P("s07-contexto", "contexto", -25, 30, ["proposta", "casalCliente7", "fotografo2"]) },
+    { quando: "ini", plano: P("s07-close", "close", 20, 30, ["proposta"], "proposta") },
+    { quando: "ctx", plano: ctxPeca("s07", 5, 38, ["proposta", "casalCliente7", "fotografo2"], "proposta", "casalCliente7") },
   ],
   /* s08 */ [
     { quando: "ini", plano: P("s08-close", "close", 35, 30, ["contrato"], "contrato") },
-    { quando: "ctx", plano: P("s08-contexto", "contexto", -25, 30, ["contrato", "casalCliente8", "fotografo2"]) },
+    { quando: "ctx", plano: ctxPeca("s08", 5, 38, ["contrato", "casalCliente8", "fotografo2"], "contrato", "casalCliente8") },
   ],
   /* s09 */ [
     { quando: "ini", plano: P("s09-close", "close", 35, 30, ["maquininha"], "maquininha") },
-    { quando: "ctx", plano: P("s09-contexto", "contexto", -25, 30, ["maquininha", "contrato", "casalCliente9", "fotografo2"]) },
+    { quando: "ctx", plano: ctxPeca("s09", 5, 38, ["maquininha", "contrato", "casalCliente9", "fotografo2"], "maquininha", "casalCliente9") },
   ],
   /* s10 */ [
     { quando: "ini", plano: P("s10-close", "close", 20, 30, ["hds"], "hds") },
-    { quando: "ctx", plano: P("s10-contexto", "contexto", -25, 32, ["hds", "cabos10", "fotografo2"]) },
+    { quando: "ctx", plano: ctxPeca("s10", 5, 38, ["hds", "cabos10", "fotografo2"], "hds", "casalCliente9") },
   ],
   /* s11 */ [
     { quando: "ini", plano: P("s11-close", "close", 10, 30, ["tablet"], "tablet") },
-    { quando: "ctx", plano: P("s11-contexto", "contexto", 15, 30, ["tablet", "casalCliente11", "fotografo2"]) },
+    { quando: "ctx", plano: ctxPeca("s11", 5, 38, ["tablet", "casalCliente11", "fotografo2"], "tablet", "casalCliente11") },
   ],
   /* s12 */ [
     { quando: "ini", plano: P("s12-close", "close", 10, 28, ["balao", "cabecasCliente11"], "balao") },
@@ -210,8 +217,71 @@ export type Resolvido = {
 const NUM_ITER = 20;
 const cache = new Map<string, Resolvido>();
 
+// ---------- oclusao: o raio da camera ate os cantos da peca nao pode atravessar o cilindro de um personagem ----------
+// corpo real do personagem: 67% da caixa declarada
+const cilindroDe = (id: string) => {
+  const { c, t } = CAIXAS[id];
+  return { x: c[0], z: c[2], r: (Math.max(t[0], t[2]) / 2) * 0.67, y0: c[1] - t[1] / 2, y1: c[1] + t[1] / 2 };
+};
+const bloqueia = (cam: THREE.Vector3, alvo: THREE.Vector3, cil: ReturnType<typeof cilindroDe>): boolean => {
+  const dx = alvo.x - cam.x;
+  const dz = alvo.z - cam.z;
+  const a = dx * dx + dz * dz;
+  if (a < 1e-9) return false;
+  const fx = cam.x - cil.x;
+  const fz = cam.z - cil.z;
+  const b = 2 * (fx * dx + fz * dz);
+  const c = fx * fx + fz * fz - cil.r * cil.r;
+  const disc = b * b - 4 * a * c;
+  if (disc < 0) return false;
+  const sq = Math.sqrt(disc);
+  const t1 = (-b - sq) / (2 * a);
+  const t2 = (-b + sq) / (2 * a);
+  const lo = Math.max(0, t1);
+  const hi = Math.min(1, t2);
+  if (lo > hi) return false;
+  // altura do raio dentro do intervalo [lo, hi]
+  const y = (t: number) => cam.y + (alvo.y - cam.y) * t;
+  const ymin = Math.min(y(lo), y(hi));
+  const ymax = Math.max(y(lo), y(hi));
+  return ymax >= cil.y0 && ymin <= cil.y1;
+};
+// fracao dos 8 cantos + centro da peca que a camera enxerga sem personagem na frente
+export const visibilidadeDe = (plano: Plano, camPos: THREE.Vector3): number => {
+  if (!plano.visivel || !plano.oclusores) return 1;
+  const pts = cantos(plano.visivel);
+  const { c } = CAIXAS[plano.visivel];
+  pts.push(new THREE.Vector3(c[0], c[1], c[2]));
+  const cils = plano.oclusores.map(cilindroDe);
+  let vistos = 0;
+  for (const p of pts) if (!cils.some((cl) => bloqueia(camPos, p, cl))) vistos++;
+  return vistos / pts.length;
+};
+
+function resolverComAz(plano: Plano, az: number): Resolvido {
+  return resolverPlanoBase({ ...plano, az });
+}
 export const resolverPlano = (plano: Plano): Resolvido => {
   if (cache.has(plano.id)) return cache.get(plano.id)!;
+  let melhor: Resolvido | null = null;
+  let melhorVis = -1;
+  if (plano.visivel && plano.oclusores) {
+    const ordem: number[] = [0];
+    for (let k = 1; k <= 12; k++) ordem.push(k, -k);
+    for (const k of ordem) {
+      const r = resolverComAz(plano, plano.az + k * 5);
+      const vis = visibilidadeDe(plano, new THREE.Vector3(...r.pos));
+      if (r.fora.length === 0 && vis >= 0.99) { melhor = r; melhorVis = vis; break; }
+      if (r.fora.length === 0 && vis > melhorVis) { melhor = r; melhorVis = vis; }
+    }
+  }
+  const res = melhor ?? resolverPlanoBase(plano);
+  const final = { ...res, plano: { ...plano, az: res.plano.az } };
+  cache.set(plano.id, final);
+  return final;
+};
+
+function resolverPlanoBase(plano: Plano): Resolvido {
   const janela = plano.janela ?? JANELA_UTIL;
   const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: janela.y1 - janela.y0 - 2 * MARGEM };
   const todos: THREE.Vector3[] = [];
@@ -253,22 +323,21 @@ export const resolverPlano = (plano: Plano): Resolvido => {
   if (plano.tipo === "close" && p) {
     const w = p.xmax - p.xmin;
     limite = Math.abs(w - LARGURA_CLOSE) <= LARGURA_CLOSE * TOLERANCIA ? "largura" : "altura";
-    // abaixo da tolerancia de largura so e aceitavel quando a altura da janela (ou a uniao) limita
-    if (w > LARGURA_CLOSE * (1 + TOLERANCIA)) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px)`);
+    // 45% da largura (486 px), tolerancia de 5% para os dois lados
+    if (Math.abs(w - LARGURA_CLOSE) > LARGURA_CLOSE * TOLERANCIA) fora.push(`${plano.principal} (largura ${w.toFixed(0)} px, esperado 486 +- 5%)`);
   }
   const res: Resolvido = {
     plano, d, janela, uniao: u, principal: p ?? undefined, caixas, limite, fora,
     alvo: [alvo.x, alvo.y, alvo.z],
     pos: [camera.position.x, camera.position.y, camera.position.z],
   };
-  cache.set(plano.id, res);
   return res;
-};
+}
 
 // pose da camera para um plano, com o azimute deslocado (orbita lenta de AZ_ORBITA graus em volta de az)
 export const poseResolvida = (plano: Plano, azExtra: number): { pos: V3; alvo: V3; fov: number } => {
   const r = resolverPlano(plano);
-  const az = ((plano.az + azExtra) * Math.PI) / 180;
+  const az = ((r.plano.az + azExtra) * Math.PI) / 180; // azimute resolvido (a busca de oclusao pode te-lo mudado)
   const el = (plano.el * Math.PI) / 180;
   const [tx, ty, tz] = r.alvo;
   return {
@@ -286,7 +355,7 @@ ETAPAS_SEG.forEach((et) => et.forEach((e) => PLANOS_RESOLVIDOS.push(resolverPlan
 export const projetarComAz = (plano: Plano, azExtra: number): Record<string, Retangulo> => {
   const r = resolverPlano(plano);
   const alvo = new THREE.Vector3(...r.alvo);
-  posicionar(alvo, r.d, plano.az + azExtra, plano.el);
+  posicionar(alvo, r.d, r.plano.az + azExtra, plano.el);
   const out: Record<string, Retangulo> = {};
   for (const id of plano.lista) out[id] = projetarPontos(cantos(id));
   return out;

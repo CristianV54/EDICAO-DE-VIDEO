@@ -9,8 +9,8 @@ const CORES = ["#F6C28B", "#7FB8E6", "#F7B6C2", "#E9CFA3", "#2A3A6B", "#F29E7E",
 
 export const P06Instagram: React.FC<PecaProps> = ({ fs }) => (
   <group rotation={[0, 0.12, 0]}>
-    <B p={[0, 0.03, 0]} s={[0.7, 0.06, 0.45]} c="#3A3D47" r={0.03} />
-    <Plaquinha tex="plq_instagram" p={[0, 0.07, 0.25]} w={0.56} rot={[-0.6, 0, 0]} />
+    <B p={[0, 0.03, 0]} s={[1.0, 0.06, 0.5]} c="#3A3D47" r={0.03} />
+    <Plaquinha tex="plq_instagram" p={[0, 0.07, 0.27]} w={0.6} rot={[-0.6, 0, 0]} />
     <group position={[0, 0.58, -0.02]} rotation={[-0.1, 0, 0]}>
       <B s={[0.5, 0.9, 0.08]} c="#F7F5F0" r={0.08} />
       <B p={[0, 0, 0.045]} s={[0.42, 0.78, 0.02]} c="#D4D6DC" r={0.03} sombra={false} />

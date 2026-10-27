@@ -62,8 +62,8 @@ const extra: Record<string, Omit<ItemRoteiro, "id" | "texto">> = {
   s04: {
     titulo: "FLASH", tarefa: "comprar um flash",
     etiquetas: [
-      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: [-0.6, ALTO, -0.6] },
-      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: [-0.6, ALTO, -0.6] },
+      { quando: "segunda", texto: "ISO 12800", tipo: "problema", alvo: SOBRE_CAMERA },
+      { quando: "solucao", texto: "LUZ NA PISTA", tipo: "solucao", alvo: SOBRE_CAMERA },
     ],
   },
   s05: {

@@ -27,7 +27,7 @@ export const P10Backup: React.FC<PecaProps> = ({ fp, fs }) => {
   const ok = fs >= 0;
   return (
     <group>
-      <B p={[0, 0.03, 0]} s={[1.5, 0.06, 0.9]} c="#3A3D47" r={0.03} />
+      <B p={[0, 0.03, 0]} s={[1.9, 0.06, 0.9]} c="#3A3D47" r={0.03} />
       <Plaquinha tex="plq_backup" p={[0, 0.1, 0.5]} w={0.56} rot={[-0.6, 0, 0]} />
       <group position={[0, 0.06, 0]}>
         <Hd x={-0.45} queimado={queima} led={piscaVerm ? "#FF4D4D" : queima ? "#3B3F46" : "#4DA3FF"} ledI={piscaVerm ? 2 : 0.6} />

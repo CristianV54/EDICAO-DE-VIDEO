@@ -19,7 +19,7 @@ import { PIXEL } from "./Pecas/P11Galeria";
 import { TexturasProvider } from "./Texturas";
 import { cameraPorFrame } from "./cameraPorFrame";
 import {
-  CASAL_AMIGOS, ROT_CASAL_AMIGOS, ENTRADA_CLIENTE, FOTOGRAFO_ATO1, FOTOGRAFO_ATO2, INDICADO_DESTINO, INDICADO_ORIGEM,
+  CASAL_AMIGOS, ROT_CASAL_AMIGOS, FOTOGRAFO_ATO1, FOTOGRAFO_ATO2, INDICADO_DESTINO, INDICADO_ORIGEM,
   CURIOSO, LUGAR_CLIENTE, PECA, ROT_FOTOGRAFO_ATO1, ROT_FOTOGRAFO_ATO2, TOPO, V3,
 } from "../dados/posicoes";
 import { CAMINHADA_INDICADO, LINHAS, clamp01, easeInOutCubic, entrada, lerp, segDe, springQueda, FPS } from "../util/tempo";
@@ -179,43 +179,41 @@ const CasalAmigos: React.FC<{ frame: number }> = ({ frame }) => {
 };
 
 const REPOUSO = 0.25; // rotY de repouso do casal cliente (de frente para o espectador)
-const DUR_ANDA = 45;
-type Trecho = { ini: number; de: V3; para: V3; dur: number };
-const trechosCliente = (): Trecho[] => {
-  const L6 = LINHAS[6];
-  // o casal cliente entra quando o plano de contexto do s06 comeca (o contexto precisa mostra-lo)
-  const entrada = Math.max(L6.ini + 10, L6.ctxIni - DUR_ANDA + 8);
-  return [
-    { ini: entrada, de: ENTRADA_CLIENTE, para: LUGAR_CLIENTE[6], dur: DUR_ANDA },
-    { ini: LINHAS[7].ini, de: LUGAR_CLIENTE[6], para: LUGAR_CLIENTE[7], dur: DUR_ANDA },
-    { ini: LINHAS[8].ini, de: LUGAR_CLIENTE[7], para: LUGAR_CLIENTE[8], dur: DUR_ANDA },
-    { ini: LINHAS[9].ini, de: LUGAR_CLIENTE[8], para: LUGAR_CLIENTE[9], dur: DUR_ANDA },
-    { ini: LINHAS[11].ini, de: LUGAR_CLIENTE[9], para: LUGAR_CLIENTE[11], dur: DUR_ANDA },
-  ];
-};
-const TRECHOS = trechosCliente();
+const DUR_ANDA = 36; // 1,2 s de caminhada ate o lugar
+// Janelas em que o casal cliente existe: ele so entra quando o plano de contexto do segmento comeca (os closes
+// mostram so a peca) e continua ate o fim do segmento. s10 mantem o lugar de s09; s12 em diante mantem o de s11.
+type Janela = { seg: number; lugar: number; ini: number; fim: number; anda: boolean };
+const JANELAS: Janela[] = [
+  { seg: 6, lugar: 6, ini: LINHAS[6].ctxIni - 4, fim: LINHAS[6].fim, anda: true },
+  { seg: 7, lugar: 7, ini: LINHAS[7].ctxIni - 4, fim: LINHAS[7].fim, anda: true },
+  { seg: 8, lugar: 8, ini: LINHAS[8].ctxIni - 4, fim: LINHAS[8].fim, anda: true },
+  { seg: 9, lugar: 9, ini: LINHAS[9].ctxIni - 4, fim: LINHAS[9].fim, anda: true },
+  { seg: 10, lugar: 9, ini: LINHAS[10].ctxIni - 4, fim: LINHAS[10].fim, anda: false },
+  { seg: 11, lugar: 11, ini: LINHAS[11].ctxIni - 4, fim: LINHAS[11].fim, anda: true },
+  { seg: 12, lugar: 11, ini: LINHAS[12].ini, fim: LINHAS[14].fim + 100000, anda: false },
+];
 
 const CasalCliente: React.FC<{ frame: number }> = ({ frame }) => {
-  if (frame < TRECHOS[0].ini) return null;
-  let k = 0;
-  TRECHOS.forEach((tr, idx) => {
-    if (frame >= tr.ini) k = idx;
-  });
-  const tr = TRECHOS[k];
-  const t = frame - tr.ini;
-  const u = easeInOutCubic(t / tr.dur);
-  const andando = t < tr.dur;
-  let x = lerp(tr.de[0], tr.para[0], u);
-  const z = lerp(tr.de[2], tr.para[2], u);
-  let y = tr.de[1] + (tr.para[1] - tr.de[1]) * u;
-  if (k === 0) y = TOPO * clamp01((6.5 - x) / 0.4); // sobe na plataforma
-  const heading = girarPara([tr.de[0], tr.de[2]], [tr.para[0], tr.para[2]]);
-  const fim = clamp01((t - (tr.dur - 12)) / 12);
+  const j = JANELAS.find((w) => frame >= w.ini && frame < w.fim);
+  if (!j) return null;
+  const t = frame - j.ini;
+  const para = LUGAR_CLIENTE[j.lugar];
+  const andando = j.anda && t < DUR_ANDA;
+  const u = j.anda ? easeInOutCubic(t / DUR_ANDA) : 1;
+  // vem de 1,8 m a direita do lugar
+  let x = lerp(para[0] + 1.8, para[0], u);
+  const z = lerp(para[2] + 0.3, para[2], u);
+  const y = para[1];
+  const heading = girarPara([para[0] + 1.8, para[2] + 0.3], [para[0], para[2]]);
+  const fim = clamp01((t - (DUR_ANDA - 10)) / 10);
   let rotY = andando ? lerp(heading, REPOUSO, fim) : REPOUSO;
+  const aparece = j.anda ? clamp01(t / 8) : 1;
+  const some = j.fim < LINHAS[14].fim ? 1 - clamp01((frame - (j.fim - 6)) / 6) : 1;
+  const opac = Math.min(aparece, some);
   // s08: vira de costas em "desmarca" (140 graus) e recua 0,3; volta em "assinado"
   const L8 = LINHAS[8];
   const vira = easeInOutCubic((frame - L8.prob) / 12) * (1 - easeInOutCubic((frame - L8.sol) / 12));
-  if (frame >= L8.prob && frame < L8.sol + 14) {
+  if (j.seg === 8 && frame >= L8.prob && frame < L8.sol + 14) {
     rotY += vira * ((140 * Math.PI) / 180);
     x -= vira * 0.3;
   }
@@ -242,7 +240,7 @@ const CasalCliente: React.FC<{ frame: number }> = ({ frame }) => {
     : escCelular > 0.01
       ? { bracos: { dir: [-1.0, 0.1] as [number, number] }, maoDir: <CelularPixel escala={escCelular} /> }
       : undefined;
-  return <Casal tipo="cliente" position={[x, y, z]} rotY={rotY} caminha={caminha} olhar={olhar} noiva={noiva} />;
+  return <Casal tipo="cliente" position={[x, y, z]} rotY={rotY} caminha={caminha} olhar={olhar} noiva={noiva} opacidade={opac} />;
 };
 
 // celular com a foto pixelada (blocos grandes), segurado na mao

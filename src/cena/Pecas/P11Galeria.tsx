@@ -13,7 +13,7 @@ export const P11Galeria: React.FC<PecaProps> = ({ fs }) => {
   const forte = fs >= 0 ? 0.55 : 0;
   return (
     <group rotation={[0, 0.1, 0]}>
-      <B p={[0, 0.03, 0]} s={[1.1, 0.06, 0.6]} c="#3A3D47" r={0.03} />
+      <B p={[0, 0.03, 0]} s={[1.15, 0.06, 0.6]} c="#3A3D47" r={0.03} />
       <Plaquinha tex="plq_galeria" p={[0, 0.08, 0.34]} w={0.56} rot={[-0.6, 0, 0]} />
       <group position={[0, 0.46, -0.05]} rotation={[-0.3, 0, 0]}>
         <B s={[0.95, 0.66, 0.07]} c="#17181D" r={0.05} />
