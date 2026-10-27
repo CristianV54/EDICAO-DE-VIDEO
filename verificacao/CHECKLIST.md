@@ -1,484 +1,515 @@
-# Checklist real (v2), 48 stills abertos um a um
+# Checklist real (v3), 56 stills abertos um a um
 
-Cada linha foi escrita depois de abrir o PNG correspondente (1080x1920) em `verificacao/`. Nenhum "ok" foi marcado sem olhar o still.
-Legenda: **ok** = passou; **FALHA** = não passou (só anotado, sem correção); **parcial** = passou em parte (descrito na própria linha); **n/a** = não se aplica a esse plano.
-Itens: peça (visível, centro, 35% a 55% da largura nos closes, sem corte), chão/tapete (aparecem em volta), fotógrafo (visível com a câmera na mão nos planos de contexto), telão (estado certo no ato 1),
-problema (encenado na cena, não só na etiqueta), sobreposição (legenda, título, card, contador, etiquetas sem se cobrirem nem cobrirem a peça), contador/texto (número certo, sem travessão, acentos corretos).
-Distância mínima entre objetos: ver `verificacao/distancias.txt` (menor valor 1,08, mínimo exigido 0,9).
-Busca de travessão (`LC_ALL=C grep -rnP "\xE2\x80\x94|\xE2\x80\x93"` em `src/` e `scripts/`): nenhuma ocorrência.
+Cada linha foi escrita depois de abrir o PNG em `verificacao/` (1080x1920). Os stills de s06 a s13, s14, final e os 8 do card foram regerados depois da última correção e abertos de novo, um a um. Os de s00 a s05 foram regerados e comparados pixel a pixel com os que eu tinha aberto (idênticos ou com PSNR acima de 77 dB), então as linhas deles continuam valendo.
+Legenda: **ok** = passou; **parcial** = passou em parte, com a justificativa na própria linha; **FALHA** = não passou; **n/a** = não se aplica ao plano.
+Itens: peça (visível, centro, sem corte; closes perto de 45% da largura), chão/tapete (aparecem em volta), fotógrafo (visível com a câmera na mão), telão (estado certo no ato 1), problema (encenado na cena), sobreposição (legenda, título, card, contador e etiquetas sem cobrir peça ou personagem), contador/texto (número certo, sem travessão, acentos corretos).
+Distância mínima entre objetos: `verificacao/distancias.txt` (menor 1,33, mínimo exigido 1,2). Enquadramento: `verificacao/enquadramento.txt`.
 
 
+## card
 
-## s00
-
-### `s00_a_momento.png`
-**O que vejo:** Fotógrafo no canto esquerdo (x 100-420, y 400-960) segurando a câmera preta com seletor AUTO e lente do kit cinza; casal de amigos à direita, de perfil, com o noivo na frente e quase cobrindo a noiva (só o cabelo dela aparece). Sem contador (correto), sem card, sem telão (correto), legenda "se" em y 1190. Parede e chão de madeira só no terço superior, sem tapete; plataforma escura ocupa cerca de 60% da tela.
+### `card_s01_a_saindo.png`
+**O que vejo:** Close da câmera em s01, 3 frames antes do fim da saída: o card "comprar uma câmera ✓" está quase todo fora do quadro, só a faixa de baixo com a linha e o ✓ aparece no topo (y 0-100, cortado); fotógrafo de frente com a câmera AUTO e lente do kit (x 270-690), noiva em primeiro plano à direita; contador 1/13; telão `auto` cortado na borda direita; legenda "foto" y 1240.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| ok | FALHA (sem tapete, 60% escuro) | ok | n/a | n/a | FALHA (noiva escondida atrás do noivo) | ok |
+| ok | ok | ok | parcial (cortado; é close) | n/a | ok (card saindo pelo topo, sem cobrir a cabeça) | ok (1/13) |
 
-### `s00_b_problema.png`
-**O que vejo:** Mesmo plano: fotógrafo à esquerda com a câmera no peito (não está ao rosto, o clique já passou), etiqueta vermelha "FOTÓGRAFO?" em y 480 cobrindo o rosto dele; casal à direita; legenda "fotógrafo" em y 1190. Sem contador (correto). Faixa vertical de sombra com borda reta visível no chão da plataforma embaixo (x 515, y>1500).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok | FALHA (sem tapete) | ok | n/a | parcial (só a etiqueta; flash e câmera ao rosto já passaram neste frame) | FALHA (etiqueta tapa o rosto do fotógrafo) | ok |
-
-### `s00_c_solucao.png`
-**O que vejo:** Plano abrindo logo após "treze": fotógrafo com câmera na mão e rosto visível à esquerda, casal à direita, contador "PEÇAS 0/13" no canto superior direito, legenda "treze" em y 1190. Quadros na parede, pedaço de tapete azul e LEDs dourados no canto inferior esquerdo; plataforma escura ocupa 65% da tela e mostra blocos retangulares de sombra com bordas retas.
+### `card_s01_b_saiu.png`
+**O que vejo:** Mesmo close, quando o card terminou de sair: nenhum card na tela, só o contador 1/13, fotógrafo, câmera AUTO, telão `auto` cortado e a noiva à direita; legenda "Mas" y 1240.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| ok | parcial (só um canto de tapete) | ok | n/a | n/a | ok | ok (0/13) |
+| ok | ok | ok | parcial (cortado; é close) | n/a | ok (o card saiu) | ok (1/13) |
 
-
-## s01
-
-### `s01_a_momento.png`
-**O que vejo:** Fotógrafo grande no centro (x 140-850), câmera com brilho dourado do pulso (parece cor de oliva), AUTO no seletor e lente do kit cinza; ocupa cerca de 75% da largura. O card "comprar uma câmera ✓" cobre a testa e o cabelo dele. Contador 1/13, legenda "existe" y 1180. O telão não aparece no quadro. Chão de madeira e parede atrás, plataforma escura embaixo (45%).
+### `card_s05_a_saindo.png`
+**O que vejo:** Close do álbum em s05 com o card quase fora (só a faixa de baixo "montar o portfólio ✓", y 0-95); o personagem curioso (camiseta cinza, calça jeans) entra em fade, semitransparente, na direita (x 700-1040, y 100-1230) e passa por trás do contador; álbum dourado com plaquinha "PORTFÓLIO" (x 320-760); legenda "fotógrafo" y 1240.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| FALHA (75% da largura, acima de 55%) | parcial (madeira sim, tapete não) | ok | FALHA (não aparece no momento em que nasce) | n/a | FALHA (card cobre a cabeça do fotógrafo) | ok (1/13) |
+| ok (álbum visível no centro) | ok | n/a | n/a | parcial (o curioso entra em fade dentro do close, semitransparente) | parcial (o curioso semitransparente passa por trás do contador) | ok (5/13) |
 
-### `s01_b_problema.png`
-**O que vejo:** Plano de contexto: fotógrafo inteiro à esquerda com a câmera (AUTO) e etiqueta "MODO AUTO" em y 480 ao lado da cabeça; telão à direita no estado `auto` (cinza azulado dessaturado, casal de amigos; o selo "AUTO" do canto está fora do quadro); a noiva da direita aparece cortada pela borda. Card "comprar uma câmera ✓", contador 1/13 (por cima da borda do telão), legenda "automático" y 1180. Chão de madeira visível, sem tapete, plataforma escura embaixo (40%).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (câmera visível, contexto) | parcial (madeira sim, tapete não) | ok | ok (`auto`) | ok (telão acinzentado + etiqueta; o seletor não pisca vermelho neste frame) | ok (card cobre só a borda do telão) | ok |
-
-### `s01_c_solucao.png`
-**O que vejo:** Fotógrafo à esquerda com a cabeça cortada pela borda, câmera com seletor "M" verde, etiqueta verde "APRENDE O MANUAL" em y 555; telão `manual` (pôr do sol laranja, casal nítido) ocupando a metade direita; casal de amigos grande em primeiro plano à direita, o noivo tapando parte da noiva e a parte de baixo do telão. Card, contador 1/13, legenda "caro" y 1180.
+### `card_s05_b_saiu.png`
+**O que vejo:** Close do álbum quando o card terminou de sair: nenhum card; o curioso (camiseta cinza, calça jeans), quase opaco, em pé à direita do álbum (x 725-1030, y 130-1200) com a cabeça sobre o contador 5/13; álbum dourado com plaquinha "PORTFÓLIO" (x 360-760); telão cortado à esquerda; legenda "fotógrafo" y 1240.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| ok (câmera visível, contexto) | parcial (madeira sim, tapete não) | FALHA (cabeça cortada pela borda esquerda) | ok (`manual`) | n/a | FALHA (casal tapa a parte de baixo do telão) | ok |
+| ok | ok | n/a | n/a | parcial (curioso quase opaco ao lado do álbum, cabeça sobre o contador) | parcial (a cabeça do curioso encosta no contador) | ok (5/13) |
 
-
-## s02
-
-### `s02_a_momento.png`
-**O que vejo:** Momento da peça = "cinquenta": a lente 50mm preta com anéis dourados e "50mm" está no ar no centro (x 540-700, y 970-1140), a caminho da câmera; a lente cinza do kit ainda está na câmera do fotógrafo (esquerda, cabeça cortada pela borda); telão à direita no estado `cinquenta` (igreja desfocada, casal nítido); casal à direita. Card com ✓, contador 2/13, etiqueta verde "50MM" em y 555, legenda "cinquenta" y 1180 encostando na base da lente.
+### `card_s09_a_saindo.png`
+**O que vejo:** Close da maquininha em s09 com o card quase fora (só a faixa de baixo "cobrar 30% de sinal ✓", y 0-95); o casal cliente, já opaco, ocupa o topo-esquerdo (noiva ruiva x 160-410, noivo azul x 390-670, y 90-770), com a cabeça do noivo encostando no contador; maquininha "R$" com calendário "SÁB" e plaquinha "SINAL" (x 310-760); contrato assinado ("ASSINADO" e assinatura) à direita (x 830-1075); legenda "promessa" y 1240.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| FALHA (lente 50mm ocupa cerca de 15% da largura; plano é de contexto, mas a peça fica pequena e a legenda encosta nela) | parcial (madeira sim, tapete não) | ok (cabeça cortada pela borda, câmera visível) | ok (`cinquenta`) | n/a | FALHA (legenda toca a lente) | ok (2/13) |
+| ok (maquininha inteira e legível, 42% da largura) | ok | parcial (aparece só a lente da câmera, no canto superior esquerdo) | n/a | n/a | parcial (a noiva cobre parte da maquininha: o ombro do noivo passa atrás do R$) | ok (9/13) |
 
-### `s02_b_problema.png`
-**O que vejo:** Fotógrafo inteiro à esquerda com a câmera (lente do kit cinza, seletor M); etiqueta vermelha "FOTO ESCURA" em y 480; telão à direita no estado `escura` (igreja e casal escurecidos); a noiva da direita aparece cortada na borda. O card ainda digita "trocar a lente do kit" com cursor e sem ✓; contador 1/13; legenda "escurece" y 1180.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (lente do kit visível; ela deveria piscar, não pisca neste frame) | parcial (madeira sim, tapete não) | ok | ok (`escura`) | ok (telão escuro encena o problema) | ok | ok (1/13 coerente: a peça 2 só nasce em "cinquenta") |
-
-### `s02_c_solucao.png`
-**O que vejo:** Quadro idêntico ao s02_a (nesse segmento o momento da peça é a própria âncora da solução, então os dois stills caem no mesmo frame): lente 50mm preta com anéis dourados no ar no centro, lente cinza do kit ainda na câmera, telão `cinquenta`, etiqueta verde "50MM", contador 2/13, card com ✓, legenda "cinquenta" encostando na base da lente.
+### `card_s09_b_saiu.png`
+**O que vejo:** Mesmo close, quando o card terminou de sair: nenhum card; casal cliente (noiva ruiva x 140-400, noivo azul x 380-660, rostos visíveis) à esquerda atrás da maquininha "R$" e do calendário "SÁB" (x 310-760); contrato à direita com a assinatura e uma bolinha amarela correndo pelo cabo (x 780-840, y 650-700); legenda "promessa" y 1240; contador 9/13.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| FALHA (lente 50mm pequena, cerca de 15% da largura) | parcial (madeira sim, tapete não) | ok (cabeça cortada pela borda esquerda, câmera visível) | ok (`cinquenta`) | n/a | FALHA (legenda toca a lente) | ok (2/13) |
+| ok | ok | n/a (fora do quadro) | n/a | n/a | ok | ok (9/13) |
 
-
-## s03
-
-### `s03_a_momento.png`
-**O que vejo:** Close muito fechado: fotógrafo e câmera ocupam o quadro (câmera preta com 50mm dourada e seletor M, cerca de 75% da largura); o card "câmera com dois slots ✓" cobre a testa e o cabelo dele. Só aparece a aba escura do slot, fechada, na lateral esquerda da câmera: nenhum cartão visível. Telão fora do quadro. Contador 3/13, legenda "memória" y 1180. Madeira atrás e uma linha azul de tapete no canto direito.
+### `card_s13_a_saindo.png`
+**O que vejo:** Contexto de s13 com o card quase fora (só a faixa de baixo "pedir indicação ✓", y 0-95): plataforma na diagonal com todas as peças do ato 2, o casal cliente à esquerda (a noiva ruiva aponta para a direita), fotógrafo no centro, casal indicado (noivo cinza e noiva loira) ao lado dele e coração dourado entre eles; telão e 3 quadros acima; legenda "você" y 1240; contador 13/13.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| FALHA (cartões não aparecem; câmera ocupa 75% da largura) | parcial (madeira e um fio de tapete) | ok | FALHA (fora do quadro neste momento) | n/a | FALHA (card cobre a cabeça) | ok (3/13) |
+| ok (coração e todas as peças visíveis) | ok | ok | ok | n/a | ok | ok (13/13) |
 
-### `s03_b_problema.png`
-**O que vejo:** Fotógrafo à esquerda (cabeça visível) com a câmera 50mm; na lateral dela, na altura da cintura, dois cartões pequenos: o da esquerda vermelho com X branco e o da direita azul "SD" (cerca de 20% da largura, meio escondidos pelo braço). Etiqueta vermelha "CARTÃO CORROMPEU" em y 480. Telão à direita no estado `corrompida` (faixas deslocadas, retângulos magenta e verde). Casal cortado na borda direita. Contador 3/13, legenda "corrompe".
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| parcial (cartões visíveis mas pequenos e meio escondidos) | parcial (madeira sim, tapete não) | ok | ok (`corrompida`) | ok (cartão vermelho com X e telão com glitch) | ok | ok |
-
-### `s03_c_solucao.png`
-**O que vejo:** Mesma composição: etiqueta verde "SLOT 2 SALVOU" y 555; cartão esquerdo vermelho com X e o direito verde "SD" na lateral da câmera; telão `restaurada` (igreja clara) com o selo verde "SLOT 2" cortado pela borda direita (só "LOT" aparece); casal à direita em primeiro plano; legenda "slots".
+### `card_s13_b_saiu.png`
+**O que vejo:** Mesmo plano quando o card terminou de sair: nenhum card, telão e 3 quadros visíveis, plataforma com todas as peças e os dois casais, coração dourado, nuvem verde; legenda "pagar" y 1240; contador 13/13.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| parcial (cartões pequenos) | parcial (madeira sim, tapete não) | ok | FALHA (selo "SLOT 2" cortado pela borda; estado certo, `restaurada`) | n/a | ok | ok |
-
-
-## s04
-
-### `s04_a_momento.png`
-**O que vejo:** Momento = estouro do flash (+0,3 s). Cena em festa com luzes magenta e ciano; fotógrafo cortado na borda esquerda (só olho e barba), flash branco pequeno em cima da câmera (cerca de 12% da largura, parte dele cortada); globo espelhado cinza grande no meio, na frente do telão; casal dançando escuro à direita; telão `festa_flash` (bokeh colorido, noiva visível, noivo escondido pelo globo e pelo casal). Etiqueta verde "LUZ NA PISTA" em y 655 por cima do globo, card com ✓, contador 4/13, legenda "granulada" y 1180.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (flash pequeno e cortado pela borda) | parcial (madeira sim, tapete não) | ok (câmera visível, cabeça cortada) | ok (`festa_flash`, mas o casal real tapa metade da imagem) | n/a | FALHA (etiqueta sobre o globo e o casal) | ok (4/13) |
-
-### `s04_b_problema.png`
-**O que vejo:** Em "apagaram": cena escura e azulada, luz em 25%. Fotógrafo à esquerda com câmera 50mm e dois cartões; telão `festa_granulada` (pista azul-marinho com pontinhos de ruído e casal escuro); casal à direita enorme e cortado pela borda, com o globo cinza cortado no canto superior direito. Card ainda digitando "comprar um flash" com cursor, sem ✓; contador 3/13 (coerente, o flash ainda não caiu); sem etiqueta (a de "ISO 12800" vem depois); legenda "apagaram".
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (flash ainda não existe, como previsto; câmera visível) | parcial (madeira escura, tapete não) | ok | ok (`festa_granulada`) | ok (cena escurece e telão granula) | FALHA (globo e casal cortados pela borda direita) | ok (3/13) |
-
-### `s04_c_solucao.png`
-**O que vejo:** Quadro idêntico ao s04_a (momento e solução são o mesmo frame em s04): flash pequeno na câmera, globo, casal dançando, telão `festa_flash`, etiqueta "LUZ NA PISTA" em cima do globo, contador 4/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (flash pequeno e cortado) | parcial | ok | ok (`festa_flash`) | n/a | FALHA (etiqueta sobre o globo e o casal) | ok (4/13) |
-
-
-## s05
-
-### `s05_a_momento.png`
-**O que vejo:** Close do álbum dourado no pedestal cinza-escuro, com foto azul e rosa na capa e plaquinha branca "PORTFÓLIO" na frente; ocupa cerca de 59% da largura (x 210-850), no centro-alto. Madeira em cima (30%), plataforma escura embaixo (65%), sem tapete. Card com ✓, contador 5/13, legenda "contrata" em y 1180 encostando na base da plaquinha. Fotógrafo, telão e casal fora do quadro (close).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA leve (59% da largura, o limite é 55%) | parcial (madeira sim, tapete não) | n/a (close) | n/a (close) | n/a | FALHA (legenda toca a plaquinha) | ok (5/13) |
-
-### `s05_b_problema.png`
-**O que vejo:** Plano de contexto: álbum dourado pequeno no pedestal (cerca de 36% da largura, x 480-860, y 860-1180), etiqueta vermelha "CADÊ SEU TRABALHO?" em y 720 acima dele; telão grande no canto superior esquerdo, estado `festa_flash` (a foto final do ato 1), com o card cobrindo a parte de baixo dele; noiva do casal de amigos parcialmente visível na borda esquerda. Faixa azul de tapete só como linha fina na borda da plataforma; madeira e parede em volta. Legenda "sem" y 1180 encostando no pedestal. Fotógrafo não aparece (ele caminhou para o ato 2, fora do quadro).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (36% da largura, abaixo de 35% a 55%... fica no limite; o álbum ainda é legível) | parcial (madeira sim, tapete só uma linha) | FALHA (não aparece no plano de contexto) | ok (`festa_flash`, o último estado do ato 1) | parcial (só a etiqueta; nada encena a falta de trabalho) | FALHA (card cobre a parte de baixo do telão; legenda toca o pedestal) | ok (5/13) |
-
-### `s05_c_solucao.png`
-**O que vejo:** Contexto: álbum no pedestal (cerca de 28% da largura) com plaquinha PORTFÓLIO cortada pela legenda "separa" (a palavra cobre o rótulo); etiqueta verde "20 MELHORES"; um cabo curto saindo do telão com bolinha azul na ponta, que não chega ao álbum; casal de amigos na borda esquerda (acenando, braços fora do quadro); telão com o casal. As três fotos não aparecem (o álbum continua fechado neste frame). Card com ✓, contador 5/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (28% da largura; álbum fechado, as fotos voando e a abertura ainda não começaram) | parcial | FALHA (não aparece) | ok (`festa_flash`) | n/a | FALHA (legenda cobre a plaquinha PORTFÓLIO) | ok (5/13) |
-
-
-## s06
-
-### `s06_a_momento.png`
-**O que vejo:** Close do celular branco em pé, tela cinza vazia com barra magenta, plaquinha "INSTAGRAM" na frente com a legenda "guardado" por cima do texto; celular ocupa cerca de 28% da largura (x 400-700). Madeira e parede ao fundo; só um pedaço do álbum amarelo na borda esquerda. Card com ✓, contador 6/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (28% da largura, abaixo de 35%) | parcial (madeira sim, tapete não) | n/a (close) | n/a | n/a | FALHA (legenda cobre a plaquinha) | ok (6/13) |
-
-### `s06_b_problema.png`
-**O que vejo:** Celular em pé à direita do centro com tela cinza vazia (problema "ninguém viu" encenado), etiqueta vermelha "NINGUÉM VIU" em y 480; à esquerda a câmera grande do fotógrafo (lente 50mm dourada, flash em cima) com o cabo dourado e a bolinha amarela correndo do álbum até o celular; fotógrafo quase todo cortado pela borda esquerda (só o braço, a lente e o pé aparecem). Legenda "gaveta", card ✓, contador 6/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (celular visível e no centro, cerca de 22% da largura; contexto) | parcial (madeira sim, tapete não) | FALHA (quase todo cortado, o rosto não aparece) | n/a (ato 2) | ok (tela vazia + etiqueta) | ok | ok |
-
-### `s06_c_solucao.png`
-**O que vejo:** Contexto com "vitrine": celular à direita (cerca de 14% da largura) com só três miniaturas preenchidas no topo da grade (laranja, azul, rosa) e o resto cinza; etiqueta vermelha "NINGUÉM VIU" ainda ativa em y 480 (a verde "NOVO DIRECT" só nasce em 0,88 do segmento); cabo preto com bolinha azul do álbum ao celular; à esquerda a câmera do fotógrafo grande, com o rosto dele cortado pela borda (só parte do cabelo e do flash aparecem). Corações não aparecem. Legenda "vitrine".
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (celular pequeno, 14% da largura; grade ainda vazia, a animação só começou) | parcial (madeira sim, tapete não) | FALHA (rosto cortado pela borda) | n/a | n/a | ok | ok (6/13) |
-
-OBS: etiqueta de problema ainda na tela quando a solução já começou
-
-
-## s07
-
-### `s07_a_momento.png`
-**O que vejo:** Close da proposta num suporte inclinado: folha branca com "PROPOSTA", linhas cinza e selo dourado, plaquinha "PROPOSTA" na frente. Ocupa cerca de 48% da largura (x 440-860), centro-alto; o braço azul do noivo cliente aparece cortado na borda esquerda. Card ✓, contador 7/13, legenda "pergunta" y 1180 (por baixo do suporte, sem tocar na plaquinha). Madeira e uma linha de tapete atrás.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok | parcial (madeira e fio de tapete) | n/a (close) | n/a | n/a | ok | ok (7/13) |
-
-### `s07_b_problema.png`
-**O que vejo:** Plano de contexto com o casal cliente em primeiro plano: noiva (cabelo ruivo, costas) e noivo (terno azul, costas) enormes, ocupando 70% da largura; a proposta aparece pequena à direita, parcialmente atrás do noivo; etiqueta cinza "VISUALIZOU" em y 480 sobre a noiva; os cabelos e o rosto dos dois ficam atrás do card (só os topos de cabeça e os cabelos aparecem em cima do card). Legenda "visualiza" y 1180. Sem fotógrafo.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (proposta pequena e meio escondida atrás do casal) | parcial (madeira sim, canto de tapete) | FALHA (não aparece) | n/a | ok (casal de costas + etiqueta cinza) | FALHA (card cobre a cabeça e o rosto do casal) | ok (7/13) |
-
-### `s07_c_solucao.png`
-**O que vejo:** Casal cliente de costas à esquerda/centro (50% da largura), rostos em y 380-520 cortados pela base do card; etiqueta verde "QUERO FECHAR" em y 480 em cima do ombro; a proposta à direita, clara e brilhando, cortada pela borda direita ("OPOSTA"); à esquerda o álbum e o celular parcialmente visíveis ("TFÓLIO", "INSTA"); cabo preto saindo do álbum. Sem fotógrafo.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (proposta cortada pela borda direita, 25% da largura) | parcial | FALHA (não aparece) | n/a | n/a | FALHA (card corta os rostos do casal) | ok (7/13) |
-
-
-## s08
-
-### `s08_a_momento.png`
-**O que vejo:** Close do contrato: folha com linhas cinza no suporte inclinado, plaquinha "CONTRATO" na frente, caneta azul deitada junto à base; cobre cerca de 40% da largura (x 410-870). O noivo cliente (terno azul) ocupa o lado esquerdo inteiro, de costas, com a cabeça acima do quadro; o card tapa o tronco dele. Cabo preto com bolinhas azuis chega da proposta (canto superior direito, cortada). Contador 8/13 encostado na proposta cortada, legenda "desmarca" y 1180 por baixo da plaquinha (toca de leve).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (40% da largura) | FALHA (quase só plataforma escura; um fio de madeira no topo) | n/a (close) | n/a | n/a | FALHA (noivo ocupa 35% da tela e o card cobre o tronco dele; contador sobre a proposta cortada) | ok (8/13) |
-
-### `s08_b_problema.png`
-**O que vejo:** Contexto: noiva cliente (cabelo ruivo) grande à esquerda, de frente e já meio virada, etiqueta vermelha "DESMARCOU" em y 480 sobre o ombro dela; o card cobre os olhos e o topo da cabeça do noivo e do fotógrafo (só o cabelo e a boca aparecem); contrato à direita (30% da largura) com cabos para o celular e para a proposta; plaquinhas INSTAGRAM e PROPOSTA visíveis; fotógrafo cortado na borda esquerda (só o cabelo e o ombro). Faixa azul de tapete grande no canto inferior direito. Legenda "não" y 1180.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (contrato legível, 30% da largura) | ok (tapete azul visível no canto, madeira no fundo) | FALHA (cortado na borda, o rosto não aparece) | n/a | parcial (o casal virando de costas é difícil de ler como "desmarcou"; só a etiqueta deixa claro) | FALHA (card cobre os rostos) | ok (8/13) |
-
-### `s08_c_solucao.png`
-**O que vejo:** Contexto: casal cliente de costas à esquerda (noiva ruiva, noivo azul) com rostos em y 380-520 cortados pelo card; fotógrafo na borda esquerda com a câmera grande (lente 50mm dourada, flash) e o rosto escondido atrás do card; etiqueta verde "TEM O QUE COBRAR" em y 480; contrato à direita (cerca de 28% da largura) com a caneta azul em pé sobre a folha e o início da assinatura em pontinhos azuis; cabos para o celular e a proposta. Tapete azul grande no canto inferior direito, telão no canto superior esquerdo (cortado). Legenda "assinado".
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| parcial (contrato pequeno, assinatura em andamento mas o carimbo ASSINADO ainda não apareceu) | ok (tapete azul visível) | parcial (câmera visível, rosto atrás do card) | n/a | n/a | FALHA (card cobre os rostos) | ok (8/13) |
-
-
-## s09
-
-### `s09_a_momento.png`
-**O que vejo:** Close da maquininha dourada com "R$" verde e teclado, calendário "SÁB" ao lado, plaquinha "SINAL" na frente; as duas peças ocupam cerca de 63% da largura (x 250-830). O casal cliente de costas aparece atrás, cortado em cima (noiva à esquerda, noivo no centro), o card cobre o tronco deles; a proposta e o contrato aparecem cortados na borda direita com o cabo preto e a bolinha azul. Legenda "sinal" encostando na plaquinha "SINAL" e escondendo parte da palavra. Contador 9/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA leve (63% da largura, acima de 55%) | FALHA (quase só plataforma escura, sem madeira nem tapete) | n/a (close) | n/a | n/a | FALHA (legenda cobre a plaquinha SINAL; card cobre o casal) | ok (9/13) |
-
-### `s09_b_problema.png`
-**O que vejo:** Contexto: maquininha dourada (R$) e calendário SÁB no centro (cerca de 42% da largura, x 330-840), casal cliente grande atrás, com os rostos (noiva ruiva e noivo) visíveis acima do card e o tronco abaixo; etiqueta vermelha "SÓ PROMESSA" em y 480 sobre o terno do noivo; contrato com "ASSINADO" e a assinatura em pontos à direita (cortado na borda); cabo com a bolinha dourada correndo. Plataforma escura grande embaixo com os LEDs dourados e tapete azul no canto inferior (cerca de 35% da tela). Fotógrafo não aparece (só o cabelo do noivo e uma câmera preta atrás do card no canto superior esquerdo). Legenda "promessa" y 1180.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (42% da largura) | ok (tapete azul e LEDs visíveis; madeira só no topo) | FALHA (não aparece) | n/a | parcial (só etiqueta e casal parado; nada mostra a "promessa" sem sinal) | FALHA (card corta o casal; etiqueta sobre o noivo) | ok (9/13) |
-
-### `s09_c_solucao.png`
-**O que vejo:** Contexto: maquininha com "30%" amarelo e calendário SÁB com círculo verde (cerca de 35% da largura), casal cliente atrás com os rostos cortados pelo card (só os cabelos aparecem acima) e fotógrafo atrás (câmera e rosto parcial no canto superior esquerdo, cortados); etiqueta verde "DATA RESERVADA" em y 490; telão no canto superior esquerdo (cortado), contrato "ASSINADO" e celular com grade à direita. Plataforma grande com LEDs e tapete azul embaixo (cerca de 40% da tela); madeira no canto inferior direito. Legenda "reservada".
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (35% da largura) | ok (tapete e LEDs bem visíveis) | FALHA (rosto atrás do card, só o cabelo e a câmera) | n/a | n/a | FALHA (card cobre os rostos do casal) | ok (9/13) |
-
-
-## s10
-
-### `s10_a_momento.png`
-**O que vejo:** Close do backup: dois HDs cinza com LEDs azuis lado a lado (cerca de 70% da largura, x 160-880) e plaquinha "BACKUP" cortada pelo caractere "o" da legenda; a nuvem branca grande no ar (y 380-700) cobre parte do card, a noiva cliente (ruiva) à direita e o fotógrafo acima (flash e cabeça cortados no topo). Plataforma escura, LEDs dourados e tapete azul embaixo (cerca de 25% da tela). Card com ✓, contador 10/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA (70% da largura, acima de 55%; nuvem tapada pelo card) | parcial (tapete e LEDs sim, madeira não) | parcial (câmera e flash visíveis, cabeça cortada pelo topo) | n/a | n/a | FALHA (legenda "o" cobre a plaquinha BACKUP; card cobre a nuvem) | ok (10/13) |
-
-### `s10_b_problema.png`
-**O que vejo:** Contexto: HD 1 (esquerda) queimado, escuro, com luz vermelha e fumaça cinza e rosada subindo; HD 2 com LED azul; nuvem branca com tom rosado no ar e dois cabos pretos descendo até os HDs com bolinhas azuis e uma bolinha amarela correndo; casal cliente à direita com a noiva ruiva em rosa pela luz vermelha; fotógrafo atrás com a câmera 50mm e o cabo. Etiqueta vermelha "HD QUEIMOU" em y 480. Peça com cerca de 45% da largura. Legenda "inteiro" cobre a plaquinha BACKUP. Telão no canto superior esquerdo.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (45% da largura) | ok (tapete azul e LEDs; madeira no topo) | parcial (câmera visível, rosto atrás do card) | n/a | ok (fumaça e luz vermelha encenam o HD queimado) | FALHA (legenda cobre a plaquinha BACKUP) | ok (10/13) |
-
-### `s10_c_solucao.png`
-**O que vejo:** Contexto: nuvem verde-clara e HD 2 com tom verde e LED verde (cerca de 40% da largura do grupo), HD 1 escuro com fumaça cinza subindo; etiqueta verde "3 CÓPIAS" em y 480; casal cliente à direita (noiva ruiva e noivo, rostos visíveis, braços cruzados na frente do corpo); fotógrafo atrás com a câmera, o cartão vermelho com X e o verde SD na lateral, rosto parcial e flash visíveis acima do card; cabo da câmera ao HD 1 e à nuvem; maquininha "30%" cortada na borda direita. Tapete azul e LEDs dourados ocupam 25% inferior, madeira no canto inferior esquerdo. Legenda "cópias" cobre o topo da plaquinha BACKUP.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (grupo HDs + nuvem em cerca de 45% da largura) | ok (tapete, LEDs e madeira visíveis) | ok (câmera na mão e rosto parcial visível) | n/a | n/a | FALHA (legenda sobre a plaquinha BACKUP; maquininha cortada na borda) | ok (10/13) |
-
-
-## s11
-
-### `s11_a_momento.png`
-**O que vejo:** Close do tablet preto com grade de 6 fotos coloridas e cadeado dourado aberto no canto, plaquinha "GALERIA" na frente; cerca de 58% da largura (x 245-870), centro-alto. A noiva cliente aparece cortada no canto superior direito (saia e braço); card com ✓ cobre a parte de cima. A legenda "foto" toca a plaquinha. Fundo quase todo plataforma escura (80%); um pedaço de madeira no topo e um fio de LED no canto inferior esquerdo. Contador 11/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA leve (58% da largura, acima de 55%) | FALHA (quase só plataforma escura; sem tapete visível) | n/a (close) | n/a | n/a | FALHA (legenda toca a plaquinha; contador encosta no braço da noiva) | ok (11/13) |
-
-### `s11_b_problema.png`
-**O que vejo:** Contexto: tablet com a grade de fotos à esquerda (cerca de 38% da largura), cadeado dourado, plaquinha "GALERIA" com a legenda "WhatsApp" por cima; celular pequeno branco com foto pixelada aparece cortado na borda esquerda (só 8% da largura); cabo da nuvem com bolinha dourada ao tablet; casal cliente grande atrás com rostos visíveis acima do card e corpos abaixo; HD 1 cinza (apagado) à direita; etiqueta vermelha "FOTO COMPRIMIDA" em y 480. Tapete azul e LEDs na parte de baixo (cerca de 20%). Fotógrafo não aparece.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| parcial (tablet 38% da largura, mas o celular pixelado está cortado e quase invisível) | ok (tapete e LEDs visíveis) | FALHA (não aparece) | n/a | FALHA (celular com foto pixelada cortado pela borda, o problema quase não é visto) | FALHA (legenda "WhatsApp" cobre a plaquinha GALERIA; card corta o casal) | ok (11/13) |
-
-### `s11_c_solucao.png`
-**O que vejo:** Contexto: tablet com a tela mais clara e quente (acende), cadeado dourado, etiqueta verde "GALERIA COM SENHA" em y 548; celular pixelado sumiu (correto); casal cliente atrás (noiva de costas, noivo de frente, rostos em parte cortados pelo card); nuvem verde grande cortada na borda direita; HD 1 e cabo; fotógrafo no canto superior direito, só cabelo, flash e lente da câmera. Telão no canto superior esquerdo. Legenda "Galeria" cobre a plaquinha GALERIA. Tapete azul e LEDs embaixo (25%).
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (tablet 33% da largura, mais claro) | ok (tapete e LEDs visíveis, madeira no canto) | FALHA (quase fora do quadro, só flash e lente) | n/a | n/a | FALHA (legenda cobre a plaquinha; nuvem cortada na borda) | ok (11/13) |
-
-
-## s12
-
-### `s12_a_momento.png`
-**O que vejo:** Close do balão de fala amarelo no alto (cerca de 59% da largura, x 225-865, y 600-950) com 5 estrelas cinza; embaixo, tapando a base do balão, a cabeça do noivo cliente (cabelo escuro), a noiva ruiva por trás com a plaquinha "DEPOI" cortada e o fotógrafo (câmera com 50mm e flash) à direita; nuvem verde cortada no canto inferior direito; telão no canto esquerdo; quadros na parede. Legenda "amou" por cima do rosto do noivo. Contador 12/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| FALHA leve (59% da largura, acima de 55%) | FALHA (madeira só numa faixa fina; plataforma escura embaixo, sem tapete) | parcial (câmera e flash visíveis, rosto escondido atrás da lente) | n/a | n/a | FALHA (legenda sobre o rosto do noivo; o balão fica sobre o card) | ok (12/13) |
-
-### `s12_b_problema.png`
-**O que vejo:** Contexto: balão amarelo com 5 estrelas cinza (cerca de 47% da largura) e etiqueta vermelha "SÓ VOCÊ SABE" em y 480 em cima dele (o problema é encenado só por estrelas apagadas); noivo cliente grande no centro, noiva ruiva atrás com a plaquinha "DEPOI" cortada, fotógrafo atrás com câmera 50mm e flash, e o rosto atrás da lente; cabos azuis em volta, nuvem verde, tablet GALERIA à esquerda embaixo, HD cinza embaixo. Legenda "disso" cobre o tronco do noivo. Telão no canto esquerdo e quadros no topo. Sem tapete visível.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (balão e estrelas legíveis, 47%) | FALHA (plataforma escura e peças, sem madeira nem tapete) | parcial (câmera e flash visíveis, rosto escondido) | n/a | parcial (estrelas cinza + etiqueta; nada mais) | FALHA (legenda sobre o noivo) | ok (12/13) |
-
-### `s12_c_solucao.png`
-**O que vejo:** Contexto: balão com 4 estrelas brancas acesas e a 5ª ainda cinza (acendem uma por uma), etiqueta verde "POSTOU" em y 480 dentro do balão; noivo cliente no centro, noiva ruiva atrás; fotógrafo atrás com câmera e flash; nuvem verde grande à direita; tablet GALERIA e HDs com plaquinhas "GALERIA" e "BACKUP" no terço inferior; celular Instagram à direita com "TAGRAM" cortado; a estrela dourada voadora não aparece neste frame. Legenda "posta" sobre o tronco do noivo.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| ok (balão 45% da largura) | FALHA (sem madeira nem tapete; só plataforma e peças) | parcial (câmera e flash visíveis, rosto escondido atrás da lente) | n/a | n/a | FALHA (legenda sobre o noivo; muitos objetos juntos, cena poluída) | ok (12/13) |
-
-
-## s13
-
-### `s13_a_momento.png`
-**O que vejo:** Momento = chegada do casal indicado. Visão de cima da plataforma com muitos objetos: casal cliente à esquerda (noivo azul com rosto virado, noiva atrás), casal indicado à direita (noivo cinza de costas com cabelo escuro, noiva loira ao fundo), coração dourado entre eles (cerca de 15% da largura), fotógrafo atrás no centro (câmera, flash e cabeça cortados pelo card), nuvem verde grande, HDs, maquininha "30%" e calendário SÁB embaixo, Instagram à direita com plaquinha. Telão no canto superior esquerdo com o casal da festa. Tapete azul e LEDs no canto inferior esquerdo (cerca de 25%). Legenda "sem" no meio do HD verde. Contador 13/13.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| parcial (o coração é pequeno; os casais ficam sobrepostos e a cena é confusa) | ok (tapete, LEDs e madeira visíveis) | parcial (câmera visível, rosto cortado pelo card) | n/a | n/a | FALHA (card cobre cabeças; legenda sobre o HD; casais sobrepostos) | ok (13/13) |
-
-### `s13_b_problema.png`
-**O que vejo:** Em "indica": mesma visão de cima, mas o contador marca 12/13 e o card ainda digita sem ✓ (coerente: a peça 13 só chega depois). Casal cliente à esquerda (noivo azul, noiva atrás), fotógrafo no centro com a câmera 50mm e o cabo preto saindo da lente até o HD verde, nuvem verde, HDs, maquininha "30%" e calendário SÁB, Instagram à direita com plaquinha. O casal indicado ainda não aparece (ele entra a partir daqui). Tapete azul e LEDs embaixo à esquerda (cerca de 25%), madeira no canto. Legenda "indica" cobre o HD verde. Telão com o casal da festa no canto superior esquerdo.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| n/a (peça 13 ainda não nasceu) | ok (tapete, LEDs e madeira) | ok (câmera na mão, cabeça cortada pelo card) | n/a | parcial (nada indica a falta de indicação; só o casal indicado começa a entrar, ainda fora do quadro) | FALHA (legenda sobre o HD verde) | ok (12/13 coerente com o momento) |
-
-### `s13_c_solucao.png`
-**O que vejo:** Em "pronto": etiqueta verde "NOVO CLIENTE" em y 480, casal indicado à direita do casal cliente (noivo cinza de costas e noiva loira) e coração dourado entre eles; a bolinha dourada amarela corre pelo cabo no canto direito; balão com 5 estrelas cortado atrás do card; fotógrafo no centro com câmera e cabo; nuvem verde; maquininha e calendário. Tapete azul, LEDs e madeira ocupam cerca de 35% inferior. Legenda "Pronto" cobre o HD verde e parte da plaquinha BACKUP. Contador 13/13, card com ✓.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| parcial (casais sobrepostos, coração visível mas pequeno, 20% da largura) | ok (tapete, LEDs, madeira) | parcial (câmera visível, rosto atrás do card) | n/a | n/a | FALHA (legenda sobre o HD e a plaquinha BACKUP; balão cortado pelo card) | ok (13/13) |
-
-
-## s14
-
-### `s14_a_momento.png`
-**O que vejo:** Plano alto no início do segmento (início + 1,5 s, a câmera ainda não recuou): plataforma inteira em diagonal com os objetos agrupados no centro-direita; chão de madeira ocupa metade inferior (cerca de 45%), tapete azul em volta, parede com 3 quadros e telão (casal da festa) no topo. Card "pedir indicação ✓" ainda visível (cobre a base dos quadros), contador 13/13, legenda "para" em y 1180 sobre a madeira. Fotógrafo pequeno no meio do grupo, com câmera; lado esquerdo da plataforma vazio. Plataforma ocupa cerca de 60% da largura; peças pequenas.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| n/a (plano final) | ok (madeira, tapete e LEDs) | ok (aparece pequeno com a câmera na mão) | n/a | n/a | FALHA leve (card ainda cobre os quadros; metade esquerda da plataforma vazia) | ok (13/13) |
-
-### `s14_b_problema.png`
-**O que vejo:** Em "para" + 0,3 s: câmera já recuou. Plataforma inteira em diagonal, 3 quadros e o telão visíveis, chão de madeira em 45% inferior e tapete azul em volta; objetos agrupados no centro-direita; contador 13/13; o card já saiu (correto); legenda "na" em y 1190. Sem textos finais (correto, ainda não é "comenta"). Lado esquerdo da plataforma vazio.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| n/a | ok | ok (pequeno, com câmera na mão, no grupo) | n/a | n/a | ok | ok (13/13) |
-
-### `s14_c_solucao.png`
-**O que vejo:** Em "comenta" + 0,3 s: plano alto com os três textos finais já na tela ("COMENTA QUAL PEÇA" branco em y 420, "VOCÊ QUER VER" amarelo em y 540; o terceiro, "DESMONTADA", ainda não apareceu), confete caindo (cubos pequenos), legenda "Comenta" y 1190 sobre os LEDs, o @ ainda não aparece (entra depois). Os dois textos se sobrepõem aos quadros da parede e ao telão (o texto amarelo cobre o telão). Plataforma com objetos agrupados no centro-direita, madeira em 45% inferior.
-
-| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
-|---|---|---|---|---|---|---|
-| n/a | ok | ok (pequeno, com câmera, no grupo) | n/a | n/a | FALHA (texto amarelo cobre o telão e os dois textos cobrem os quadros) | ok (13/13; textos legíveis, acentos Ç e Ê corretos) |
+| ok | ok | ok | ok | n/a | ok (o card saiu) | ok (13/13) |
 
 
 ## final
 
 ### `final_a_para_1.8s.png`
-**O que vejo:** "para" + 1,8 s: plano alto aberto, plataforma inteira em diagonal, 3 quadros e telão acima, madeira em 45% inferior, tapete azul em volta; objetos agrupados no centro-direita, lado esquerdo vazio; sem card (saiu), contador 13/13, legenda "entende" y 1180 por cima dos LEDs da plataforma. Fotógrafo pequeno no grupo, com câmera na mão.
+**O que vejo:** "para" + 1,8 s: plano alto aberto: plataforma na diagonal (x 0-910, y 700-1280) com 3 quadros e o telão na parede, a mesa de edição com a lâmpada no canto direito (x 1010-1080), madeira em 45% inferior; personagens e peças no meio-esquerda; sem card (saiu), contador 13/13, legenda "entende" y 1240 sobre os LEDs; os textos finais ainda não entraram (correto).
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| n/a | ok | ok (pequeno) | n/a | n/a | ok | ok (13/13) |
+| ok | ok | ok (pequeno) | ok | n/a | ok | ok (13/13) |
 
 ### `final_b_comenta_0.5s.png`
-**O que vejo:** "comenta" + 0,5 s: os três textos finais completos ("COMENTA QUAL PEÇA", "VOCÊ QUER VER", "DESMONTADA" azul), legenda "qual" y 1180, confete; o pill "@ramesfares" ainda não aparece (ele entra 18 frames, 0,6 s, depois de "comenta", por desenho). "DESMONTADA" ocupa y 640-710 e encosta no grupo de peças (cobre a parte de cima do balão); "VOCÊ QUER VER" cobre o telão; "COMENTA QUAL PEÇA" cobre os quadros. Textos dentro da área segura (x 140-940).
+**O que vejo:** "comenta" + 0,5 s: os três textos finais completos: "COMENTA QUAL PEÇA" branco (y 420), "VOCÊ QUER VER" amarelo itálico (y 540), "DESMONTADA" azul itálico (y 670, x 145-935), dentro da área segura; confete; legenda "qual" y 1240; o pill "@ramesfares" ainda não aparece (entra em 0,6 s, por desenho); "DESMONTADA" cobre o telão e "VOCÊ QUER VER" toca um quadro.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| n/a | ok | ok (pequeno) | n/a | n/a | FALHA (os textos cobrem o telão, os quadros e o topo do balão de estrelas) | ok (3 textos legíveis e na área segura; @ só entra em +0,6 s, por desenho) |
+| ok | ok | ok | ok | n/a | parcial (os textos finais cobrem o telão e dois quadros, que são cenário) | ok (3 textos legíveis; @ só entra em +0,6 s, por desenho) |
 
 ### `final_c_ultimo_frame.png`
-**O que vejo:** Último frame: os três textos finais + pill escuro "@ramesfares" em y 1440 sobre a madeira (dentro da área segura), confete caindo, contador 13/13; sem legenda (a última palavra já sumiu). Plataforma inteira com os objetos agrupados; textos em x 160-940, dentro da área segura; "DESMONTADA" encosta nas peças.
+**O que vejo:** Último frame: os três textos finais e o pill escuro "@ramesfares" em y 1440 (x 390-690, dentro da área segura), confete; contador 13/13; sem legenda (a última palavra já sumiu); plataforma com os personagens e as peças, telão coberto em parte por "DESMONTADA"; madeira em 45% inferior.
 
 | peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
 |---|---|---|---|---|---|---|
-| n/a | ok | ok (pequeno) | n/a | n/a | FALHA leve ("VOCÊ QUER VER" cobre o telão, "DESMONTADA" toca o balão) | ok (13/13, @ legível, sem travessão) |
+| ok | ok | ok | ok | n/a | parcial (texto final sobre o telão e quadros, cenário) | ok (13/13, @ legível, sem travessão) |
+
+
+## s00
+
+### `s00_a_momento.png`
+**O que vejo:** Abertura, sem card nem contador (correto, é o gancho). Fotógrafo à esquerda (x 285-470, y 530-860) segurando a câmera preta com AUTO e a lente do kit cinza; casal de amigos lado a lado (noiva de vestido branco e cabelo preso em x 560-720, noivo de terno azul-marinho em x 720-805), de perfil; sem telão (correto). Tapete azul quadriculado com borda grafite e LEDs dourados, chão de madeira e tapete bege em volta, 2 quadros; legenda "se" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | n/a | n/a | ok | ok |
+
+### `s00_b_problema.png`
+**O que vejo:** Mesmo plano: etiqueta vermelha "FOTÓGRAFO?" em y 374, acima e à esquerda da cabeça do fotógrafo, sem tocá-la; câmera ao peito; casal lado a lado; legenda "fotógrafo" y 1240; sem contador (correto).
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | n/a | parcial (neste frame só a etiqueta aparece: câmera ao rosto e flash de tela ocorrem antes do instante amostrado) | ok | ok |
+
+### `s00_c_solucao.png`
+**O que vejo:** Em "treze": a câmera recuou e mostra a plataforma inteira (x 95-990, y 590-950) com o fotógrafo e o casal pequenos em cima; 3 quadros na parede e a ponta de uma mesa no canto direito; contador "PEÇAS 0/13" em y 208; legenda "treze" y 1240; madeira em 50% inferior da tela, com o tapete bege em volta da plataforma.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (plataforma inteira) | ok | ok (pequeno, com a câmera) | n/a | n/a | ok | ok (0/13) |
+
+
+## s01
+
+### `s01_a_momento.png`
+**O que vejo:** Close da câmera no momento da peça, com o corpo dourado do pulso: câmera com AUTO e lente do kit cinza (x 360-695), fotógrafo de frente com rosto e barba (x 265-480); card "comprar uma câmera ✓" (y 250-378) encostando no topo do cabelo, sem cobrir o rosto; contador 1/13; telão `auto` cortado na borda direita e a noiva em primeiro plano à direita; legenda "existe" y 1240; tapete quadriculado em 50% do quadro.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | parcial (só uma ponta na borda direita; é close da câmera) | n/a | parcial (o card encosta no topo do cabelo) | ok (1/13) |
+
+### `s01_b_problema.png`
+**O que vejo:** Contexto, card já saiu (só o contador 1/13): fotógrafo inteiro à esquerda (x 320-470, y 645-900) com a câmera AUTO; casal de amigos lado a lado (noiva x 555-680, noivo x 680-745); telão `auto` (cinza dessaturado, casal e selo AUTO) atrás deles; etiqueta vermelha "MODO AUTO" em y 541 acima da cabeça do fotógrafo, encostando na quina esquerda do telão; legenda "automático" y 1240; tapete, madeira e tapete bege em volta.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok (inteiro) | ok (`auto`) | ok (imagem acinzentada no telão + etiqueta) | parcial (a etiqueta toca a quina do telão, sem cobrir o conteúdo) | ok (1/13) |
+
+### `s01_c_solucao.png`
+**O que vejo:** Contexto: etiqueta verde "APRENDE O MANUAL" em y 538 acima do fotógrafo, sobre a quina esquerda do telão; telão `manual` (pôr do sol laranja, casal nítido); seletor da câmera com "M" verde; casal lado a lado; contador 1/13; legenda "caro" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | ok (`manual`) | n/a | parcial (etiqueta sobre a quina do telão, fora do casal retratado) | ok (1/13) |
+
+
+## s02
+
+### `s02_a_momento.png`
+**O que vejo:** Close da câmera no momento da peça: lente do kit cinza na câmera e a 50mm preta com anéis dourados e "50mm" entrando pela frente (x 610-795, y 725-910) ao lado da lente do kit; fotógrafo de frente (x 255-640); card ✓ (y 250-378) sem tocar o rosto; etiqueta verde "50MM" em y 470 encostando na cabeça dele (x 410-585 vs cabelo até x 465); contador 2/13; telão `cinquenta` cortado na borda direita; legenda "cinquenta" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (câmera e a 50mm inteiras no quadro) | ok | ok | parcial (cortado na borda; é close) | n/a | parcial (a etiqueta encosta no cabelo do fotógrafo) | ok (2/13) |
+
+### `s02_b_problema.png`
+**O que vejo:** Contexto: card digitando "trocar a lente do kit" com cursor (a peça só nasce em "cinquenta"), contador 1/13 (coerente); fotógrafo inteiro à esquerda com a lente do kit cinza; telão `escura` (igreja escurecida, casal escuro); etiqueta vermelha "FOTO ESCURA" em y 540 sobre a quina do telão; casal lado a lado; legenda "escurece" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (lente do kit visível) | ok | ok | ok (`escura`) | ok (telão escurecido encena o problema) | parcial (etiqueta sobre a quina do telão) | ok (1/13) |
+
+### `s02_c_solucao.png`
+**O que vejo:** Mesmo frame do s02_a (neste segmento momento e solução coincidem): lente do kit na câmera e a 50mm dourada entrando (x 610-795), fotógrafo de frente, card ✓, etiqueta verde "50MM" y 470 encostando no cabelo, contador 2/13, legenda "cinquenta" y 1240, telão `cinquenta` cortado à direita.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | parcial (cortado; é close) | n/a | parcial (etiqueta encosta no cabelo) | ok (2/13) |
+
+
+## s03
+
+### `s03_a_momento.png`
+**O que vejo:** Close da câmera com a 50mm dourada instalada e "M" verde no seletor: dois cartões SD azuis saindo do slot esquerdo (x 255-455, y 765-850), fotógrafo de frente (x 290-500, y 380-1130); card "câmera com dois slots ✓" (y 250-378) toca o topo do cabelo, sem cobrir o rosto; contador 3/13; noiva grande à direita (x 790-1080) e telão `cinquenta` cortado; legenda "memória" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (câmera 45% da largura da caixa, cartões legíveis) | ok | ok | parcial (cortado; é close) | n/a | parcial (card encosta no topo do cabelo) | ok (3/13) |
+
+### `s03_b_problema.png`
+**O que vejo:** Contexto: fotógrafo inteiro à esquerda com a câmera, a 50mm dourada e dois cartões na lateral (esquerdo vermelho com X branco, direito azul SD); telão `corrompida` (faixas deslocadas, retângulos magenta e verde sobre a igreja); casal lado a lado; etiqueta vermelha "CARTÃO CORROMPEU" em y 541 acima do fotógrafo, sobre a quina do telão; contador 3/13; legenda "corrompe" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | ok (`corrompida`) | ok (cartão vermelho com X e telão com glitch) | parcial (etiqueta sobre a quina do telão) | ok (3/13) |
+
+### `s03_c_solucao.png`
+**O que vejo:** Contexto: etiqueta verde "SLOT 2 SALVOU" em y 540; cartão esquerdo vermelho com X e direito verde SD; telão `restaurada` (igreja clara, casal nítido) com o selo verde "SLOT 2" inteiro e com 40 px de margem (x 715-765, y 715); casal lado a lado; contador 3/13; legenda "slots" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | ok (`restaurada`) | n/a | parcial (etiqueta sobre a quina do telão) | ok (3/13) |
+
+
+## s04
+
+### `s04_a_momento.png`
+**O que vejo:** Momento do estouro do flash: close da câmera (x 345-690) com o flash branco na sapata (x 485-595, y 595-700), a 50mm com reflexo roxo e dois cartões; cena em luz baixa com tons roxo e azul no tapete; globo espelhado branco à direita cobrindo parte do telão (`festa_flash`, bokeh colorido); casal dançando cortado pela borda direita; card ✓ (y 250-378); etiqueta verde "LUZ NA PISTA" y 470 acima da cabeça do fotógrafo, sem tocá-la; contador 4/13; legenda "granulada" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (câmera com flash e mãos ocupa 45% pela caixa declarada, mas o grupo visível mede 32% da largura: a caixa inclui os antebraços) | ok | ok | ok (`festa_flash`, parcialmente coberto pelo globo) | n/a | ok | ok (4/13) |
+
+### `s04_b_problema.png`
+**O que vejo:** Contexto em "apagaram": cena escurecida e azulada (luz em 25%), tapete com manchas de luz azul e roxa; globo branco brilhante sobre as cabeças do casal; telão com ruído (`festa_granulada`: pontinhos sobre o bokeh); fotógrafo inteiro à esquerda com a câmera, cartões e a 50mm; card digitando "comprar um flash" com cursor, sem ✓; contador 3/13 (coerente: o flash ainda não caiu); sem etiqueta (a de ISO vem depois); legenda "apagaram" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (o flash ainda não existe, como previsto) | ok | ok | ok (`festa_granulada`) | ok (luz cai a 25% e o telão fica granulado) | parcial (o globo cobre as cabeças do casal, parte da festa) | ok (3/13) |
+
+### `s04_c_solucao.png`
+**O que vejo:** Mesmo frame do s04_a (momento e solução coincidem): close da câmera com flash, globo, casal cortado na borda direita, etiqueta "LUZ NA PISTA", telão `festa_flash`, contador 4/13, card ✓.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (grupo visível 32% da largura, caixa 45%) | ok | ok | ok (`festa_flash`) | n/a | ok | ok (4/13) |
+
+
+## s05
+
+### `s05_a_momento.png`
+**O que vejo:** Close do álbum dourado no pedestal grafite com plaquinha "PORTFÓLIO" (x 320-765, 41% da largura, y 600-945); card ✓ (y 250-378) e contador 5/13 sem sobreposição; legenda "contrata" y 1240 sem tocar a peça; tapete quadriculado ocupa 60% do quadro, madeira e parede ao fundo; o telão aparece cortado na borda esquerda.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (41%, dentro da tolerância) | ok | n/a (close) | n/a (close) | n/a | ok | ok (5/13) |
+
+### `s05_b_problema.png`
+**O que vejo:** Contexto: telão `festa_flash` (x 320-615), casal de amigos lado a lado (x 420-605), álbum dourado fechado no pedestal com plaquinha PORTFÓLIO (x 715-840), personagem curioso de camiseta cinza à direita (x 840-920, y 720-995) com os braços levantados e balão "?" acima da cabeça (x 925-1000, y 665-735); fotógrafo inteiro à esquerda (x 160-320) com câmera, flash e cartões; etiqueta vermelha "CADÊ SEU TRABALHO?" em y 495 sobre o quadro da parede, sem tocar personagem; contador 5/13; legenda "sem" y 1240; sem card.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (álbum visível, mas pequeno: 11% da largura; é contexto) | ok | ok | ok (`festa_flash`) | ok (curioso com braços levantados e "?") | ok | ok (5/13) |
+
+### `s05_c_solucao.png`
+**O que vejo:** Contexto: etiqueta verde "20 MELHORES" em y 497 acima do curioso, sobre o quadro; curioso à direita com o braço estendido ao álbum (joinha), casal de amigos com os braços estendidos, cabo preto do telão ao álbum; fotógrafo inteiro à esquerda; álbum ainda fechado neste frame; contador 5/13; legenda "separa" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (álbum com 11% da largura e ainda fechado neste frame; abre logo depois) | ok | ok | ok | n/a | ok | ok (5/13) |
+
+
+## s06
+
+### `s06_a_momento.png`
+**O que vejo:** Close do celular branco com tela cinza e barra magenta (x 450-655, y 565-930) sobre a base grafite com a plaquinha "INSTAGRAM" (peça inteira x 380-705 = 30% da largura); o álbum cortado na borda esquerda; card ✓ (y 250-378) e contador 6/13 sem se tocar; legenda "guardado" y 1240 sem tocar a peça; tapete quadriculado em 55% do quadro, madeira e parede ao fundo.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (30% da largura: o celular é alto e estreito e a altura da janela útil de 590 px limita antes dos 45%; o log do enquadramento marca "limitada pela altura") | ok | n/a (close) | n/a | n/a | ok | ok (6/13) |
+
+### `s06_b_problema.png`
+**O que vejo:** Contexto: celular com a tela cinza vazia (x 440-520, y 575-715, 7% da largura) ao lado do fotógrafo, que está de lado com a câmera, o flash e os cartões (x 240-490); casal cliente já assentado e parado à direita (noiva ruiva x 595-755 e noivo azul x 750-905, rostos visíveis, y 535-950); etiqueta vermelha "NINGUÉM VIU" em y 354 sobre a parede, acima do celular, sem tocar nenhum objeto; contador 6/13; legenda "gaveta" y 1240; tapete bege e madeira em 35% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (celular inteiro e visível, mas com 7% da largura porque o plano precisa mostrar o fotógrafo e o casal; a tela vazia lê como cinza) | ok | ok (de lado, câmera na mão, rosto de perfil) | n/a | ok (tela cinza vazia + etiqueta) | ok | ok (6/13) |
+
+### `s06_c_solucao.png`
+**O que vejo:** Contexto: celular com 3 miniaturas coloridas no topo da grade e o resto cinza (x 450-530, y 575-715); cabo com bolinha azul do álbum; fotógrafo de frente (x 235-410) com câmera, flash e cartões; casal cliente parado à direita (rostos visíveis); etiqueta vermelha "NINGUÉM VIU" ainda ativa em y 353 (a verde só nasce em 88% do segmento); legenda "vitrine" y 1240; contador 6/13.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (celular inteiro com 7% da largura; o contexto precisa caber o fotógrafo e o casal) | ok | ok | n/a | n/a | ok | ok (6/13) |
+
+
+## s07
+
+### `s07_a_momento.png`
+**O que vejo:** Close da proposta: folha branca com "PROPOSTA", linhas cinza e selo dourado (x 450-690, y 600-890) sobre a base grafite com a plaquinha (peça inteira x 320-765 = 41% da largura); o celular com a grade preenchida e o cabo azul à esquerda, cortados; card ✓ e contador 7/13 sem se tocar; legenda "pergunta" y 1240 sem tocar; tapete quadriculado embaixo e a borda grafite da plataforma à direita.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (peça inteira com 41%, dentro de 45% ± 5%) | ok | n/a (close) | n/a | n/a | ok | ok (7/13) |
+
+### `s07_b_problema.png`
+**O que vejo:** Contexto: etiqueta cinza "VISUALIZOU" em y 420 acima do casal, sem tocá-lo; casal cliente assentado (noiva ruiva x 480-610 e noivo azul x 615-770, rostos visíveis) ao lado da proposta, que aparece inteira à direita (x 760-920, "PROPOSTA" legível, selo dourado); fotógrafo (x 190-385) com câmera e flash; telão `festa_flash` no canto esquerdo; legenda "visualiza" y 1240; tapete bege e madeira em volta.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (proposta inteira, sem oclusão; 15% da largura em contexto) | ok | ok | ok (aparece, em `festa_flash`) | ok (casal parado e etiqueta cinza) | ok | ok (7/13) |
+
+### `s07_c_solucao.png`
+**O que vejo:** Contexto: etiqueta verde "QUERO FECHAR" em y 423 acima do casal; casal cliente de frente (noiva ruiva x 480-630, noivo azul x 620-770) ao lado da proposta clara com selo (x 790-930, "PROPOSTA" legível, brilhando); fotógrafo (x 190-390) com câmera e flash; telão e álbum atrás à esquerda; legenda "proposta" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (proposta inteira, sem oclusão) | ok | ok | ok | n/a | ok | ok (7/13) |
+
+
+## s08
+
+### `s08_a_momento.png`
+**O que vejo:** Close do contrato no suporte (folha com linhas, caneta azul deitada, plaquinha "CONTRATO"; peça inteira x 340-750 = 38% da largura, y 590-995); proposta atrás à direita, celular no centro e cabos pretos em arco com esferas azuis ligando as peças; o fotógrafo aparece cortado na borda esquerda (só rosto e ombro, x 0-70); card ✓ (y 250-378) sobre o celular e os cabos; contador 8/13; legenda "desmarca" y 1240 por baixo da plaquinha, sem tocar; tapete bege e madeira no canto inferior direito.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (38% da largura com a base, apenas 2,5 pontos abaixo da faixa de 40,5%: o solver mede 45% pela caixa declarada, que é um pouco maior que o suporte real) | ok | parcial (rosto cortado pela borda esquerda no close; é close do contrato) | n/a | n/a | parcial (o card cobre o celular e o cabo, peças vizinhas) | ok (8/13) |
+
+### `s08_b_problema.png`
+**O que vejo:** Contexto: o casal cliente vira de costas em "desmarca": o noivo azul de costas (x 380-500) e a noiva ruiva de três quartos (x 460-640); etiqueta vermelha "DESMARCOU" em y 375 acima do casal, sem tocá-lo; contrato (x 650-905, y 775-980) e proposta legíveis à direita; fotógrafo (x 215-390) com câmera e flash; álbum e telão à esquerda; legenda "não" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (contrato inteiro e legível, 24% da largura) | ok | ok | ok | ok (casal virando as costas, etiqueta) | ok | ok (8/13) |
+
+### `s08_c_solucao.png`
+**O que vejo:** Contexto: casal cliente de frente de novo (noiva ruiva x 410-555, noivo azul x 550-700, rostos visíveis); etiqueta verde "TEM O QUE COBRAR" em y 375; contrato à direita (x 650-910) com a caneta azul em pé e a assinatura em azul começando; proposta atrás; fotógrafo (x 215-390) com câmera e flash; legenda "assinado" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (contrato inteiro, assinatura em andamento) | ok | ok | n/a (fora do quadro neste plano) | n/a | ok | ok (8/13) |
+
+
+## s09
+
+### `s09_a_momento.png`
+**O que vejo:** Close da maquininha dourada com "R$" verde e do calendário "SÁB" com plaquinha "SINAL" (peça inteira x 310-760 = 42% da largura, y 570-1010); contrato assinado ("ASSINADO" verde e assinatura azul) à direita com cabo; o fotógrafo aparece da cintura para baixo no canto superior esquerdo (pernas e tênis, câmera e flash cortados); card ✓ (y 250-378) cobre o tronco dele e a parte de cima do contrato; contador 9/13 encostando no celular cortado; legenda "sinal" y 1240 sem tocar a plaquinha; plataforma escura e tapete bege em 35% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (42%) | ok | parcial (cortado: só pernas e câmera; é close da maquininha) | n/a | n/a | parcial (o card cobre o tronco do fotógrafo e a parte de cima do contrato) | ok (9/13) |
+
+### `s09_b_problema.png`
+**O que vejo:** Contexto visto da esquerda: maquininha "R$" e calendário "SÁB" (x 730-920, y 835-1000, 18% da largura) à direita do casal cliente; casal assentado (noiva ruiva x 455-600 e noivo azul x 585-710) à frente, sem cobrir a maquininha; o contrato semitransparente com o contorno vermelho piscando atrás do noivo (x 665-730, y 635-770), a proposta mais acima; fotógrafo (x 175-370) com câmera, flash e cartões; etiqueta vermelha "SÓ PROMESSA" em y 300 (x 655-965) sobre a parede, junto à mesa de edição e acima do contador (a 25 px dele), sem tocar personagem; legenda "promessa" y 1240 sobre os LEDs.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (maquininha inteira e legível, sem oclusão) | ok | ok | n/a | ok (contrato fraco com contorno vermelho piscando) | parcial (a etiqueta termina em x 965, 5 px além do limite de 960, e fica perto do contador) | ok (9/13) |
+
+### `s09_c_solucao.png`
+**O que vejo:** Contexto: maquininha com "30%" e calendário com o círculo verde em "SÁB" (x 730-920, y 840-1000); contrato de volta sólido com brilho verde (x 675-745, y 640-770) atrás do noivo; casal cliente (noiva x 455-600, noivo x 585-710), proposta, fotógrafo (x 190-375); etiqueta verde "DATA RESERVADA" em y 300 (x 595-965) junto à mesa, 25 px abaixo do contador; legenda "reservada" y 1240 sobre os LEDs.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (maquininha e calendário legíveis, sem oclusão) | ok | ok | n/a | n/a | parcial (a etiqueta termina em x 965, 5 px além do limite, e fica a 25 px do contador) | ok (9/13) |
+
+
+## s10
+
+### `s10_a_momento.png`
+**O que vejo:** Close dos dois HDs cinza com LEDs azuis e plaquinha "BACKUP" (peça inteira x 320-770 = 42% da largura, y 830-1010); a nuvem branca no ar sobre os HDs (x 435-660, y 590-750) à frente da câmera do fotógrafo, que aparece atrás (câmera, flash e cabeça cortada em y 380-600); cabos azuis em arco ligando as peças vizinhas; card ✓ (y 250-378) cobre o telão e a cabeça do fotógrafo; contador 10/13; legenda "o" y 1250 (a palavra "o", num círculo preto); tapete bege e madeira em 35% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (HDs com 42%; a nuvem fica entre os HDs e a câmera) | ok | n/a (close dos HDs; ele aparece atrás, parcialmente) | n/a | n/a | parcial (o card cobre o telão e a cabeça do fotógrafo; a nuvem cobre o tronco dele) | ok (10/13) |
+
+### `s10_b_problema.png`
+**O que vejo:** Contexto visto de lado (câmera à esquerda): HD 1 vermelho com luz vermelha pulsando e fumaça cinza sobre ele e HD 2 cinza (x 680-860, y 785-1010, 17% da largura), nuvem branca acima (x 715-850, y 615-780), plaquinha "BACKUP" de lado; cabos pretos da câmera do fotógrafo aos HDs com esferas azuis; fotógrafo inteiro de perfil (x 240-500, y 560-980) com a câmera, os cartões e o rosto visíveis; casal cliente atrás (noiva ruiva x 505-690, noivo escuro atrás dela); etiqueta vermelha "HD QUEIMOU" em y 300 (x 670-965) sobre o piso de madeira, sem tocar ninguém e a 25 px do contador; legenda "inteiro" y 1240 sobre o tapete; o piso de madeira ocupa o terço superior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (HDs, fumaça e luz vermelha visíveis, sem oclusão) | ok | ok (inteiro, com a câmera e o rosto) | n/a | ok (fumaça e luz vermelha no HD 1) | parcial (a etiqueta termina em x 965, 5 px além do limite de 960, e fica a 25 px do contador) | ok (10/13) |
+
+### `s10_c_solucao.png`
+**O que vejo:** Contexto visto de lado: nuvem verde-clara no ar (x 715-855, y 615-790), HD 2 com LED verde (x 705-840, y 790-870) e HD 1 escuro com restos de fumaça; etiqueta verde "3 CÓPIAS" em y 300 (x 710-940), dentro da área segura, 25 px abaixo do contador; fotógrafo inteiro de perfil (x 245-510) com a câmera e os cartões; noiva ruiva e noivo atrás; cabos azuis da câmera aos HDs; legenda "cópias" y 1240; tapete quadriculado em 55% do quadro.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (HDs e nuvem legíveis, sem oclusão) | ok | ok | n/a | n/a | ok | ok (10/13) |
+
+
+## s11
+
+### `s11_a_momento.png`
+**O que vejo:** Close do tablet preto no suporte com a grade de 6 fotos e o cadeado dourado, plaquinha "GALERIA" (peça inteira x 310-770 = 43% da largura, y 595-985); card ✓ (y 250-378) cobre o cabo e a base do álbum; o fotógrafo aparece da cintura para baixo no canto direito (pernas, câmera cortada) e o contador 11/13 encosta na câmera dele; HD cinza à direita; legenda "foto" y 1240 sobre os LEDs.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (43%, dentro da tolerância) | ok | parcial (cortado: só pernas e câmera; é close do tablet) | n/a | n/a | parcial (contador encosta na câmera do fotógrafo; card cobre o cabo) | ok (11/13) |
+
+### `s11_b_problema.png`
+**O que vejo:** Contexto: casal cliente à esquerda do tablet "GALERIA" (noiva ruiva x 310-435, noivo azul x 440-560); a noiva segura o celular com a foto pixelada na altura do peito (x 445-495, y 745-785); tablet com cadeado (x 375-525, y 885-985), HDs "BACKUP" e nuvem verde no centro, fotógrafo (x 600-725) com câmera e flash, proposta, contrato e maquininha à direita; etiqueta vermelha "FOTO COMPRIMIDA" em y 440 (x 232-625), tocando o canto direito do telão; legenda "WhatsApp" y 1240 sobre os LEDs; tapete bege e madeira em 35% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (tablet inteiro e legível, mas com 14% da largura em contexto) | ok | ok | ok | parcial (o celular pixelado existe na mão da noiva, mas mede 50 px de largura e a pixelização só se percebe de perto) | parcial (a etiqueta toca o canto do telão, fora da imagem dele) | ok (11/13) |
+
+### `s11_c_solucao.png`
+**O que vejo:** Contexto: etiqueta verde "GALERIA COM SENHA" em y 438 (x 220-645), tocando o canto direito do telão; casal cliente parado ao lado do tablet "GALERIA" (noiva ruiva x 310-440, noivo azul x 440-570), sem o celular pixelado (correto, ele some em "galeria"); tablet com cadeado (x 375-525); fotógrafo (x 600-730) com câmera e flash; nuvem verde, HDs, proposta, contrato e maquininha "30%"; legenda "Galeria" y 1240; tapete bege e madeira em 35% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (tablet inteiro e legível, 14% da largura em contexto) | ok | ok | ok | n/a | parcial (a etiqueta toca o canto do telão, fora da imagem dele) | ok (11/13) |
+
+
+## s12
+
+### `s12_a_momento.png`
+**O que vejo:** Close do balão amarelo com 5 estrelas cinza (x 345-760, 38% da largura, y 555-760) e a plaquinha "DEPOIMENTO" cortada ("POIMEN") atrás do casal; o casal cliente (noiva ruiva e noivo azul, rostos e corpos inteiros, x 285-820, y 750-1380) ocupa a metade de baixo; tablet "GALERIA" abaixo, fotógrafo à direita (câmera 50mm, flash e cartões, rosto no canto, x 870-1080), telão e quadros acima; card ✓ cobre o topo do telão; legenda "amou" y 1240 sobre as pernas do casal; contador 12/13.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| parcial (balão com 38% da largura, 2,5 pontos abaixo da faixa de 40,5%; a caixa do close inclui as cabeças do casal e a plaquinha fica escondida atrás deles) | ok | ok (rosto parcial, câmera na mão) | n/a | n/a | parcial (a legenda cobre as pernas do casal; o casal cobre a plaquinha do balão) | ok (12/13) |
+
+### `s12_b_problema.png`
+**O que vejo:** Contexto: balão amarelo com as 5 estrelas cinza (x 295-495, y 530-640) atrás do casal cliente (x 265-540), plaquinha "DEPOIMENTO" cortada ("POIMEN"); etiqueta vermelha "SÓ VOCÊ SABE" em y 315 sobre o quadro da parede, 215 px acima do balão; fotógrafo (x 575-715) com câmera e flash; nuvem verde, HDs, tablet "GALERIA", celular, proposta, contrato e maquininha "30%" em fila; telão no canto superior esquerdo; legenda "disso" y 1240; tapete bege e madeira em 30% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (balão e estrelas legíveis, 19% da largura em contexto) | ok | ok | ok | ok (estrelas cinza + etiqueta) | ok | ok (12/13) |
+
+### `s12_c_solucao.png`
+**O que vejo:** Contexto: quatro estrelas brancas acesas e a quinta cinza (acendem uma por uma); etiqueta verde "POSTOU" em y 314 sobre o quadro; casal cliente à esquerda, fotógrafo e nuvem verde ao centro, peças em fila à direita; a estrela dourada voadora não aparece neste frame; legenda "posta" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (balão legível) | ok | ok | ok | n/a | ok | ok (12/13) |
+
+
+## s13
+
+### `s13_a_momento.png`
+**O que vejo:** Chegada do casal indicado (câmera de lado e mais alta): casal cliente à esquerda (noiva ruiva com o braço estendido apontando para a direita, noivo azul atrás), fotógrafo no centro (câmera, flash e rosto parcialmente visíveis), casal indicado à direita (noivo cinza de costas e noiva loira ao fundo, x 625-770, y 650-990), coração dourado grande entre eles (x 490-580, y 655-735); balão com 5 estrelas brancas acima do casal cliente, nuvem verde, HDs, tablet, maquininha "30%" e calendário, celular, contrato e proposta; card ✓ (y 250-378) cobre a parte de baixo do telão e dois quadros; contador 13/13; legenda "sem" y 1240 sobre os LEDs.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (coração e todas as peças do ato 2 visíveis; coração com 8% da largura, é contexto) | ok | ok (câmera na mão e rosto visível) | parcial (a parte de baixo fica atrás do card) | ok (a noiva aponta para o casal indicado que chegou) | parcial (o card cobre a base do telão e a parte de cima do balão) | ok (13/13) |
+
+### `s13_b_problema.png`
+**O que vejo:** Em "indica": card ainda digitando "pedir indicação" com cursor, sem ✓, e contador 12/13 (coerente: o momento da peça é a chegada do casal); noiva ruiva aponta com o braço estendido para a direita (x 390-460, y 650-680); fotógrafo no centro; nuvem verde, HDs, tablet, celular, proposta, contrato, maquininha; o casal indicado entra pela borda direita, o noivo cinza cortado (x 1010-1080, y 740-1090); balão de 5 estrelas acima do casal cliente; legenda "indica" y 1240; sem etiqueta (s13 só tem a de solução).
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| n/a (a peça 13 ainda não nasceu) | ok | ok | parcial (a parte de baixo fica atrás do card) | ok (casal indicado entra caminhando e a noiva aponta) | parcial (o card cobre a base do telão) | ok (12/13) |
+
+### `s13_c_solucao.png`
+**O que vejo:** Em "pronto": etiqueta verde "NOVO CLIENTE" em y 418 (x 408-728), acima da cabeça do fotógrafo e do casal indicado, sem tocar ninguém; casal indicado (noivo cinza x 545-610 e noiva loira atrás) ao lado do fotógrafo, coração dourado (x 390-460, y 675-740); a bolinha amarela corre pelo cabo do celular (x 690-705, y 700); casal cliente à esquerda; todas as peças do ato 2 em fila, telão e 3 quadros acima; contador 13/13; legenda "Pronto" y 1240; madeira e tapete bege ocupam 45% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (todas as peças do ato 2 e o coração visíveis) | ok | ok | ok | n/a | ok | ok (13/13) |
+
+
+## s14
+
+### `s14_a_momento.png`
+**O que vejo:** Plano alto no início do segmento (início + 1,5 s, a câmera ainda não recuou): plataforma inteira na diagonal com os personagens no meio (casal cliente x 235-370, fotógrafo x 445-535, casal indicado x 530-615) e as peças do ato 2 em fila; telão e 3 quadros na parede; sem card (correto, s14 não tem card), contador 13/13; legenda "para" y 1240; madeira em 40% inferior e tapete bege em volta.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (plataforma e peças visíveis) | ok | ok (pequeno, com a câmera) | ok | n/a | ok | ok (13/13) |
+
+### `s14_b_problema.png`
+**O que vejo:** Em "para" + 0,3 s: mesmo enquadramento (a câmera começa a recuar só depois); plataforma e peças, personagens no centro, telão e 3 quadros acima; contador 13/13; sem card; legenda "na" y 1240.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok | ok | ok | ok | n/a | ok | ok (13/13) |
+
+### `s14_c_solucao.png`
+**O que vejo:** Em "comenta" + 0,3 s: plano final com confete (cubinhos coloridos caindo) e dois dos três textos finais já na tela: "COMENTA QUAL PEÇA" branco em y 420 e "VOCÊ QUER VER" amarelo em y 540 (o terceiro, "DESMONTADA", e o @ ainda entram, por desenho, a 6 e 18 frames); legenda "Comenta" y 1240 sobre os LEDs; plataforma na diagonal com personagens e peças em fila, telão na parede, 3 quadros (os textos passam por cima de dois deles e da quina do telão); contador 13/13; sem card (correto); madeira em 50% inferior.
+
+| peça | chão/tapete | fotógrafo | telão | problema | sobreposição | contador/texto |
+|---|---|---|---|---|---|---|
+| ok (todas as peças do ato 2, os casais e o fotógrafo no quadro) | ok | ok (pequeno, com a câmera) | ok | n/a | parcial (os textos finais passam por cima dos quadros e da quina do telão, que são cenário; legíveis e dentro de x 150-940) | ok (13/13; sem travessão, Ç e Ê corretos) |
 
 ## Resumo
 
-48 stills abertos. Itens marcados: 133 ok, 79 FALHA, 43 parcial.
-
-FALHAS por item: sobreposição 38, peça 17, fotógrafo 12, chão/tapete 8, telão 3, problema 1
+56 stills abertos. Contagem por item (7 itens por still, 392 no total): ok 269, parcial 54, FALHA 0, n/a 69.
 
 
-## Lista de falhas por still
+## FALHAS
 
-- `s00_a_momento`: **chão/tapete**: FALHA (sem tapete, 60% escuro); **sobreposição**: FALHA (noiva escondida atrás do noivo)
-- `s00_b_problema`: **chão/tapete**: FALHA (sem tapete); **sobreposição**: FALHA (etiqueta tapa o rosto do fotógrafo)
-- `s01_a_momento`: **peça**: FALHA (75% da largura, acima de 55%); **telão**: FALHA (não aparece no momento em que nasce); **sobreposição**: FALHA (card cobre a cabeça do fotógrafo)
-- `s01_c_solucao`: **fotógrafo**: FALHA (cabeça cortada pela borda esquerda); **sobreposição**: FALHA (casal tapa a parte de baixo do telão)
-- `s02_a_momento`: **peça**: FALHA (lente 50mm ocupa cerca de 15% da largura; plano é de contexto, mas a peça fica pequena e a legenda encosta nela); **sobreposição**: FALHA (legenda toca a lente)
-- `s02_c_solucao`: **peça**: FALHA (lente 50mm pequena, cerca de 15% da largura); **sobreposição**: FALHA (legenda toca a lente)
-- `s03_a_momento`: **peça**: FALHA (cartões não aparecem; câmera ocupa 75% da largura); **telão**: FALHA (fora do quadro neste momento); **sobreposição**: FALHA (card cobre a cabeça)
-- `s03_c_solucao`: **telão**: FALHA (selo "SLOT 2" cortado pela borda; estado certo, `restaurada`)
-- `s04_a_momento`: **peça**: FALHA (flash pequeno e cortado pela borda); **sobreposição**: FALHA (etiqueta sobre o globo e o casal)
-- `s04_b_problema`: **sobreposição**: FALHA (globo e casal cortados pela borda direita)
-- `s04_c_solucao`: **peça**: FALHA (flash pequeno e cortado); **sobreposição**: FALHA (etiqueta sobre o globo e o casal)
-- `s05_a_momento`: **peça**: FALHA leve (59% da largura, o limite é 55%); **sobreposição**: FALHA (legenda toca a plaquinha)
-- `s05_b_problema`: **peça**: FALHA (36% da largura, abaixo de 35% a 55%... fica no limite; o álbum ainda é legível); **fotógrafo**: FALHA (não aparece no plano de contexto); **sobreposição**: FALHA (card cobre a parte de baixo do telão; legenda toca o pedestal)
-- `s05_c_solucao`: **peça**: FALHA (28% da largura; álbum fechado, as fotos voando e a abertura ainda não começaram); **fotógrafo**: FALHA (não aparece); **sobreposição**: FALHA (legenda cobre a plaquinha PORTFÓLIO)
-- `s06_a_momento`: **peça**: FALHA (28% da largura, abaixo de 35%); **sobreposição**: FALHA (legenda cobre a plaquinha)
-- `s06_b_problema`: **fotógrafo**: FALHA (quase todo cortado, o rosto não aparece)
-- `s06_c_solucao`: **peça**: FALHA (celular pequeno, 14% da largura; grade ainda vazia, a animação só começou); **fotógrafo**: FALHA (rosto cortado pela borda)
-- `s07_b_problema`: **peça**: FALHA (proposta pequena e meio escondida atrás do casal); **fotógrafo**: FALHA (não aparece); **sobreposição**: FALHA (card cobre a cabeça e o rosto do casal)
-- `s07_c_solucao`: **peça**: FALHA (proposta cortada pela borda direita, 25% da largura); **fotógrafo**: FALHA (não aparece); **sobreposição**: FALHA (card corta os rostos do casal)
-- `s08_a_momento`: **chão/tapete**: FALHA (quase só plataforma escura; um fio de madeira no topo); **sobreposição**: FALHA (noivo ocupa 35% da tela e o card cobre o tronco dele; contador sobre a proposta cortada)
-- `s08_b_problema`: **fotógrafo**: FALHA (cortado na borda, o rosto não aparece); **sobreposição**: FALHA (card cobre os rostos)
-- `s08_c_solucao`: **sobreposição**: FALHA (card cobre os rostos)
-- `s09_a_momento`: **peça**: FALHA leve (63% da largura, acima de 55%); **chão/tapete**: FALHA (quase só plataforma escura, sem madeira nem tapete); **sobreposição**: FALHA (legenda cobre a plaquinha SINAL; card cobre o casal)
-- `s09_b_problema`: **fotógrafo**: FALHA (não aparece); **sobreposição**: FALHA (card corta o casal; etiqueta sobre o noivo)
-- `s09_c_solucao`: **fotógrafo**: FALHA (rosto atrás do card, só o cabelo e a câmera); **sobreposição**: FALHA (card cobre os rostos do casal)
-- `s10_a_momento`: **peça**: FALHA (70% da largura, acima de 55%; nuvem tapada pelo card); **sobreposição**: FALHA (legenda "o" cobre a plaquinha BACKUP; card cobre a nuvem)
-- `s10_b_problema`: **sobreposição**: FALHA (legenda cobre a plaquinha BACKUP)
-- `s10_c_solucao`: **sobreposição**: FALHA (legenda sobre a plaquinha BACKUP; maquininha cortada na borda)
-- `s11_a_momento`: **peça**: FALHA leve (58% da largura, acima de 55%); **chão/tapete**: FALHA (quase só plataforma escura; sem tapete visível); **sobreposição**: FALHA (legenda toca a plaquinha; contador encosta no braço da noiva)
-- `s11_b_problema`: **fotógrafo**: FALHA (não aparece); **problema**: FALHA (celular com foto pixelada cortado pela borda, o problema quase não é visto); **sobreposição**: FALHA (legenda "WhatsApp" cobre a plaquinha GALERIA; card corta o casal)
-- `s11_c_solucao`: **fotógrafo**: FALHA (quase fora do quadro, só flash e lente); **sobreposição**: FALHA (legenda cobre a plaquinha; nuvem cortada na borda)
-- `s12_a_momento`: **peça**: FALHA leve (59% da largura, acima de 55%); **chão/tapete**: FALHA (madeira só numa faixa fina; plataforma escura embaixo, sem tapete); **sobreposição**: FALHA (legenda sobre o rosto do noivo; o balão fica sobre o card)
-- `s12_b_problema`: **chão/tapete**: FALHA (plataforma escura e peças, sem madeira nem tapete); **sobreposição**: FALHA (legenda sobre o noivo)
-- `s12_c_solucao`: **chão/tapete**: FALHA (sem madeira nem tapete; só plataforma e peças); **sobreposição**: FALHA (legenda sobre o noivo; muitos objetos juntos, cena poluída)
-- `s13_a_momento`: **sobreposição**: FALHA (card cobre cabeças; legenda sobre o HD; casais sobrepostos)
-- `s13_b_problema`: **sobreposição**: FALHA (legenda sobre o HD verde)
-- `s13_c_solucao`: **sobreposição**: FALHA (legenda sobre o HD e a plaquinha BACKUP; balão cortado pelo card)
-- `s14_a_momento`: **sobreposição**: FALHA leve (card ainda cobre os quadros; metade esquerda da plataforma vazia)
-- `s14_c_solucao`: **sobreposição**: FALHA (texto amarelo cobre o telão e os dois textos cobrem os quadros)
-- `final_b_comenta_0.5s`: **sobreposição**: FALHA (os textos cobrem o telão, os quadros e o topo do balão de estrelas)
-- `final_c_ultimo_frame`: **sobreposição**: FALHA leve ("VOCÊ QUER VER" cobre o telão, "DESMONTADA" toca o balão)
+Nenhuma.
 
-## Lista de itens parciais por still
+## Parciais com justificativa
 
-- `s00_b_problema`: **problema**: parcial (só a etiqueta; flash e câmera ao rosto já passaram neste frame)
-- `s00_c_solucao`: **chão/tapete**: parcial (só um canto de tapete)
-- `s01_a_momento`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s01_b_problema`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s01_c_solucao`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s02_a_momento`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s02_b_problema`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s02_c_solucao`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s03_a_momento`: **chão/tapete**: parcial (madeira e um fio de tapete)
-- `s03_b_problema`: **peça**: parcial (cartões visíveis mas pequenos e meio escondidos); **chão/tapete**: parcial (madeira sim, tapete não)
-- `s03_c_solucao`: **peça**: parcial (cartões pequenos); **chão/tapete**: parcial (madeira sim, tapete não)
-- `s04_a_momento`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s04_b_problema`: **chão/tapete**: parcial (madeira escura, tapete não)
-- `s04_c_solucao`: **chão/tapete**: parcial
-- `s05_a_momento`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s05_b_problema`: **chão/tapete**: parcial (madeira sim, tapete só uma linha); **problema**: parcial (só a etiqueta; nada encena a falta de trabalho)
-- `s05_c_solucao`: **chão/tapete**: parcial
-- `s06_a_momento`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s06_b_problema`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s06_c_solucao`: **chão/tapete**: parcial (madeira sim, tapete não)
-- `s07_a_momento`: **chão/tapete**: parcial (madeira e fio de tapete)
-- `s07_b_problema`: **chão/tapete**: parcial (madeira sim, canto de tapete)
-- `s07_c_solucao`: **chão/tapete**: parcial
-- `s08_b_problema`: **problema**: parcial (o casal virando de costas é difícil de ler como "desmarcou"; só a etiqueta deixa claro)
-- `s08_c_solucao`: **peça**: parcial (contrato pequeno, assinatura em andamento mas o carimbo ASSINADO ainda não apareceu); **fotógrafo**: parcial (câmera visível, rosto atrás do card)
-- `s09_b_problema`: **problema**: parcial (só etiqueta e casal parado; nada mostra a "promessa" sem sinal)
-- `s10_a_momento`: **chão/tapete**: parcial (tapete e LEDs sim, madeira não); **fotógrafo**: parcial (câmera e flash visíveis, cabeça cortada pelo topo)
-- `s10_b_problema`: **fotógrafo**: parcial (câmera visível, rosto atrás do card)
-- `s11_b_problema`: **peça**: parcial (tablet 38% da largura, mas o celular pixelado está cortado e quase invisível)
-- `s12_a_momento`: **fotógrafo**: parcial (câmera e flash visíveis, rosto escondido atrás da lente)
-- `s12_b_problema`: **fotógrafo**: parcial (câmera e flash visíveis, rosto escondido); **problema**: parcial (estrelas cinza + etiqueta; nada mais)
-- `s12_c_solucao`: **fotógrafo**: parcial (câmera e flash visíveis, rosto escondido atrás da lente)
-- `s13_a_momento`: **peça**: parcial (o coração é pequeno; os casais ficam sobrepostos e a cena é confusa); **fotógrafo**: parcial (câmera visível, rosto cortado pelo card)
-- `s13_b_problema`: **problema**: parcial (nada indica a falta de indicação; só o casal indicado começa a entrar, ainda fora do quadro)
-- `s13_c_solucao`: **peça**: parcial (casais sobrepostos, coração visível mas pequeno, 20% da largura); **fotógrafo**: parcial (câmera visível, rosto atrás do card)
+- `card_s01_a_saindo` **telão**: (cortado; é close)
+- `card_s01_b_saiu` **telão**: (cortado; é close)
+- `card_s05_a_saindo` **problema**: (o curioso entra em fade dentro do close, semitransparente)
+- `card_s05_a_saindo` **sobreposição**: (o curioso semitransparente passa por trás do contador)
+- `card_s05_b_saiu` **problema**: (curioso quase opaco ao lado do álbum, cabeça sobre o contador)
+- `card_s05_b_saiu` **sobreposição**: (a cabeça do curioso encosta no contador)
+- `card_s09_a_saindo` **fotógrafo**: (aparece só a lente da câmera, no canto superior esquerdo)
+- `card_s09_a_saindo` **sobreposição**: (a noiva cobre parte da maquininha: o ombro do noivo passa atrás do R$)
+- `final_b_comenta_0.5s` **sobreposição**: (os textos finais cobrem o telão e dois quadros, que são cenário)
+- `final_c_ultimo_frame` **sobreposição**: (texto final sobre o telão e quadros, cenário)
+- `s00_b_problema` **problema**: (neste frame só a etiqueta aparece: câmera ao rosto e flash de tela ocorrem antes do instante amostrado)
+- `s01_a_momento` **telão**: (só uma ponta na borda direita; é close da câmera)
+- `s01_a_momento` **sobreposição**: (o card encosta no topo do cabelo)
+- `s01_b_problema` **sobreposição**: (a etiqueta toca a quina do telão, sem cobrir o conteúdo)
+- `s01_c_solucao` **sobreposição**: (etiqueta sobre a quina do telão, fora do casal retratado)
+- `s02_a_momento` **telão**: (cortado na borda; é close)
+- `s02_a_momento` **sobreposição**: (a etiqueta encosta no cabelo do fotógrafo)
+- `s02_b_problema` **sobreposição**: (etiqueta sobre a quina do telão)
+- `s02_c_solucao` **telão**: (cortado; é close)
+- `s02_c_solucao` **sobreposição**: (etiqueta encosta no cabelo)
+- `s03_a_momento` **telão**: (cortado; é close)
+- `s03_a_momento` **sobreposição**: (card encosta no topo do cabelo)
+- `s03_b_problema` **sobreposição**: (etiqueta sobre a quina do telão)
+- `s03_c_solucao` **sobreposição**: (etiqueta sobre a quina do telão)
+- `s04_a_momento` **peça**: (câmera com flash e mãos ocupa 45% pela caixa declarada, mas o grupo visível mede 32% da largura: a caixa inclui os antebraços)
+- `s04_b_problema` **sobreposição**: (o globo cobre as cabeças do casal, parte da festa)
+- `s04_c_solucao` **peça**: (grupo visível 32% da largura, caixa 45%)
+- `s05_c_solucao` **peça**: (álbum com 11% da largura e ainda fechado neste frame; abre logo depois)
+- `s06_a_momento` **peça**: (30% da largura: o celular é alto e estreito e a altura da janela útil de 590 px limita antes dos 45%; o log do enquadramento marca "limitada pela altura")
+- `s06_b_problema` **peça**: (celular inteiro e visível, mas com 7% da largura porque o plano precisa mostrar o fotógrafo e o casal; a tela vazia lê como cinza)
+- `s06_c_solucao` **peça**: (celular inteiro com 7% da largura; o contexto precisa caber o fotógrafo e o casal)
+- `s08_a_momento` **peça**: (38% da largura com a base, apenas 2,5 pontos abaixo da faixa de 40,5%: o solver mede 45% pela caixa declarada, que é um pouco maior que o suporte real)
+- `s08_a_momento` **fotógrafo**: (rosto cortado pela borda esquerda no close; é close do contrato)
+- `s08_a_momento` **sobreposição**: (o card cobre o celular e o cabo, peças vizinhas)
+- `s09_a_momento` **fotógrafo**: (cortado: só pernas e câmera; é close da maquininha)
+- `s09_a_momento` **sobreposição**: (o card cobre o tronco do fotógrafo e a parte de cima do contrato)
+- `s09_b_problema` **sobreposição**: (a etiqueta termina em x 965, 5 px além do limite de 960, e fica perto do contador)
+- `s09_c_solucao` **sobreposição**: (a etiqueta termina em x 965, 5 px além do limite, e fica a 25 px do contador)
+- `s10_a_momento` **sobreposição**: (o card cobre o telão e a cabeça do fotógrafo; a nuvem cobre o tronco dele)
+- `s10_b_problema` **sobreposição**: (a etiqueta termina em x 965, 5 px além do limite de 960, e fica a 25 px do contador)
+- `s11_a_momento` **fotógrafo**: (cortado: só pernas e câmera; é close do tablet)
+- `s11_a_momento` **sobreposição**: (contador encosta na câmera do fotógrafo; card cobre o cabo)
+- `s11_b_problema` **peça**: (tablet inteiro e legível, mas com 14% da largura em contexto)
+- `s11_b_problema` **problema**: (o celular pixelado existe na mão da noiva, mas mede 50 px de largura e a pixelização só se percebe de perto)
+- `s11_b_problema` **sobreposição**: (a etiqueta toca o canto do telão, fora da imagem dele)
+- `s11_c_solucao` **peça**: (tablet inteiro e legível, 14% da largura em contexto)
+- `s11_c_solucao` **sobreposição**: (a etiqueta toca o canto do telão, fora da imagem dele)
+- `s12_a_momento` **peça**: (balão com 38% da largura, 2,5 pontos abaixo da faixa de 40,5%; a caixa do close inclui as cabeças do casal e a plaquinha fica escondida atrás deles)
+- `s12_a_momento` **sobreposição**: (a legenda cobre as pernas do casal; o casal cobre a plaquinha do balão)
+- `s13_a_momento` **telão**: (a parte de baixo fica atrás do card)
+- `s13_a_momento` **sobreposição**: (o card cobre a base do telão e a parte de cima do balão)
+- `s13_b_problema` **telão**: (a parte de baixo fica atrás do card)
+- `s13_b_problema` **sobreposição**: (o card cobre a base do telão)
+- `s14_c_solucao` **sobreposição**: (os textos finais passam por cima dos quadros e da quina do telão, que são cenário; legíveis e dentro de x 150-940)
