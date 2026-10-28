@@ -43,7 +43,7 @@ export const obstaculos = (frame: number, i: number): { nome: string; r: Ret }[]
 export const dadosTitulo = (i: number) => {
   const titulo = ROTEIRO[i].titulo ?? "";
   // estimativa conservadora (Montserrat 900 italico ~0,72 em de largura por letra), sem medir no navegador
-  const fs = Math.min(104, Math.floor((LARGURA_SEGURA * 0.9) / (titulo.length * 0.72)));
+  const fs = Math.min(titulo.length >= 12 ? 78 : 104, Math.floor((LARGURA_SEGURA * 0.9) / (titulo.length * 0.72)));
   const h = alturaTitulo(fs);
   const w = Math.min(LARGURA_SEGURA, titulo.length * fs * 0.72);
   return { fs, h, w };
@@ -59,7 +59,7 @@ export const planoTitulo = (i: number) => {
   const L = LINHAS[i];
   const { h, w } = dadosTitulo(i);
   const f0 = L.ini + 12;
-  const f1 = L.ini + 150;
+  const f1 = Math.min(L.fim - 20, L.ini + 240);
   const rects: Ret[][] = [];
   for (let f = f0; f <= f1 + 6; f++) rects[f - f0] = obstaculos(f, i).map((o) => o.r).filter((r) => r.x1 > 540 - w / 2 && r.x0 < 540 + w / 2);
   const bate = (f: number, y: number) => rects[f - f0].some((r) => r.y1 > y - h / 2 && r.y0 < y + h / 2);

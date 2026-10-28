@@ -429,6 +429,7 @@ const personagensDe = (n: number): string[] => {
 };
 const extrasDe = (n: number): string[] => {
   const e: string[] = [];
+  if (n === 13) e.push("balao13"); // o balao "voce fotografa o meu casamento?" tem que aparecer inteiro
   return e;
 };
 const sid = (n: number) => `s${String(n).padStart(2, "0")}`;
