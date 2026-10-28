@@ -75,9 +75,10 @@ export const CameraModelo: React.FC<CamProps> = ({ escala, lente = "kit", troca 
       {/* cartoes de memoria no slot do topo */}
       {cartoes !== "nenhum" &&
         [0, 1].map((k) => (
-          <group key={k} position={[0.2 + k * 0.17, 0.43, -0.08]}>
-            <B s={[0.14, 0.2, 0.025]} c={cor[cartoes][k]} r={0.01} e={cor[cartoes][k]} ei={cartoes === "salvo" && k === 1 ? 0.9 : 0.2} />
-            <B p={[0, 0.07, 0.015]} s={[0.1, 0.05, 0.005]} c="#E2B341" r={0.002} sombra={false} />
+          <group key={k} position={[0.05 + k * 0.27, 0.5, -0.08]}>
+            <B s={[0.22, 0.32, 0.03]} c={cor[cartoes][k]} r={0.015} e={cor[cartoes][k]} ei={cartoes === "salvo" && k === 1 ? 0.9 : 0.25} />
+            <B p={[0, 0.11, 0.02]} s={[0.16, 0.08, 0.006]} c="#F7F5F0" r={0.003} sombra={false} />
+            <B p={[0, -0.1, 0.02]} s={[0.14, 0.06, 0.006]} c="#E2B341" r={0.002} sombra={false} />
           </group>
         ))}
       {/* flash pequeno na sapata */}

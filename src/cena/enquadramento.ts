@@ -17,7 +17,7 @@ export type Janela = { x0: number; x1: number; y0: number; y1: number };
 // janelas uteis (px): com o card visivel o conteudo fica abaixo dele; sem card sobe ate y = 300
 export const JANELA_CARD: Janela = { x0: 50, x1: 1030, y0: 470, y1: 1540 };
 export const JANELA_LIVRE: Janela = { x0: 50, x1: 1030, y0: 300, y1: 1540 };
-export const JANELA_FINAL: Janela = { x0: 0, x1: 1080, y0: 520, y1: 1560 };
+export const JANELA_FINAL: Janela = { x0: -70, x1: 1150, y0: 520, y1: 1560 }; // final: o tabuleiro enche a tela e corta um pouco nas laterais, como na referencia
 export const JANELA_TOTAL: Janela = { x0: 0, x1: 1080, y0: 300, y1: 1540 }; // tabuleiro inteiro: a largura toda da tela
 export const JANELA_ABERTURA: Janela = { x0: 50, x1: 1030, y0: 480, y1: 1560 }; // s00: fotografo abaixo do card, camera da mao acima da legenda
 export const JANELA_UTIL = JANELA_CARD;
@@ -88,7 +88,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "maoCam": {
       const p = posFot(n);
-      return { c: [p[0], p[1] + 1.0, p[2] + 0.22], t: [0.45, 0.34, 0.4] };
+      return { c: [p[0], p[1] + (n === 8 ? 1.12 : 1.0), p[2] + 0.22], t: [0.45, 0.34, 0.4] }; // s08: sobe para os cartoes da sapata ficarem no centro
     }
     case "notebook": {
       const p = posMesa(n);
@@ -507,7 +507,7 @@ export const planoPlaca = (n: number, sufixo: string): Plano => ({
   id: `${sid(n)}-placa${sufixo}`, tipo: "close", az: AZ_VISTA, el: EL, casa: n, lista: [`tela${n}`], principal: `tela${n}`, larguraPx: LARG_CLOSE, livreV: true, janela: JANELA_V,
 });
 export const planoDetalhe = (n: number): Plano => ({
-  id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_V, livreV: true, casa: n,
+  id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: n === 8 ? 0.7 * LARGURA_TELA : LARG_DETALHE, // s08: os dois cartoes ficam grandes janela: JANELA_V, livreV: true, casa: n,
 });
 export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_ABERTURA, livreV: true, casa: 1, orbita: { az: 45, push: 0.1 } };
 export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_TOTAL, orbita: { az: 20, push: 0.06 } };
@@ -540,6 +540,7 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
       e.push({ quando: R("ev", "solucao", n === 7 ? 2.4 : 1.1), plano: planoPlaca(n, ""), trans: 0.3 });
       e.push({ quando: R("ev", "solucao", n === 7 ? 3.8 : 2.5), plano: planoCena(n), trans: 0.4 });
     }
+    if (n === 7 || n === 9) e.push({ quando: R("chegada", undefined, 1.0), plano: planoCena(n), trans: 0.5 }); // a peca so cai na ancora: antes disso mostra a cena (portal, casal), nao o fotografo parado
     // a placa de foto tem corte proprio quando a foto muda (s01: clique e manual; s08: foto corrompida)
     if (n === 1) {
       e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(1, "a"), trans: 0.3 });

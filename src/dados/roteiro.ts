@@ -32,7 +32,7 @@ const acimaDaCasa = (n: number): V3 => {
 const E = (quando: string, texto: string, tipo: TipoEtiqueta, alvo?: V3, ate?: string): Etiqueta => ({ quando, texto, tipo, alvo, ate });
 
 const dados: Omit<ItemRoteiro, "id" | "texto">[] = [
-  { titulo: null, tarefa: "virar fotógrafo de casamento", etiquetas: [E("ini", "PRIMEIRO CASAMENTO?", "problema", [posFot(1)[0] + 1.0, 2.05, posFot(1)[2]], "solucao")] },
+  { titulo: null, tarefa: "virar fotógrafo de casamento", etiquetas: [E("ini", "PRIMEIRO CASAMENTO?", "problema", [posFot(1)[0] + 1.5, 2.05, posFot(1)[2]], "solucao")] },
   { titulo: "CÂMERA", tarefa: "aprender o modo manual", etiquetas: [E("problema", "MODO AUTO", "problema"), E("solucao", "MANUAL", "solucao")] },
   { titulo: "PORTFÓLIO", tarefa: "montar o portfólio", etiquetas: [E("problema", "SEM TRABALHO PRA MOSTRAR", "problema"), E("solucao", "PORTFÓLIO PRONTO", "solucao")] },
   { titulo: "INSTAGRAM", tarefa: "postar no Instagram", etiquetas: [E("problema", "NINGUÉM VÊ", "problema"), E("solucao", "PRIMEIRO DIRECT", "solucao")] },

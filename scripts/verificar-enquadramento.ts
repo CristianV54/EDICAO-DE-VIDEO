@@ -30,7 +30,8 @@ for (const r of PLANOS_RESOLVIDOS as Resolvido[]) {
   if (p.tipo === "caminhada" && alt < ALT_CAMINHADA - 3) falha(`${p.id}: fotografo ${alt.toFixed(0)} px < ${ALT_CAMINHADA.toFixed(0)} px (45% da tela)`);
   if (p.id === "s00-abertura" && alt < ALT_ABERTURA - 3) falha(`${p.id}: fotografo ${alt.toFixed(0)} px < ${ALT_ABERTURA.toFixed(0)} px (55% da tela)`);
   if (p.tipo === "close" && p.larguraPx && larg < p.larguraPx * (1 - TOL_CLOSE) - 1) falha(`${p.id}: ${p.principal} ${larg.toFixed(0)} px de largura < ${(p.larguraPx * (1 - TOL_CLOSE)).toFixed(0)} px (${((p.larguraPx / 1080) * 100).toFixed(0)}% da tela)`);
-  if (p.tipo === "detalhe" && Math.abs(larg - LARG_DETALHE) > LARG_DETALHE * 0.05 + 1) falha(`${p.id}: camera na mao ${larg.toFixed(0)} px != ${LARG_DETALHE.toFixed(0)} px`);
+  if (p.tipo === "detalhe" && p.larguraPx && Math.abs(larg - p.larguraPx) > p.larguraPx * 0.05 + 1) falha(`${p.id}: camera na mao ${larg.toFixed(0)} px != ${p.larguraPx.toFixed(0)} px`);
+  void LARG_DETALHE;
   if (p.tipo === "cena") {
     const alvoAlt = r.caixas[p.principal ?? ""] ? r.caixas[p.principal!].ymax - r.caixas[p.principal!].ymin : 0;
     const ok = alvoAlt >= ALT_CENA * 0.99; // tolerancia de 1% (764 px em vez de 768 px em s10)

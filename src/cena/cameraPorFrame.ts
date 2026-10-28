@@ -26,7 +26,9 @@ const frameDe = (i: number, e: EtapaPlano): number => {
 export const ETAPAS: Etapa[] = (() => {
   const out: Etapa[] = [];
   ETAPAS_SEG.forEach((lista, i) => {
-    lista.forEach((e) => {
+    // ordena as etapas do segmento pelo frame (em s07, s09 e s13 a queda da peca vem depois do plano cena)
+    const ordenada = lista.map((e, k) => ({ e, k, f: frameDe(i, e) })).sort((a, b) => a.f - b.f || a.k - b.k).map((x) => x.e);
+    ordenada.forEach((e) => {
       let ini = frameDe(i, e);
       if (out.length && ini <= out[out.length - 1].inicio) ini = out[out.length - 1].inicio + 1;
       out.push({ inicio: ini, fim: 0, e, transicao: sf(e.trans ?? 0.5), seg: i });
