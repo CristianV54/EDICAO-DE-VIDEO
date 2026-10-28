@@ -87,7 +87,7 @@ const desenhar = (d: Def): THREE.CanvasTexture => {
   g.textAlign = "center";
   g.textBaseline = "middle";
   const multi = d.t.indexOf(" ") > 0 && d.t.length > 14;
-  let fs = d.h * (multi ? 0.3 : 0.62);
+  let fs = d.h * (multi ? 0.2 : 0.62); // balao de duas linhas: "voce fotografa o" / "meu casamento?"
   g.font = `${d.peso} ${fs}px Montserrat`;
   if (multi) {
     const linhas = quebra(g, d.t, d.w * 0.86);
