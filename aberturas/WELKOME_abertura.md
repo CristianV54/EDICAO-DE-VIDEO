@@ -30,13 +30,50 @@ Prints que você mandou: (1) drone aberto na praia, céu cinza, convidados peque
 | 0:21 a 0:24 | cena da noiva, sem fala, música sobe | nenhuma | nenhum |
 | 0:24 a 0:29 | Fares fotografando, corte a cada "Deitei" | "Deitei! Deitei! Deitei!" (9,7 a 11,5) e "Uhul! Pra cima!" (27,6 a 29,2) | nenhum |
 | 0:29 a 0:35 | Fares tirando foto, depois fotos aparecendo em sequência (1,5 a 2 s, no som do clique) | frase nova: "Vem comigo que eu vou te mostrar como eu fotografei esse welcome drink." (~5 s, a gravar) | **WELCOME DRINK** |
-| 0:35 a 0:37 | título ou logo (1 a 2 s), entra em "Chegaram bem?" (84,3) | | |
+| 0:35 a 0:37 | título ou logo (1 a 2 s) e corte para o pai e a noiva (ver "Entrada no corpo" abaixo) | | |
 
 Observações:
 - **Tire a linha "Amanhã eu vou soltar as fotos..." da v1.** As fotos que aparecem em 0:29 já cumprem esse papel, e duas promessas de foto seriam repetição.
 - **Primeiro frame:** o print 2 (noiva sorrindo, Fares agachado) é mais forte que o drone: tem sujeito, movimento e emoção. O drone (print 1) tem céu cinza e convidados minúsculos; com o texto "100 CONVIDADOS" funciona como escala, mas não como primeiro frame.
 - **Cor:** o drone (cinza) e os planos de câmera (céu azul) parecem horários diferentes; iguale a cor ou esconda na transição.
 - **Voz da frase nova:** se for gravada à parte, ponha o mesmo som ambiente de praia por baixo, senão destoa das falas originais.
+
+## Entrada no corpo (corrige o "Chegaram bem?")
+
+"Chegaram bem?" era uma pergunta de conversa, sem emoção, logo depois de uma abertura de ritmo. Não faz sentido ali e eu errei em sugerir.
+
+**Entre no corpo pelo pai e a noiva**, que a v2 tirou da abertura e é o momento mais emocional do arquivo:
+- começo: 53,1 s ("Pai,") se a imagem dos 9 s seguintes segurar; senão 62,6 s ("chegou o grande dia ou não chegou?");
+- "Ô Deus!" (65,8 a 66,8), "Abraça aí, papai, chega perto. Olha pra ela, pai." (72,7 a 76,5), "Lindo!" (80,4 a 81,1);
+- depois "Chegaram bem? Chegaram. Bom demais." (84,3 a 86,8) fica no lugar dele, como cena seguinte.
+
+O bloco de pose (5,7 a 50 s) pode sair do começo: o melhor dele (Deitei, rodadinha, Pra cima) já está na abertura.
+
+## Anúncio da mentoria (meio do vídeo)
+
+**Transcrição:** tenho o arquivo inteiro (0 a 32:10). Há três buracos sem nenhuma palavra: 14:01 a 15:37, 20:33 a 22:28 e 23:59 a 24:37.
+
+**Onde colocar: em 15:38 (937,8 s), no lugar da fala atual, até 16:50 (1010 s).** O meio do vídeo é 16:05.
+
+O que a fala de 15:38 a 16:50 diz hoje (a transcrição não marca quem fala, e há erros):
+- "...essa oportunidade que você abre... não é ensaiar, é participar do que é real, nada a ver com o casamento ensaiado";
+- "a vivência que você está tendo hoje... qual a dúvida que eu tinha? Resolvi... Tô aqui com o Fares. Como que o Fares faz isso?";
+- "eu tô respirando o lugar", a analogia da casa e do carro (quando você quer um carro, começa a ver carros);
+- "quando um cliente pintar, 'eu quero fazer na praia', eu sei fazer e tenho contato";
+- "deixa de ser fotógrafo e passa a ser uma pessoa que vai se formar pro evento" (ouça, a transcrição pode ter errado).
+- **Não há link nem chamada para ação nessa fala.** A palavra "link" não aparece em nenhum ponto do arquivo.
+- O json tem "Você" em 14:01 e "está batendo na sua mentoria" só em 15:38, 95 s depois. Parece uma frase partida por imagem ou música, ou fala que o reconhecimento perdeu. Ouça esses 95 s.
+
+**Por que aqui:**
+- 40% a 48% do vídeo é onde os três vídeos de referência puseram o anúncio: Think Media (autopromoção) em 9:24 de 19:46, patrocinador do Paddy em 7:52 de 19:50 e patrocinador do Todd/Jimmy em 16:22 de 34:02. Duraram 36 a 60 s, com ponte na entrada ("antes de continuar eu preciso te contar isso", "real quick") e volta clara ("let's get back to the video").
+- Encaixa no assunto: o trecho já fala da vivência, que é o que a mentoria vende. A palavra "vivência" aparece 3 vezes no arquivo (15:53, 16:29, 30:54), é a palavra dele.
+- Depois do anúncio vem o humor ("Estou lhe servindo... I am CEO... Anata mitero", 16:50 a 17:33), uma volta leve.
+
+**Como fazer:**
+1. Entrada: uma frase de ponte curta ("antes de continuar, deixa eu te falar uma coisa").
+2. Off de 30 a 45 s sobre imagens do mentorado trabalhando: o que a mentoria entrega, uma chamada para ação só, e a prova (a fala do mentorado ou do próprio Fares).
+3. Saída: "bora voltar" mais uma promessa do que ainda vem: a foto 360° com drone (23:25 e 26:57 a 30:04). Confirme que essas cenas estão na edição.
+4. Escolha uma chamada para ação só (link na descrição, ou outro). Para eu escrever o off, preciso do que a mentoria entrega e qual é a chamada.
 
 ## Versão 1 (anterior, para comparação)
 
