@@ -15,7 +15,30 @@ Feita só a partir do `VIDEO WELKOME.txt` e do `VIDEO WELKOME palavras.json` (te
 4. **O melhor momento emocional já está na abertura, mas enterrado:** pai e noiva em 0:53 a 1:21 ("chegou o grande dia ou não chegou?", "Ô Deus!", "Olha pra ela, pai", "Lindo!"), depois de ~50 s de direção de pose.
 5. **Em 47 s dos 90 s não há fala** (10 trechos de 3 a 9 s sem palavra). Não sei se há música ou imagem forte nesses trechos; quem decide é a imagem.
 
-## Abertura proposta (≈40 s)
+## Versão 2 (a sua ordem, ≈37 s): usar esta
+
+Mudanças pedidas por você: abrir sem fala, só com imagem (noiva acenando indo à praia, drone rápido, Fares fotografando), trocar o respiro do pai pela cena da noiva e fechar com a frase nova. Entendi que o evento é o **welcome drink**; o texto na tela usa esse nome.
+
+Prints que você mandou: (1) drone aberto na praia, céu cinza, convidados pequenos; (2) noiva de braços abertos na beira do mar, Fares agachado com a câmera; (3) noiva posando ao lado do barco, Fares de costas fotografando.
+
+| tempo | o que entra | fala (corte no arquivo, em s) | texto na tela |
+|---|---|---|---|
+| 0:00 a 0:04 | **print 2 primeiro** (1,3 s), drone rápido (1,3 s), Fares fotografando por fora (1,3 s). Sem fala, música e som de mar | nenhuma | **100 CONVIDADOS** a partir de 0:01 |
+| 0:04 a 0:08 | Fares trabalhando | "Recebemos 100 convidados aqui, fotografamos os 100 convidados." (1829,2 a 1832,9) | mantém |
+| 0:08 a 0:16 | chegada ao local, Fares trabalhando, cortes de ~2,5 s | "A gente chegou aqui nesse local 13h47 da tarde e estamos encerrando agora 18 horas." (1842,9 a 1850,9) | **13H47 → 18H** |
+| 0:16 a 0:21 | o mentorado fotografando | "A gente deu um acesso para um mentorado que veio fotografar a gente aqui." (1851,0 a 1855,6) | **COM UM MENTORADO** |
+| 0:21 a 0:24 | cena da noiva, sem fala, música sobe | nenhuma | nenhum |
+| 0:24 a 0:29 | Fares fotografando, corte a cada "Deitei" | "Deitei! Deitei! Deitei!" (9,7 a 11,5) e "Uhul! Pra cima!" (27,6 a 29,2) | nenhum |
+| 0:29 a 0:35 | Fares tirando foto, depois fotos aparecendo em sequência (1,5 a 2 s, no som do clique) | frase nova: "Vem comigo que eu vou te mostrar como eu fotografei esse welcome drink." (~5 s, a gravar) | **WELCOME DRINK** |
+| 0:35 a 0:37 | título ou logo (1 a 2 s), entra em "Chegaram bem?" (84,3) | | |
+
+Observações:
+- **Tire a linha "Amanhã eu vou soltar as fotos..." da v1.** As fotos que aparecem em 0:29 já cumprem esse papel, e duas promessas de foto seriam repetição.
+- **Primeiro frame:** o print 2 (noiva sorrindo, Fares agachado) é mais forte que o drone: tem sujeito, movimento e emoção. O drone (print 1) tem céu cinza e convidados minúsculos; com o texto "100 CONVIDADOS" funciona como escala, mas não como primeiro frame.
+- **Cor:** o drone (cinza) e os planos de câmera (céu azul) parecem horários diferentes; iguale a cor ou esconda na transição.
+- **Voz da frase nova:** se for gravada à parte, ponha o mesmo som ambiente de praia por baixo, senão destoa das falas originais.
+
+## Versão 1 (anterior, para comparação)
 
 A ideia é abrir **pelo final**, com a voz dele mesmo: o resumo que ele faz às 18h já traz os números exatos e a promessa. Depois vêm o ângulo do mentorado, o respiro emocional, a energia do trabalho e a promessa do payoff.
 
