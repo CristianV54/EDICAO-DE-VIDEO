@@ -29,7 +29,7 @@ export const ALT_ABERTURA = 0.55 * ALTURA_TELA; // s00: fotografo a 55% da altur
 export const LARG_CENA_MIN = 0.75 * LARGURA_TELA; // cena: conjunto a 75% da largura (810 px) ...
 export const ALT_CENA_MIN = 0.4 * ALTURA_TELA; // ... ou personagem mais alto a 40% da altura (768 px)
 export const LARG_DETALHE = 0.45 * LARGURA_TELA;
-export const JANELA_CENA: Janela = { x0: -40, x1: 1120, y0: 520, y1: 1560 }; // cena: pode cortar ate 40 px nas laterais
+export const JANELA_CENA: Janela = { x0: -90, x1: 1170, y0: 520, y1: 1560 }; // cena: pode cortar ate 40 px nas laterais
 export const JANELA_V: Janela = { x0: 50, x1: 1030, y0: 520, y1: 1560 }; // planos que cortam na vertical: so a largura limita
 // legenda: nao pode cobrir cabecas, plaquinhas nem a placa de foto
 export const BANDA_LEGENDA = { x0: 80, x1: 1000, y0: 1185, y1: 1295 };
@@ -82,7 +82,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "balao": {
       const p = posCli(n);
-      return { c: [p[0], Y_CASA + 2.3, p[2]], t: [1.2, 0.75, 0.3] };
+      return { c: [p[0] + 0.45, Y_CASA + 2.3, p[2] + 0.25], t: [1.2, 0.75, 0.3] };
     }
     case "maoCam": {
       const p = posFot(n);
@@ -128,6 +128,7 @@ export type Plano = {
   janela?: Janela;
   seguir?: { de: string; para: string }; // caminhada: a mira acompanha o fotografo
   casa?: number; // casa do segmento (plaquinha e placa de foto)
+  orbita?: { az: number; push: number }; // abertura e final: giro e push-in maiores que os 5 graus e 6% padrao (nunca parado)
   livreV?: boolean; // so a largura limita; em cima e embaixo pode cortar (como na referencia)
 };
 
@@ -382,9 +383,9 @@ export const resolverPlano = (plano: Plano): Resolvido => {
 // pose em um ponto (prog 0..1) do plano: o azimute cresce 5 graus e a distancia diminui 6%
 export const poseResolvida = (plano: Plano, prog: number): { pos: V3; alvo: V3; fov: number } => {
   const r = resolverPlano(plano);
-  const az = ((plano.az + AZ_ORBITA * prog) * Math.PI) / 180;
+  const az = ((plano.az + (plano.orbita?.az ?? AZ_ORBITA) * prog) * Math.PI) / 180;
   const el = (plano.el * Math.PI) / 180;
-  const d = r.d * (1 - PUSH_IN * prog);
+  const d = r.d * (1 - (plano.orbita?.push ?? PUSH_IN) * prog);
   const [tx, ty, tz] = r.alvo;
   return { pos: [tx + d * Math.sin(az) * Math.cos(el), ty + d * Math.sin(el), tz + d * Math.cos(az) * Math.cos(el)], alvo: r.alvo, fov: FOV };
 };
@@ -497,10 +498,10 @@ export const planoPlaca = (n: number, sufixo: string): Plano => ({
 export const planoDetalhe = (n: number): Plano => ({
   id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_V, livreV: true, casa: n,
 });
-export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_V, livreV: true, casa: 1 };
-export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_LIVRE };
-export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_LIVRE };
-export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL };
+export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_V, livreV: true, casa: 1, orbita: { az: 45, push: 0.1 } };
+export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 58, lista: ["tabuleiro"], janela: JANELA_LIVRE };
+export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_LIVRE, orbita: { az: 25, push: 0.08 } };
+export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL, orbita: { az: 40, push: 0.14 } };
 export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_V, livreV: true, casa: 3 };
 
 export const ETAPAS_SEG: EtapaPlano[][] = (() => {

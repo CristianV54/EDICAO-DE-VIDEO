@@ -11,7 +11,7 @@ export const luzGlobal = (f: number): number => {
   let k = 1;
   k = lerp(k, 0.55, r(f, L7.ini, 12));
   k = lerp(k, 1, r(f, L7.sol + 10, 14));
-  k = lerp(k, 0.25, r(f, L9.ev.apagam, 15));
+  k = lerp(k, 0.35, r(f, L9.ev.apagam, 15));
   k = lerp(k, 0.75, r(f, L9.sol, 6));
   k = lerp(k, 1, r(f, L9.fim - 12, 12));
   return k;

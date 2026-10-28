@@ -57,7 +57,7 @@ const Luzes: React.FC<{ frame: number }> = ({ frame }) => {
       />
       {cores.map((cor, k) => {
         const a = ang + (k * Math.PI * 2) / 3;
-        return <pointLight key={k} color={cor} intensity={14 * festa} distance={7} decay={1.6} position={[c9[0] + Math.cos(a) * 1.7, 2.3, c9[2] + Math.sin(a) * 1.7]} />;
+        return <pointLight key={k} color={cor} intensity={8 * festa} distance={7} decay={1.6} position={[c9[0] + Math.cos(a) * 1.7, 2.3, c9[2] + Math.sin(a) * 1.7]} />;
       })}
       <pointLight color="#FFFFFF" intensity={luzFlash(frame)} distance={9} decay={1.5} position={[c9[0] + 0.4, 1.6, c9[2] + 0.6]} />
       <pointLight color="#FF2A2A" intensity={luzFogo(frame)} distance={4} decay={1.6} position={[fogo[0] - 0.3, 1.0, fogo[2] - 0.4]} />

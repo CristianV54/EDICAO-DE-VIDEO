@@ -20,9 +20,9 @@ export const Contador: React.FC = () => {
   return (
     <div
       style={{
-        position: "absolute", top: 175, right: 60, padding: "10px 26px", borderRadius: 999,
+        position: "absolute", top: 175, right: 60, padding: "12px 32px", borderRadius: 999,
         background: "#F7F5F0", border: "3px solid #1A1A1A", fontFamily: MONTSERRAT, fontWeight: 800,
-        fontSize: 34, color: "#1A1A1A", transform: `scale(${escala})`, transformOrigin: "100% 50%", whiteSpace: "nowrap",
+        fontSize: 46, color: "#1A1A1A", transform: `scale(${escala})`, transformOrigin: "100% 50%", whiteSpace: "nowrap",
       }}
     >
       PEÇAS <span style={{ color: "#D4A537" }}>{n}</span>/13

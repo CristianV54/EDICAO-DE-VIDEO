@@ -28,14 +28,14 @@ export const CardAnotacoes: React.FC = () => {
         {["#FF5F57", "#FEBC2E", "#28C840"].map((c) => (
           <div key={c} style={{ width: 20, height: 20, borderRadius: 10, background: c }} />
         ))}
-        <div style={{ marginLeft: 14, fontFamily: MONO, fontWeight: 500, fontSize: 26, color: "#8A8F9C" }}>anotações · carreira</div>
+        <div style={{ marginLeft: 14, fontFamily: MONO, fontWeight: 500, fontSize: 30, color: "#8A8F9C" }}>anotações · carreira</div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", padding: "26px 30px 30px", fontFamily: MONO, fontWeight: 500, fontSize: 40, color: "#FFFFFF", whiteSpace: "pre", height: 52 }}>
+      <div style={{ display: "flex", alignItems: "center", padding: "26px 30px 30px", fontFamily: MONO, fontWeight: 500, fontSize: 46, color: "#FFFFFF", whiteSpace: "pre", height: 60 }}>
         <span style={{ color: "#D4A537" }}>{"> "}</span>
         <span>{tarefa.slice(0, n)}</span>
-        {!concluido && <span style={{ display: "inline-block", width: 22, height: 44, marginLeft: 4, background: cursor ? "#D4A537" : "transparent" }} />}
+        {!concluido && <span style={{ display: "inline-block", width: 24, height: 50, marginLeft: 4, background: cursor ? "#D4A537" : "transparent" }} />}
         {concluido && (
-          <svg width={44} height={44} viewBox="0 0 24 24" style={{ marginLeft: 18 }}>
+          <svg width={52} height={52} viewBox="0 0 24 24" style={{ marginLeft: 18 }}>
             <path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#3DDC84" strokeWidth={3.4} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
