@@ -2,7 +2,7 @@
 // de costas para a camera do plano (angulo entre a frente dele e a direcao da camera de no maximo 80 graus).
 // Rodar: npx esbuild scripts/verificar-personagens.ts --bundle --platform=node --format=esm --external:three --outfile=out/pers.mjs && node out/pers.mjs
 import { PLANOS_RESOLVIDOS, poseResolvida, projetarCorposEmProg } from "../src/cena/enquadramento";
-import { posFot, posNoiva, posNoivo, posCli, posAmigoA, posAmigoB, rotRepouso } from "../src/dados/posicoes";
+import { posFot, posNoiva, posNoivo, posCli, posAmigoA, posAmigoB, rotCli, rotFot } from "../src/dados/posicoes";
 
 const POS: Record<string, (n: number) => [number, number, number]> = { fot: posFot, noiva: posNoiva, noivo: posNoivo, cli: posCli, amigoA: posAmigoA, amigoB: posAmigoB, madrinha: posCli };
 const MAX_SOBRE = 0.10;
@@ -37,7 +37,7 @@ for (const r of PLANOS_RESOLVIDOS) {
     const m = id.match(/^([a-zA-Z]+)(\d+)$/)!;
     const n = parseInt(m[2], 10);
     const pos = POS[m[1]](n);
-    let rot = rotRepouso(n);
+    let rot = m[1] === "fot" ? rotFot(n) : rotCli(n);
     if (p.id === "s02-clique") rot = m[1] === "fot" ? 1.0 : -1.0;
     const fx = Math.sin(rot);
     const fz = Math.cos(rot);
@@ -46,10 +46,32 @@ for (const r of PLANOS_RESOLVIDOS) {
     const ang = (Math.acos((fx * dx + fz * dz) / Math.hypot(dx, dz)) * 180) / Math.PI;
     if (ang > MAX_ANG) pior.push(`${id} ${ang.toFixed(0)} graus`);
   }
+  // QUEM OLHA PARA QUEM: o fotografo olha para o(s) cliente(s) e o cliente olha para o fotografo (no maximo 60 graus de erro)
+  const olhares: string[] = [];
+  if (p.id !== "s02-clique") {
+    const nn = parseInt(p.id.slice(1, 3), 10);
+    const fots = pers.filter((id) => id.startsWith("fot"));
+    const outros = pers.filter((id) => !id.startsWith("fot"));
+    const ang = (de: [number, number, number], rot: number, para: [number, number, number]) => {
+      const dx = para[0] - de[0];
+      const dz = para[2] - de[2];
+      return (Math.acos((Math.sin(rot) * dx + Math.cos(rot) * dz) / Math.hypot(dx, dz)) * 180) / Math.PI;
+    };
+    if (fots.length && outros.length) {
+      const ps = outros.map((id) => { const mm = id.match(/^([a-zA-Z]+)(\d+)$/)!; return POS[mm[1]](parseInt(mm[2], 10)); });
+      const alvoF: [number, number, number] = [ps.reduce((a, q) => a + q[0], 0) / ps.length, 0, ps.reduce((a, q) => a + q[2], 0) / ps.length];
+      const a1 = ang(posFot(nn), rotFot(nn), alvoF);
+      if (a1 > 60) olhares.push(`fotografo erra o alvo em ${a1.toFixed(0)} graus`);
+      outros.forEach((id, k) => {
+        const a2 = ang(ps[k], rotCli(nn), posFot(nn));
+        if (a2 > 60) olhares.push(`${id} erra o fotografo em ${a2.toFixed(0)} graus`);
+      });
+    }
+  }
   // casais (s07 a s09) ficam de maos dadas e perto do fotografo: so a orientacao e checada; nos demais a sobreposicao maxima e 10%
-  const casal = /^s0[789]-/.test(p.id);
-  const ok = (casal || piorSobre <= MAX_SOBRE) && pior.length === 0;
+  const casal = /^s0[2789]-/.test(p.id); // casais e amigos de maos dadas ficam ombro a ombro (um atras do outro)
+  const ok = (casal || piorSobre <= MAX_SOBRE) && pior.length === 0 && olhares.length === 0;
   if (!ok) falhou = true;
-  console.log(`${p.id.padEnd(12)} sobreposicao maxima ${(piorSobre * 100).toFixed(0).padStart(3)}% ${par.padEnd(22)} orientacao: ${pior.length ? pior.join(", ") : "todos de frente (<= 80 graus)"}  ${ok ? "ok" : "FALHA"}`);
+  console.log(`${p.id.padEnd(12)} sobreposicao maxima ${(piorSobre * 100).toFixed(0).padStart(3)}% ${par.padEnd(22)} orientacao: ${pior.length ? pior.join(", ") : "todos de frente (<= 80 graus)"}  olham um para o outro: ${olhares.length ? olhares.join(", ") : "sim (<= 60 graus)"}  ${ok ? "ok" : "FALHA"}`);
 }
 process.exit(falhou ? 1 : 0);

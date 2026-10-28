@@ -1,6 +1,6 @@
 // Estado de cada personagem por frame (funcoes puras). Usado pelo Elenco 3D, pelo teste de interseccao e pelas estacoes.
 import {
-  ENTRADA_MADRINHA, V3, posAmigoA, posAmigoB, posCli, posFot, posNoiva, posNoivo, rotRepouso,
+  ENTRADA_MADRINHA, V3, posAmigoA, posAmigoB, posCli, posFot, posNoiva, posNoivo, rotCli, rotFot, rotRepouso,
 } from "../dados/posicoes";
 import { FLASHES, LINHAS, WALK, CAMINHADA_MADRINHA, clamp01, easeInOutCubic, lerp, segDe } from "../util/tempo";
 import { localParaMundo, mundoParaLocal } from "./geometria";
@@ -77,10 +77,10 @@ export const fotografo = (f: number): EstadoFot => {
   const L = LINHAS[i];
   const n = Math.min(Math.max(i, 1), 13);
   let pos = posFot(n);
-  let rotY = rotRepouso(n);
+  let rotY = i === 0 || i === 14 ? rotRepouso(n) : rotFot(n);
   let passo = 0;
   if (i >= 2 && i <= 13) {
-    const a = andar(f, i, posFot(i - 1), posFot(i), rotRepouso(i - 1), rotRepouso(i));
+    const a = andar(f, i, posFot(i - 1), posFot(i), rotFot(i - 1), rotFot(i));
     pos = a.pos;
     rotY = a.rotY;
     passo = a.passo;
@@ -94,11 +94,14 @@ export const fotografo = (f: number): EstadoFot => {
   const L7 = LINHAS[7];
   const lente: "kit" | "50" = i < 7 || (i === 7 && f < L7.sol) ? "kit" : "50";
   const troca = i === 7 ? clamp01((f - L7.sol) / 16) : 0;
-  let cartoes: EstadoFot["cartoes"] = "nenhum";
-  if (i === 8) cartoes = f < LINHAS[8].prob ? "azuis" : f < LINHAS[8].sol ? "falha" : "salvo";
-  else if (i > 8) cartoes = "azuis";
+  const cartoes: EstadoFot["cartoes"] = "nenhum"; // os cartoes aparecem na camera gigante do s08, nao na camera da mao
   const flash = i >= 9 && f >= LINHAS[9].sol ? Math.min(1, (f - LINHAS[9].sol) / 6) : 0;
-  return { vis: true, opac: 1, pos, rotY, passo, expr: feliz || i === 14 ? "feliz" : "normal", lev, lente, troca, cartoes, flash, etiquetaLoja: i === 0 };
+  // s14: comemoracao como na referencia: bracos para o alto e pulinhos, virado para a camera
+  const fest = i === 14 ? rampa(f, L.prob, 10) : 0;
+  const pulo = i === 14 ? 0.1 * Math.abs(Math.sin(((f - L.prob) / 30) * Math.PI * 1.6)) * fest : 0;
+  if (i === 14) rotY = mixAng(rotY, rotRepouso(n), fest);
+  const bracos: { mp?: V3; mn?: V3 } = i === 14 && fest > 0.01 ? { mp: [0.36, 0.9 + 0.7 * fest, 0.05], mn: [-0.36, 0.9 + 0.7 * fest, 0.05] } : {};
+  return { vis: true, opac: 1, pos: [pos[0], pos[1] + pulo, pos[2]], rotY, passo, expr: feliz || i === 14 ? "feliz" : "normal", lev, lente, troca, cartoes, flash, etiquetaLoja: i === 0, ...bracos };
 };
 
 // fracao de "virar de costas" entre o problema e a solucao
@@ -117,10 +120,10 @@ export const noiva = (f: number): Estado => {
   if (i >= 4 && i <= 9) {
     if (i === 4) {
       pos = posCli(4);
-      rotY = rotRepouso(4);
+      rotY = rotCli(4);
       opac = rampa(f, L.ini, 12);
     } else {
-      const a = andar(f, i, posNoiva(i - 1), posNoiva(i), rotRepouso(i - 1), rotRepouso(i));
+      const a = andar(f, i, posNoiva(i - 1), posNoiva(i), rotCli(i - 1), rotCli(i));
       pos = a.pos;
       rotY = a.rotY;
       passo = a.passo;
@@ -129,16 +132,16 @@ export const noiva = (f: number): Estado => {
   } else if (i === 10 && f < L.ini) return e;
   else if (i === 11) {
     pos = posCli(11);
-    rotY = rotRepouso(11);
+    rotY = rotCli(11);
     opac = rampa(f, L.ini, 12);
   } else if (i === 12) {
-    const a = andar(f, i, posCli(11), posCli(12), rotRepouso(11), rotRepouso(12));
+    const a = andar(f, i, posCli(11), posCli(12), rotCli(11), rotCli(12));
     pos = a.pos;
     rotY = a.rotY;
     passo = a.passo;
   } else if (i === 13) {
     pos = posCli(12);
-    rotY = rotRepouso(12);
+    rotY = rotCli(12);
     opac = 1 - rampa(f, L.ini, 12);
   }
   if (!pos || opac <= 0.01) return e;
@@ -183,7 +186,7 @@ export const noiva = (f: number): Estado => {
     if (f >= L.prob && f < sol) out.mn = [-0.02, 0.92, 0.22]; // reclama: um braco cruza o corpo, o outro segura o celular
     if (f >= sol) {
       out.expr = "feliz";
-      out.rotY = rotRepouso(11) + 0.9 * rampa(f, sol, 10);
+      out.rotY = rotCli(11); // continua virada para o fotografo
     }
   }
   if (i === 12) out.expr = f < L.ev.depoimento ? "emocao" : "feliz";
@@ -201,10 +204,10 @@ export const noivo = (f: number): Estado => {
   let opac = 1;
   if (i === 7) {
     pos = posNoivo(7);
-    rotY = rotRepouso(7);
+    rotY = rotCli(7);
     opac = rampa(f, L.ini, 12);
   } else {
-    const a = andar(f, i, posNoivo(i - 1), posNoivo(i), rotRepouso(i - 1), rotRepouso(i));
+    const a = andar(f, i, posNoivo(i - 1), posNoivo(i), rotCli(i - 1), rotCli(i));
     pos = a.pos;
     rotY = a.rotY;
     passo = a.passo;
@@ -235,13 +238,13 @@ export const amigos = (f: number): { a: Estado; b: Estado } => {
   const L = LINHAS[i];
   const inv = { a: { ...INVISIVEL }, b: { ...INVISIVEL } };
   if (i !== 2) return inv;
-  const opac = Math.min(rampa(f, L.prob - 6, 10), 1 - rampa(f, fadeAmigosIni(), 14)); // entram depois do close do album
+  const opac = Math.min(rampa(f, L.ev.amigos - 16, 10), 1 - rampa(f, fadeAmigosIni(), 14)); // entram quando o album cai ("Entao voce chama uns amigos")
   if (opac <= 0.01) return inv;
   const pa = posAmigoA(2);
   const pb = posAmigoB(2);
   const pose = rampa(f, L.ev.amigos, 8) * (1 - rampa(f, L.ev.amigos + 50, 10));
   const mid: V3 = [(pa[0] + pb[0]) / 2, lerp(0.7, 1.0, pose), (pa[2] + pb[2]) / 2];
-  const ra = mixAng(rotRepouso(2), -1.0, virarS2(f));
+  const ra = mixAng(rotCli(2), -1.0, virarS2(f));
   const a: Estado = { vis: true, opac, pos: pa, rotY: ra, passo: 0, expr: "feliz", mp: mundoParaLocal(pa, ra, mid), inclina: -0.06 * pose };
   const b: Estado = { vis: true, opac, pos: pb, rotY: ra, passo: 0, expr: "feliz", mn: mundoParaLocal(pb, ra, mid), inclina: 0.06 * pose };
   if (f >= fadeAmigosIni() - 10) {
@@ -263,7 +266,7 @@ export const madrinha = (f: number): Estado => {
   const alvo = posCli(13);
   const pos = mix(ENTRADA_MADRINHA, alvo, u);
   const ang = Math.atan2(alvo[0] - ENTRADA_MADRINHA[0], alvo[2] - ENTRADA_MADRINHA[2]);
-  const rot = u < 0.7 ? ang : mixAng(ang, rotRepouso(13), easeInOutCubic((u - 0.7) / 0.3));
+  const rot = u < 0.7 ? ang : mixAng(ang, rotCli(13), easeInOutCubic((u - 0.7) / 0.3));
   const env = u > 0 && u < 1 ? 1 : 0;
   return {
     vis: true, opac: rampa(f, ini, 6), pos, rotY: rot, passo: 0.5 * Math.sin(((f - ini) / 30) * 2 * Math.PI) * env,

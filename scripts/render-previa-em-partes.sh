@@ -16,5 +16,5 @@ while [ $ini -lt $TOTAL ]; do
   echo "file 'p$(printf '%02d' $i).mp4'" >> out/partes/lista.txt
   ini=$((fim+1)); i=$((i+1))
 done
-npx remotion ffmpeg -y -f concat -safe 0 -i out/partes/lista.txt -c copy out/previa-v3.mp4
+npx remotion ffmpeg -y -f concat -safe 0 -i out/partes/lista.txt -c copy "${SAIDA:-out/previa-v4.mp4}"
 echo PRONTO

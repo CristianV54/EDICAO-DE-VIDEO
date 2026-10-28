@@ -1,7 +1,7 @@
 import { random } from "remotion";
 
 // Desenha os 8 estados do telao (1024 x 680). Cada estado e desenhado uma vez e guardado em cache.
-export type EstadoTelao = "auto" | "manual" | "escura" | "cinquenta" | "corrompida" | "restaurada" | "festa_granulada" | "festa_flash";
+export type EstadoTelao = "auto" | "manual" | "escura" | "cinquenta" | "corrompida" | "restaurada" | "festa_granulada" | "festa_flash" | "vazio_foto" | "portfolio";
 export const W = 1024;
 export const H = 680;
 
@@ -208,6 +208,36 @@ const desenhar: Record<EstadoTelao, (g: CanvasRenderingContext2D) => void> = {
     festa(g, true);
     casal(g, 512, 600, 1.4, CASAL_CLARO);
   },
+  // s02: o cavalete vazio (sem trabalho para mostrar) e depois a grade com as melhores fotos do ensaio
+  vazio_foto: (g) => {
+    g.fillStyle = "#2A2D35";
+    g.fillRect(0, 0, W, H);
+    g.strokeStyle = "#6B7078";
+    g.lineWidth = 8;
+    g.setLineDash([26, 18]);
+    g.strokeRect(60, 60, W - 120, H - 120);
+    g.setLineDash([]);
+    g.fillStyle = "#6B7078";
+    g.font = "900 300px Montserrat";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText("?", W / 2, H / 2 + 20);
+  },
+  portfolio: (g) => {
+    g.fillStyle = "#17181D";
+    g.fillRect(0, 0, W, H);
+    const cores = [["#F6C28B", "#F29E7E"], ["#BFE3F5", "#7FB8E6"], ["#F7D6E0", "#E9A8C0"], ["#D6EBC8", "#8FC79A"], ["#FFE9A8", "#F5C542"], ["#E9CFA3", "#C99A6A"]];
+    for (let k = 0; k < 6; k++) {
+      const x = 40 + (k % 3) * 322;
+      const y = 40 + Math.floor(k / 3) * 310;
+      const grad = g.createLinearGradient(0, y, 0, y + 280);
+      grad.addColorStop(0, cores[k][0]);
+      grad.addColorStop(1, cores[k][1]);
+      g.fillStyle = grad;
+      g.fillRect(x, y, 300, 280);
+      casal(g, x + 150, y + 270, 0.55, CASAL_CLARO);
+    }
+  },
 };
 
 const desenharBase = (g: CanvasRenderingContext2D, e: EstadoTelao) => desenhar[e](g);
@@ -217,4 +247,4 @@ export const criarCanvasTelao = (e: EstadoTelao): HTMLCanvasElement => {
   desenhar[e](c.getContext("2d")!);
   return c;
 };
-export const ESTADOS: EstadoTelao[] = ["auto", "manual", "escura", "cinquenta", "corrompida", "restaurada", "festa_granulada", "festa_flash"];
+export const ESTADOS: EstadoTelao[] = ["auto", "manual", "escura", "cinquenta", "corrompida", "restaurada", "festa_granulada", "festa_flash", "vazio_foto", "portfolio"];

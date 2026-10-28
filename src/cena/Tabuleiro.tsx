@@ -7,16 +7,18 @@ import { LINHAS, clamp01, easeInOutCubic } from "../util/tempo";
 const BORDA = 0.3;
 const PX_POR_M = 80;
 const DOURADO = "#E2B341";
+const LED = "#3DDC84";
 
+// tampo da mesa de montagem: azul-marinho escuro com grade fina (as roupas brancas do elenco contrastam)
 const useTampo = (larg: number, prof: number) =>
   useMemo(() => {
     const c = document.createElement("canvas");
     c.width = Math.round(larg * PX_POR_M);
     c.height = Math.round(prof * PX_POR_M);
     const g = c.getContext("2d")!;
-    g.fillStyle = "#3B7BF2";
+    g.fillStyle = "#1D2230";
     g.fillRect(0, 0, c.width, c.height);
-    g.strokeStyle = "#6E9BF5";
+    g.strokeStyle = "#2A3145";
     g.lineWidth = 3;
     for (let x = 0; x <= larg + 1e-6; x += 0.5) {
       g.beginPath();
@@ -80,28 +82,40 @@ export const Tabuleiro: React.FC<{ frame: number }> = ({ frame }) => {
 
   return (
     <group>
-      <B p={[0, 0.025, 0]} s={[L + 1.3, 0.05, P + 0.8]} c="#E8DCC4" r={0.02} />
-      <B p={[0, Y_BASE / 2, 0]} s={[L, Y_BASE, P]} c="#2A2D35" r={0.06} />
+      {/* tapete verde-agua sob a mesa (como a referencia) e a mesa escura com LEDs verdes */}
+      <B p={[0, 0.025, 0]} s={[L + 1.5, 0.05, P + 1.3]} c="#12A58C" r={0.02} />
+      <B p={[0, 0.03, 0]} s={[L + 0.9, 0.06, P + 0.7]} c="#6ED3C0" r={0.02} sombra={false} />
+      <B p={[0, Y_BASE / 2, 0]} s={[L, Y_BASE, P]} c="#14171F" r={0.06} />
       <mesh position={[0, Y_BASE + 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[iL, iP]} />
         <meshStandardMaterial map={tampo} roughness={0.9} />
       </mesh>
-      {Array.from({ length: 22 }, (_, i) => (
-        <mesh key={i} position={[-5.4 + i * (10.8 / 21), 0.2, P / 2 + 0.005]}>
+      {Array.from({ length: 12 }, (_, i) => (
+        <mesh key={`f${i}`} position={[-L / 2 + 0.6 + i * ((L - 1.2) / 11), 0.2, P / 2 + 0.005]}>
           <boxGeometry args={[0.36, 0.07, 0.02]} />
-          <meshStandardMaterial color={DOURADO} emissive={DOURADO} emissiveIntensity={1.4} />
+          <meshStandardMaterial color={LED} emissive={LED} emissiveIntensity={1.4} />
         </mesh>
       ))}
-      {/* casas */}
+      {Array.from({ length: 20 }, (_, i) => (
+        <mesh key={`d${i}`} position={[L / 2 + 0.005, 0.2, -P / 2 + 0.6 + i * ((P - 1.2) / 19)]}>
+          <boxGeometry args={[0.02, 0.07, 0.36]} />
+          <meshStandardMaterial color={LED} emissive={LED} emissiveIntensity={1.4} />
+        </mesh>
+      ))}
+      {/* casas: base escura mais clara com moldura que acende dourada quando o fotografo chega */}
       {CASA.map(([x, z], i) => {
         const n = i + 1;
-        const opFinal = 0.4 + 0.6 * easeInOutCubic(clamp01((frame - chegadaCasa(n)) / 8));
+        const k = easeInOutCubic(clamp01((frame - chegadaCasa(n)) / 8));
+        const moldura = k > 0.5 ? DOURADO : "#3A4156";
         return (
           <group key={n} position={[x, 0, z]}>
-            <B p={[0, Y_BASE + 0.02, 0]} s={[2.0, 0.04, 2.0]} c="#F7F5F0" r={0.015} o={opFinal < 1 ? opFinal : undefined} sombra={false} />
-            <mesh position={[-0.68, Y_CASA + 0.002, 0.68]} rotation={[-Math.PI / 2, 0, 0]}>
+            <B p={[0, Y_BASE + 0.015, 0]} s={[2.0, 0.03, 2.2]} c="#262C3C" r={0.012} sombra={false} />
+            {[[0, -1.1, 2.0, 0.05], [0, 1.1, 2.0, 0.05], [-1.0, 0, 0.05, 2.2], [1.0, 0, 0.05, 2.2]].map((q, j) => (
+              <B key={j} p={[q[0], Y_BASE + 0.034, q[1]]} s={[q[2], 0.012, q[3]]} c={moldura} r={0.004} e={k > 0.5 ? DOURADO : undefined} ei={k > 0.5 ? 0.9 : 0} sombra={false} />
+            ))}
+            <mesh position={[-0.7, Y_CASA + 0.002, 0.85]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.4, 0.4]} />
-              <meshBasicMaterial map={nums[i]} transparent opacity={opFinal} toneMapped={false} depthWrite={false} />
+              <meshBasicMaterial map={nums[i]} transparent opacity={0.35 + 0.65 * k} toneMapped={false} depthWrite={false} />
             </mesh>
           </group>
         );

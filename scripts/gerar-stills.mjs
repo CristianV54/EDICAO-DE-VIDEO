@@ -41,25 +41,32 @@ const alvos = [];
 }
 m.slice(1, 14).forEach((s) => {
   const n = parseInt(s.id.slice(1), 10);
-  alvos.push({grupo: s.id, nome: `${s.id}_a_caminhada`, frame: f(n === 1 ? s.ini + 0.9 * FPS : s.ini + WALK / 2)});
-  // o close so comeca quando a peca comeca a cair; a peca pousa em toque
-  alvos.push({grupo: s.id, nome: `${s.id}_b_close`, frame: f(s.toque + 0.4 * FPS)});
-  alvos.push({grupo: s.id, nome: `${s.id}_c_problema`, frame: f(s.prob + 0.4 * FPS)});
-  alvos.push({grupo: s.id, nome: `${s.id}_d_solucao`, frame: f(s.sol + 0.4 * FPS)});
-  if (n === 7 || n === 8 || n === 9) {
-    alvos.push({grupo: s.id, nome: `${s.id}_e_corte`, frame: f(s.sol + 0.7 * FPS)});
-    alvos.push({grupo: s.id, nome: `${s.id}_f_cena`, frame: f(s.sol + 1.7 * FPS)});
-  }
+  const g = s.id;
+  const ev = s.ev || {};
+  alvos.push({grupo: g, nome: `${g}_a_caminhada`, frame: f(n === 1 ? s.ini + 0.9 * FPS : s.ini + WALK / 2)});
+  alvos.push({grupo: g, nome: `${g}_b_problema`, frame: f(s.prob + 0.6 * FPS)}); // cena do problema
+  alvos.push({grupo: g, nome: `${g}_c_queda`, frame: f(s.toque + 0.3 * FPS)}); // a peca acabou de cair
+  alvos.push({grupo: g, nome: `${g}_d_solucao`, frame: f(s.sol + 0.7 * FPS)}); // a peca age
+  alvos.push({grupo: g, nome: `${g}_e_nome`, frame: f(s.nome + 0.5 * FPS)}); // "Esse e o X": titulo, amarelo, contador
   if (n === 1) {
-    alvos.push({grupo: s.id, nome: `${s.id}_e_placa_auto`, frame: f(s.prob + 0.8 * FPS)});
-    alvos.push({grupo: s.id, nome: `${s.id}_f_placa_manual`, frame: f(s.sol + 0.5 * FPS)});
+    alvos.push({grupo: g, nome: `${g}_f_placa_auto`, frame: f(s.prob + 0.8 * FPS)});
+    alvos.push({grupo: g, nome: `${g}_g_placa_manual`, frame: f(s.sol + 1.2 * FPS)});
   }
-  if (n === 10) alvos.push({grupo: s.id, nome: `${s.id}_e_tres_copias`, frame: f(s.sol + 1.2 * FPS)});
-  if (n === 7) alvos.push({grupo: s.id, nome: `${s.id}_g_lente_inteira`, frame: f(s.sol + 1.7 * FPS)});
-  if (n === 12) alvos.push({grupo: s.id, nome: `${s.id}_e_voo`, frame: f(s.sol + 0.6 * FPS)});
-  if (n === 13) alvos.push({grupo: s.id, nome: `${s.id}_e_pronto`, frame: f(s.sol + 1.5 * FPS)});
+  if (n === 2) alvos.push({grupo: g, nome: `${g}_f_clique`, frame: f(ev.amigos + 0.4 * FPS)});
+  if (n === 7 || n === 9) alvos.push({grupo: g, nome: `${g}_f_placa_b`, frame: f(s.sol + 1.6 * FPS)});
+  if (n === 8) {
+    alvos.push({grupo: g, nome: `${g}_f_slots`, frame: f(ev.slots + 0.8 * FPS)});
+    alvos.push({grupo: g, nome: `${g}_g_placa_restaurada`, frame: f(s.sol + 2.0 * FPS)});
+  }
+  if (n === 10) {
+    alvos.push({grupo: g, nome: `${g}_f_hd_queima`, frame: f(s.prob + 0.8 * FPS)});
+    alvos.push({grupo: g, nome: `${g}_g_dois`, frame: f(ev.dois + 0.3 * FPS)});
+    alvos.push({grupo: g, nome: `${g}_h_nuvem`, frame: f(ev.nuvem + 0.5 * FPS)});
+  }
+  if (n === 12) alvos.push({grupo: g, nome: `${g}_f_voo`, frame: f(s.sol + 0.6 * FPS)});
+  if (n === 13) alvos.push({grupo: g, nome: `${g}_f_pronto`, frame: f(s.sol + 1.5 * FPS)});
 });
-// card saindo (s01, s05, s09, s13)
+// card (s01, s05, s09, s13): digitando e saindo
 for (const id of ['s01', 's05', 's09', 's13']) {
   const s = m.find((x) => x.id === id);
   alvos.push({grupo: 'card', nome: `card_${id}_a_saindo`, frame: f(s.cardFim - 3)});

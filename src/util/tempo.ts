@@ -51,24 +51,32 @@ export type Linha = {
   k: number; // compressao para segmentos curtos
   temPeca: boolean;
   chegada: number; // fim da caminhada ate a casa
+  tituloIni: number; // "Esse e o X": o titulo, o amarelo da peca e o contador acontecem aqui
   tituloFim: number;
-  cardIni: number;
+  cardIni: number; // "Entao": o card comeca a digitar
   vel: number; // chars/s efetivos
   nChars: number;
   digitaFim: number;
-  quedaIni: number;
+  quedaIni: number; // a peca cai depois de digitado
   toque: number;
+  entao: number;
   prob: number;
   segunda: number | null;
   sol: number;
-  cenaIni: number; // inicio do plano "cena" da camera
-  ev: Record<string, number>; // frames de todas as ancoras (problema, solucao e eventos extras)
+  nome: number; // revelacao do nome da peca
+  cenaIni: number; // inicio do plano "cena" da camera (cena do problema)
+  ev: Record<string, number>; // frames de todas as ancoras (problema, entao, solucao, nome e eventos extras)
   cardSai: number; // frame em que o card comeca a sair
 };
 
 export const WALK = sf(0.9); // caminhada do fotografo ate a casa (s02 a s13)
-export const CAMINHADA_MADRINHA = 66; // frames da madrinha ate a casa 13
+export const CAMINHADA_MADRINHA = 40; // frames da madrinha ate a casa 13
+const GAP = sf(0.4); // tempo minimo entre dois eventos encadeados de um mesmo segmento
+const GAP_PRIMEIRO = sf(0.7); // a peca pousa e o publico ve a peca antes de ela agir
+const NOME_APOS_SOL: Record<string, number> = { s01: 2.0, s02: 1.6, s07: 2.0, s08: 2.0, s09: 1.8, s12: 1.7 }; // segmentos com corte de placa: o nome so vem depois do resultado
 
+// Ordem de cada segmento (como na referencia): PROBLEMA (cena com os personagens e os objetos do problema), "ENTAO" (o card digita e a peca cai),
+// eventos da peca (extras), SOLUCAO (a peca age) e NOME ("Esse e o X": titulo, amarelo, contador).
 export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
   const t = tempos.segmentos[i] as unknown as { inicio: number; fim: number; ancoras: Record<string, number> };
   const ini = sf(t.inicio);
@@ -78,31 +86,50 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
   const temPeca = i >= 1 && i <= 13;
   const nChars = r.tarefa ? r.tarefa.length : 0;
   const vel = VEL_DIGITACAO / k;
-  const cardIni = ini + sf(0.15 * k);
-  const digitaFim = cardIni + Math.ceil((nChars / vel) * FPS);
-  const quedaIni = digitaFim + sf(0.15 * k);
-  const toque = quedaIni + TOQUE_REL;
-  const aProb = sf(t.ancoras.problema);
-  const aSol = sf(t.ancoras.solucao);
-  // s07 e s09: o momento da peca e a propria ancora da solucao (lente cai, flash estoura)
-  const momentoNaAncora = r.id === "s07" || r.id === "s09";
-  // s13: o momento da peca e a chegada da madrinha, que comeca a andar na ancora "madrinha"
-  const madrinha = r.id === "s13";
-  const prob = temPeca && !momentoNaAncora && !madrinha ? Math.max(aProb, toque + sf(0.8)) : aProb;
-  const toqueFinal = momentoNaAncora ? aSol : madrinha ? prob + CAMINHADA_MADRINHA : toque;
-  const sol = temPeca && !momentoNaAncora ? Math.max(aSol, prob + sf(0.5 * k)) : aSol;
   const chegada = i >= 2 && i <= 13 ? ini + WALK : ini;
-  // plano "cena": comeca 0,2 s antes do problema (e nunca antes de o fotografo chegar)
-  const cenaIni = temPeca ? Math.max(chegada + 6, prob - sf(0.2)) : ini;
-  // o card sai em max(momento + 0,5 s, min(momento + 1,2 s, cena - 0,3 s))
-  const cardSai = Math.max(toqueFinal + sf(0.5), Math.min(toqueFinal + sf(1.2), cenaIni - sf(0.3)));
-  const ev: Record<string, number> = {};
+  const anc: Record<string, number> = {};
   Object.entries(t.ancoras).forEach(([nome, seg]) => {
-    ev[nome] = sf(seg);
+    anc[nome] = sf(seg);
   });
+  const ev: Record<string, number> = { ...anc };
   ev.ini = ini; // etiquetas que entram no primeiro frame (s00)
+  let entao = ini;
+  let cardIni = ini + sf(0.15 * k);
+  let digitaFim = cardIni + Math.ceil((nChars / vel) * FPS);
+  let quedaIni = digitaFim + sf(0.15 * k);
+  let toque = quedaIni + TOQUE_REL;
+  let prob = anc.problema;
+  let sol = anc.solucao;
+  let nome = ini;
+  if (temPeca) {
+    entao = Math.max(anc.entao, chegada + sf(0.6));
+    cardIni = entao - 2;
+    digitaFim = cardIni + Math.ceil((nChars / vel) * FPS);
+    quedaIni = digitaFim + sf(0.1);
+    toque = quedaIni + TOQUE_REL;
+    prob = Math.min(Math.max(anc.problema, chegada + 3), entao - sf(0.4));
+    // eventos depois do "entao", na ordem em que aparecem no roteiro: cada um pelo menos GAP depois do anterior;
+    // o primeiro so depois que a peca pousou
+    const chaves = Object.keys(t.ancoras);
+    const depois = chaves.slice(chaves.indexOf("entao") + 1);
+    let ant = toque + GAP_PRIMEIRO - GAP;
+    depois.forEach((nm) => {
+      let v = Math.max(anc[nm], ant + GAP);
+      if (nm === "nome" && NOME_APOS_SOL[r.id] && ev.solucao !== undefined) v = Math.max(v, ev.solucao + sf(NOME_APOS_SOL[r.id]));
+      ev[nm] = v;
+      ant = v;
+    });
+    sol = ev.solucao;
+    nome = ev.nome;
+    ev.entao = entao;
+  } else {
+    nome = ini;
+  }
   ev.problema = prob;
   ev.solucao = sol;
+  if (temPeca) ev.nome = nome;
+  const cenaIni = temPeca ? chegada + 6 : ini; // a cena do problema comeca assim que o fotografo chega
+  const cardSai = temPeca ? toque + sf(0.9) : toque + sf(1.2);
   return {
     i,
     id: r.id,
@@ -112,16 +139,19 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
     k,
     temPeca,
     chegada,
-    tituloFim: ini + sf(1.4 * k),
+    tituloIni: temPeca ? nome : ini,
+    tituloFim: (temPeca ? nome : ini) + sf(1.4 * k),
     cardIni,
     vel,
     nChars,
     digitaFim,
-    quedaIni: momentoNaAncora || madrinha ? toqueFinal - TOQUE_REL : quedaIni,
-    toque: toqueFinal,
+    quedaIni,
+    toque,
+    entao,
     prob,
     segunda: t.ancoras.segunda !== undefined ? sf(t.ancoras.segunda) : null,
     sol,
+    nome,
     cenaIni,
     ev,
     cardSai,
@@ -150,11 +180,11 @@ export const FLASHES: { f: number; dur: number }[] = [
 export const FRAMES_FLASH = FLASHES.map((x) => x.f);
 
 // frames efetivos de cada segmento (usados pelo script de stills, via calculateMetadata)
-export const MARCOS = LINHAS.map((L) => ({ id: L.id, ini: L.ini, fim: L.fim, chegada: L.chegada, cenaIni: L.cenaIni, toque: L.toque, prob: L.prob, sol: L.sol, cardFim: L.cardSai + CARD_SLIDE }));
+export const MARCOS = LINHAS.map((L) => ({ id: L.id, ini: L.ini, fim: L.fim, chegada: L.chegada, cenaIni: L.cenaIni, entao: L.entao, queda: L.quedaIni, toque: L.toque, prob: L.prob, sol: L.sol, nome: L.nome, cardFim: L.cardSai + CARD_SLIDE, ev: L.ev }));
 
-// o card aparece nos segmentos s01 a s13, do inicio do segmento ate terminar de sair
+// o card aparece em "Entao" (s01 a s13) e sai pouco depois da peca pousar; no s00 digita no primeiro segundo
 export const cardVisivel = (frame: number): boolean => {
   const i = segDe(frame);
-  if (i < 0 || i > 13) return false; // o s00 tambem tem card (digitando no primeiro segundo)
-  return frame < LINHAS[i].cardSai + CARD_SLIDE;
+  if (i < 0 || i > 13) return false;
+  return frame >= LINHAS[i].cardIni - CARD_SLIDE && frame < LINHAS[i].cardSai + CARD_SLIDE;
 };

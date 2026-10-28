@@ -6,7 +6,7 @@ import { useTex } from "./Texturas";
 // Escala 1,33 = peca gigante do s01; 0,45 = camera na mao (0,34 x 0,24 x 0,18).
 export type CamProps = {
   escala: number;
-  lente?: "kit" | "50";
+  lente?: "kit" | "50" | "corpo"; // corpo: so o corpo da camera com a tampa do encaixe (sem objetiva)
   troca?: number; // 0..1: troca de lente (a antiga sai para a frente, a nova entra)
   modo?: "auto" | "m"; // seletor no topo
   giroSeletor?: number; // rad
@@ -15,12 +15,17 @@ export type CamProps = {
   etiquetaLoja?: boolean;
 };
 
-const Lente: React.FC<{ tipo: "kit" | "50"; dz?: number; esc?: number }> = ({ tipo, dz = 0, esc = 1 }) => {
+const Lente: React.FC<{ tipo: "kit" | "50" | "corpo"; dz?: number; esc?: number }> = ({ tipo, dz = 0, esc = 1 }) => {
   const t50 = useTex("lente");
   if (esc <= 0.01) return null;
   return (
     <group position={[0, 0, 0.2 + dz]} scale={esc}>
-      {tipo === "kit" ? (
+      {tipo === "corpo" ? (
+        <>
+          <Cil p={[0, 0, 0.0]} r={0.17} h={0.05} c="#2A2C33" rot={[Math.PI / 2, 0, 0]} />
+          <Cil p={[0, 0, 0.03]} r={0.12} h={0.03} c="#0A0A0C" rot={[Math.PI / 2, 0, 0]} />
+        </>
+      ) : tipo === "kit" ? (
         <>
           <Cil p={[0, 0, 0.12]} r={0.17} h={0.24} c="#8D929C" rot={[Math.PI / 2, 0, 0]} />
           <Cil p={[0, 0, 0.27]} r={0.13} h={0.08} c="#6B7078" rot={[Math.PI / 2, 0, 0]} />

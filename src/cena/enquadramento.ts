@@ -42,29 +42,25 @@ const emPe = (p: V3, larg: number, prof: number, dz = 0): Caixa => ({ c: [p[0], 
 // pecas: tamanho acima do pedestal (largura, altura, profundidade); a caixa inclui o pedestal
 const PECA_TAM: Record<number, V3> = {
   1: [1.1, 0.75, 0.65], 2: [0.95, 0.5, 0.9], 3: [0.8, 1.25, 0.25], 4: [1.05, 1.25, 0.65], 5: [1.05, 1.35, 0.65], 6: [1.2, 1.0, 0.7],
-  7: [1.0, 1.0, 0.8], 8: [0.95, 0.75, 0.55], 9: [0.7, 1.3, 0.6], 10: [1.0, 1.95, 0.95], 11: [1.15, 1.05, 0.65], 12: [0.9, 0.05, 0.9], 13: [0.9, 0.05, 0.9],
+  7: [0.9, 0.9, 0.75], 8: [1.0, 0.95, 0.85], 9: [0.7, 1.3, 0.6], 10: [1.0, 1.95, 0.95], 11: [1.15, 1.05, 0.65], 12: [1.1, 0.9, 0.5], 13: [0.9, 0.05, 0.9],
 };
 export const caixaDe = (id: string): Caixa => {
   const m = id.match(/^([a-zA-Z]+)(\d+)$/);
   if (!m) {
     if (id === "tabuleiro") return { c: [0, 0.3, 0], t: [TABULEIRO.largura + 0.3, 0.7, TABULEIRO.profundidade + 0.3] };
-    if (id === "seta") return { c: [1.2, 1.9, -0.9], t: [12.4, 2.6, 8.2] };
+    if (id === "seta") return { c: [-4.2, 1.9, -0.25], t: [1.8, 2.6, 10.2] };
     throw new Error(`caixa desconhecida: ${id}`);
   }
   const n = parseInt(m[2], 10);
   switch (m[1]) {
     case "fot": return emPe(posFot(n), 0.75, 0.85, 0.15); // inclui a camera nas maos
-    case "noiva": return emPe(posNoiva(n), 0.7, 0.55);
+    case "noiva": return emPe(posNoiva(n), 0.85, 0.7); // a saia do vestido tem 0,84 m de largura
     case "noivo": return emPe(posNoivo(n), 0.6, 0.5);
-    case "cli": return emPe(posCli(n), 0.7, 0.55);
+    case "cli": return emPe(posCli(n), 0.85, 0.7);
     case "amigoA": return emPe(posAmigoA(n), 0.6, 0.5);
-    case "amigoB": return emPe(posAmigoB(n), 0.6, 0.5);
-    case "madrinha": return emPe(posCli(n), 0.7, 0.55);
+    case "amigoB": return emPe(posAmigoB(n), 0.85, 0.7); // a amiga de vestido amarelo
+    case "madrinha": return emPe(posCli(n), 0.85, 0.7);
     case "peca": {
-      if (n === 12) { // balao de depoimento: do rosto da noiva ate o balao
-        const p = posCli(12);
-        return { c: [p[0], Y_CASA + 1.85, p[2]], t: [1.3, 1.6, 0.5] };
-      }
       const [w, h, d] = PECA_TAM[n];
       const p = posPedestal(n);
       const alt = ALTURA_PED + h;
@@ -76,11 +72,11 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "placa": {
       const p = posPlaca(n); // cavalete alto: a moldura fica acima das cabecas
-      return { c: [p[0], p[1] + 1.15, p[2]], t: [1.2, 2.3, 0.4] };
+      return { c: [p[0], p[1] + 1.325, p[2]], t: [1.2, 2.65, 0.4] };
     }
     case "tela": {
       const p = posPlaca(n);
-      return { c: [p[0], p[1] + 1.8, p[2]], t: [1.1, 0.75, 0.05] };
+      return { c: [p[0], p[1] + 2.15, p[2]], t: [1.1, 0.75, 0.05] };
     }
     case "balao": {
       const p = posCli(n);
@@ -92,7 +88,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "notebook": {
       const p = posMesa(n);
-      return { c: [p[0], Y_CASA + 0.45, p[2]], t: [0.8, 0.9, 0.6] };
+      return { c: [p[0], Y_CASA + 0.5, p[2]], t: [1.2, 1.0, 0.6] };
     }
   }
   throw new Error(`caixa desconhecida: ${id}`);
@@ -223,19 +219,21 @@ export type Resolvido = {
 };
 
 const NUM_ITER = 22;
-const MID_D = 1 - PUSH_IN / 2;
 const PROGS = [0, 0.5, 1];
 
 function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removidos"> {
+  const OZ = plano.orbita?.az ?? AZ_ORBITA; // giro e push-in do plano (os planos abertos usam os seus)
+  const PS = plano.orbita?.push ?? PUSH_IN;
+  const MID = 1 - PS / 2;
   const janela = plano.janela ?? JANELA_CARD;
   const util = { w: janela.x1 - janela.x0 - 2 * MARGEM, h: plano.livreV ? 1e9 : janela.y1 - janela.y0 - 2 * MARGEM };
   const todos = pontosDe(lista);
   const ptsP = plano.principal ? cantos(plano.principal) : null;
   const inicio = centroMundo(todos);
-  const azMid = plano.az + AZ_ORBITA / 2;
+  const azMid = plano.az + OZ / 2;
   const medir = (d: number) => {
     const alvo = inicio.clone();
-    centralizar(alvo, d * MID_D, azMid, plano.el, todos, janela);
+    centralizar(alvo, d * MID, azMid, plano.el, todos, janela);
     return { alvo, u: projetarPontos(todos), p: ptsP ? projetarPontos(ptsP) : null };
   };
   const metrica = (d: number) => {
@@ -264,7 +262,7 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     d = d0 * (1 + 0.03 * k);
     const alvo = medir(d).alvo;
     const retsEm = (a: THREE.Vector3, prog: number) => {
-      posicionar(a, d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
+      posicionar(a, d * (1 - PS * prog), plano.az + OZ * prog, plano.el);
       return { u: projetarPontos(todos), s: sens.map((x) => ({ nome: x.nome, r: projetarPontos(cantosCaixa(x.c)) })) };
     };
     const legendaCobre = (a: THREE.Vector3) => {
@@ -281,13 +279,13 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     deslocY = 0;
     cobre = legendaCobre(alvoF);
     if (cobre.length) {
-      posicionar(alvo, d * MID_D, azMid, plano.el);
+      posicionar(alvo, d * MID, azMid, plano.el);
       const cima = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
       const cands: number[] = [];
       for (let j = 1; j <= 60; j++) cands.push(j * 10, -j * 10);
       cands.sort((x, y) => Math.abs(x) - Math.abs(y));
       for (const dy of cands) {
-        const a = alvo.clone().addScaledVector(cima, (dy * d * MID_D) / FOCAL_PX);
+        const a = alvo.clone().addScaledVector(cima, (dy * d * MID) / FOCAL_PX);
         if (!dentro(a)) continue;
         if (legendaCobre(a).length === 0) {
           alvoF = a;
@@ -299,7 +297,7 @@ function resolverLista(plano: Plano, lista: string[]): Omit<Resolvido, "removido
     }
     if (!cobre.length) break;
   }
-  posicionar(alvoF, d * MID_D, azMid, plano.el);
+  posicionar(alvoF, d * MID, azMid, plano.el);
   const u = projetarPontos(todos);
   const p = ptsP ? projetarPontos(ptsP) : null;
   const caixas: Record<string, Retangulo> = {};
@@ -396,7 +394,7 @@ export const poseResolvida = (plano: Plano, prog: number): { pos: V3; alvo: V3; 
 export const projetarEmProg = (plano: Plano, prog: number): Record<string, Retangulo> => {
   const r = resolverPlano(plano);
   const alvo = new THREE.Vector3(...r.alvo);
-  posicionar(alvo, r.d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
+  posicionar(alvo, r.d * (1 - (plano.orbita?.push ?? PUSH_IN) * prog), plano.az + (plano.orbita?.az ?? AZ_ORBITA) * prog, plano.el);
   const out: Record<string, Retangulo> = {};
   for (const id of plano.lista.filter((x) => r.removidos.indexOf(x) < 0)) out[id] = projetarPontos(cantos(id));
   return out;
@@ -415,7 +413,7 @@ export const sensiveisProjetados = (plano: Plano, prog: number): { nome: string;
   const r = resolverPlano(plano);
   const lista = plano.lista.filter((x) => r.removidos.indexOf(x) < 0);
   const alvo = new THREE.Vector3(...r.alvo);
-  posicionar(alvo, r.d * (1 - PUSH_IN * prog), plano.az + AZ_ORBITA * prog, plano.el);
+  posicionar(alvo, r.d * (1 - (plano.orbita?.push ?? PUSH_IN) * prog), plano.az + (plano.orbita?.az ?? AZ_ORBITA) * prog, plano.el);
   return sensiveis(lista).map((x) => ({ nome: x.nome, r: projetarPontos(cantosCaixa(x.c)) }));
 };
 
@@ -442,6 +440,7 @@ const personagensDe = (n: number): string[] => {
 const extrasDe = (n: number): string[] => {
   const e: string[] = [];
   if (n === 13) e.push("balao13"); // o balao "voce fotografa o meu casamento?" tem que aparecer inteiro
+  if (n === 10) e.push("notebook10"); // o notebook e o HD que queima fazem parte da cena do problema
   return e;
 };
 const sid = (n: number) => `s${String(n).padStart(2, "0")}`;
@@ -468,7 +467,7 @@ export const planoClose = (n: number): Plano => {
   if (n >= 12) return base;
   const ocl = (n === 2 ? ["fot2"] : personagensDe(n)).map((id) => corpoDe(id)); // s02: os amigos so entram depois do close do album
   let melhor: { p: Plano; k: number; vis: number; intr: number; score: number } | null = null;
-  for (const k of [0, 10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60]) {
+  for (const k of [0, 10, -10, 20, -20, 30, -30]) { // no maximo 30 graus de giro: nunca a peca de lado
     const p = { ...base, az: base.az + k };
     const r = resolverPlano(p);
     const vis = Math.min(...PROGS.map((pr) => fracVisivel(caixaDe(`peca${n}`), ocl, new THREE.Vector3(...poseResolvida(p, pr).pos))));
@@ -500,7 +499,7 @@ export const planoClose = (n: number): Plano => {
 export const planoCena = (n: number): Plano => ({
   id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: JANELA_CENA, livreV: true,
   principal: `fot${n}`, alturaPx: ALT_CENA * 1.07, // o fotografo mede 50% da altura da tela; peca e personagens entram pela largura; placa tem plano proprio
-  lista: [...personagensDe(n), ...extrasDe(n), ...(n === 12 ? [] : [`peca${n}`])], // s12: o balao tem plano proprio (a caixa dele cobre a noiva e alarga o quadro)
+  lista: [...personagensDe(n), ...extrasDe(n), `peca${n}`],
 });
 // plano da placa de foto: a moldura ocupa 70% da largura (nos momentos em que a foto muda)
 export const planoPlaca = (n: number, sufixo: string): Plano => ({
@@ -510,16 +509,17 @@ export const planoDetalhe = (n: number): Plano => ({
   id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: n === 8 ? 0.7 * LARGURA_TELA : LARG_DETALHE, // s08: os dois cartoes ficam grandes janela: JANELA_V, livreV: true, casa: n,
 });
 export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_ABERTURA, livreV: true, casa: 1, orbita: { az: 45, push: 0.1 } };
-export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_TOTAL, orbita: { az: 20, push: 0.06 } };
-export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_TOTAL, orbita: { az: 25, push: 0.08 } };
-export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro"], janela: JANELA_FINAL, orbita: { az: 40, push: 0.14 } };
+export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: -1, el: 52, lista: ["tabuleiro"], janela: JANELA_TOTAL, orbita: { az: 2, push: 0.04 } };
+export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: -1, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_TOTAL, orbita: { az: 2, push: 0.05 } };
+export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: -2, el: 38, lista: ["tabuleiro"], janela: { x0: -110, x1: 1190, y0: 420, y1: 1700 }, orbita: { az: 0, push: 0.06 } };
 // s02, os tres cliques: fotografo a esquerda virado para os amigos, amigos virados para ele, camera a esquerda vendo os dois em 3/4
 export const PLANO_CLIQUE: Plano = { id: "s02-clique", tipo: "cena", az: 0, el: 30, lista: ["fot2", "amigoA2", "amigoB2"], principal: "fot2", alturaPx: ALT_CENA, janela: JANELA_CENA, livreV: true, casa: 2 };
 // corte de reacao (ritmo): o fotografo mais perto, no meio dos planos cena longos
 export const planoReacao = (n: number): Plano => ({
   id: `${sid(n)}-reacao`, tipo: "close", az: 25, el: 32, lista: [`fot${n}`], principal: `fot${n}`, alturaPx: 0.62 * ALTURA_TELA, livreV: true, janela: JANELA_V, casa: n,
 });
-export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_V, livreV: true, casa: 3 };
+// o voo do balao ate o celular da casa 3 (fundo da plataforma): a camera olha pela direita e de cima, por cima das pecas da frente
+export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "aberto", az: 55, el: 50, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_V, livreV: true, casa: 3 };
 
 export const ETAPAS_SEG: EtapaPlano[][] = (() => {
   const out: EtapaPlano[][] = [];
@@ -529,51 +529,35 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
   ]);
   for (let n = 1; n <= 13; n++) {
     const e: EtapaPlano[] = [];
-    // caminhada (e fotografo parado nela) ate a peca comecar a cair
-    e.push({ quando: R("ini"), plano: planoCaminhada(n), trans: n === 1 ? 0.6 : 0.4 });
-    // o close so comeca quando a peca comeca a cair (s13: quando a madrinha chega)
-    e.push({ quando: R(n === 13 ? "toque" : "queda"), plano: planoClose(n), trans: 0.35 });
-    e.push({ quando: R("cena"), plano: planoCena(n), trans: 0.5 });
-    if (n === 7 || n === 8 || n === 9) {
-      e.push({ quando: R("ev", "solucao", -0.1), plano: planoDetalhe(n), trans: 0.3 });
-      if (n === 7) e.push({ quando: R("ev", "solucao", 1.1), plano: { ...planoClose(7), id: "s07-lente" }, trans: 0.3 }); // a lente gigante inteira, sem ninguem na frente
-      e.push({ quando: R("ev", "solucao", n === 7 ? 2.4 : 1.1), plano: planoPlaca(n, ""), trans: 0.3 });
-      e.push({ quando: R("ev", "solucao", n === 7 ? 3.8 : 2.5), plano: planoCena(n), trans: 0.4 });
+    const add = (quando: Ref, plano: Plano, trans = 0.4) => e.push({ quando, plano, trans });
+    // 1) caminhada ate a casa; 2) CENA DO PROBLEMA (personagens e objetos do problema); 3) close da peca caindo ("Entao");
+    // 4) a peca age (solucao); 5) REVELACAO: close na peca amarela com o titulo ("Esse e o X"); 6) volta a cena ate o fim do segmento
+    add(R("ini"), planoCaminhada(n), n === 1 ? 0.6 : 0.4);
+    add(R("cena"), planoCena(n), 0.5);
+    add(R("queda"), planoClose(n), 0.35);
+    if (n !== 12 && n !== 13) {
+      add(R("ev", "nome", -0.15), planoClose(n), 0.3); // a peca ja pousada, amarela, grande, com o titulo
+      add(R("ev", "nome", 1.7), planoCena(n), 0.5);
     }
-    if (n === 7 || n === 9) e.push({ quando: R("chegada", undefined, 1.0), plano: planoCena(n), trans: 0.5 }); // a peca so cai na ancora: antes disso mostra a cena (portal, casal), nao o fotografo parado
-    // a placa de foto tem corte proprio quando a foto muda (s01: clique e manual; s08: foto corrompida)
-    if (n === 1) {
-      e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(1, "a"), trans: 0.3 });
-      e.push({ quando: R("ev", "problema", 1.4), plano: planoCena(1), trans: 0.4 });
-      e.push({ quando: R("ev", "solucao", 0.1), plano: planoPlaca(1, "b"), trans: 0.3 });
-      e.push({ quando: R("ev", "solucao", 1.4), plano: planoCena(1), trans: 0.4 });
+    // problema fotografico: a placa mostra a foto ruim (corte proprio)
+    const placaA: Record<number, Ref> = { 1: R("ev", "problema", 0.4), 2: R("ev", "problema", 0.5), 7: R("ev", "problema", 0.9), 8: R("ev", "problema", 0.9), 9: R("ev", "segunda", 0.1) };
+    if (placaA[n]) {
+      add(placaA[n], planoPlaca(n, "a"), 0.3);
+      add({ ...placaA[n], desl: (placaA[n].desl ?? 0) + 1.25 }, planoCena(n), 0.4);
     }
-    if (n === 8) { // cartao corrompe: primeiro na camera da mao (cartao vermelho), depois na placa
-      e.push({ quando: R("ev", "problema", -0.1), plano: planoDetalhe(8), trans: 0.3 });
-      e.push({ quando: R("ev", "problema", 1.1), plano: planoPlaca(8, "a"), trans: 0.3 });
-      e.push({ quando: R("ev", "problema", 2.3), plano: planoCena(8), trans: 0.4 });
-    }
+    // resultado fotografico: a placa mostra a foto boa
+    if ([1, 2, 7, 8, 9].indexOf(n) >= 0) add(R("ev", "solucao", n === 2 ? 0.9 : 0.7), planoPlaca(n, "b"), 0.3);
+    // acoes que precisam da cena inteira (balao, folha voando, data reservada, troca de lente, flash)
+    if ([3, 4, 6, 7, 9].indexOf(n) >= 0) add(R("ev", "solucao", -0.3), planoCena(n), 0.4);
     if (n === 2) {
-      e.push({ quando: R("ev", "amigos", -0.3), plano: PLANO_CLIQUE, trans: 0.4 });
-      e.push({ quando: R("ev", "solucao", -0.1), plano: planoClose(2), trans: 0.35 }); // o album abre
-      e.push({ quando: R("ev", "solucao", 1.8), plano: planoCena(2), trans: 0.4 });
+      add(R("ev", "amigos", -0.3), PLANO_CLIQUE, 0.4);
+      add(R("ev", "solucao", -0.1), planoClose(2), 0.35); // o album abre
     }
-    if (n === 7) { // foto escura na placa (antes da troca da lente)
-      e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(7, "a"), trans: 0.3 });
-      e.push({ quando: R("ev", "problema", 1.5), plano: planoCena(7), trans: 0.4 });
-    }
-    if (n === 9) { // foto granulada na placa
-      e.push({ quando: R("ev", "segunda", 0.1), plano: planoPlaca(9, "a"), trans: 0.3 });
-      e.push({ quando: R("ev", "segunda", 1.3), plano: planoCena(9), trans: 0.4 });
-    }
+    if (n === 8) add(R("ev", "slots", -0.1), planoClose(8), 0.3); // a portinha abre e os cartoes entram
     if (n === 12) {
-      e.push({ quando: R("ev", "depoimento", -0.2), plano: { ...planoClose(12), id: "s12-balao" }, trans: 0.4 }); // estrelas acendendo
-      e.push({ quando: R("ev", "solucao", 0), plano: PLANO_VOO, trans: 1.2 });
+      add(R("ev", "depoimento", -0.2), { ...planoClose(12), id: "s12-balao" }, 0.4); // estrelas acendendo
     }
-    if (n === 13) {
-      e.push({ quando: R("toque", undefined, 1.3), plano: planoCena(13), trans: 0.5 }); // balao da madrinha legivel
-      e.push({ quando: R("ev", "solucao", 0), plano: PLANO_PRONTO, trans: 1.0 });
-    }
+    if (n === 13) add(R("ev", "solucao", 0), PLANO_PRONTO, 1.0);
     out.push(e);
   }
   out.push([{ quando: R("ev", "problema", 0), plano: PLANO_FINAL, trans: 1.6 }]);

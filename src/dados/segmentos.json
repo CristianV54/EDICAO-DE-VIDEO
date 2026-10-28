@@ -1,7 +1,7 @@
 [
  {
   "id": "s00",
-  "texto": "Você comprou uma câmera e quer fotografar casamento. Só que, entre essa câmera e a sua primeira noiva, existem treze peças. Vou montar uma por uma.",
+  "texto": "Você comprou uma câmera e quer fotografar casamento. Mas entre ela e a sua primeira noiva, existem treze peças. Vou montar uma por uma.",
   "ancoras": {
    "problema": {
     "palavra": "casamento",
@@ -15,61 +15,92 @@
  },
  {
   "id": "s01",
-  "texto": "A câmera. Você deixa no automático, e a foto sai igualzinha à de celular. Aí você aprende o manual, e quem decide a luz passa a ser você.",
+  "texto": "Mas no automático, a foto sai igual à do celular. Então você aprende o modo manual, e quem decide a luz passa a ser você. Essa é a câmera.",
   "ancoras": {
    "problema": {
     "palavra": "automatico",
-    "frac": 0.25
+    "frac": 0.12
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.3,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "manual",
-    "frac": 0.6
+    "frac": 0.5,
+    "depois": "entao"
+   },
+   "nome": {
+    "palavra": "essa",
+    "frac": 0.9,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s02",
-  "texto": "Foto boa você já tem. Mas ninguém contrata sem ver trabalho. Então você chama uns amigos, faz um ensaio e monta o seu portfólio.",
+  "texto": "Mas ninguém contrata sem ver trabalho seu. Então você chama uns amigos, faz um ensaio e escolhe as dez melhores fotos. Esse é o portfólio.",
   "ancoras": {
    "problema": {
     "palavra": "ninguem",
-    "frac": 0.25
+    "frac": 0.05
    },
-   "amigos": {
-    "palavra": "amigos",
-    "frac": 0.6,
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.3,
     "depois": "problema"
    },
+   "amigos": {
+    "palavra": "ensaio",
+    "frac": 0.55,
+    "depois": "entao"
+   },
    "solucao": {
-    "palavra": "portfolio",
-    "frac": 0.85,
+    "palavra": "dez",
+    "frac": 0.8,
     "depois": "amigos"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.9,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s03",
-  "texto": "Só que portfólio guardado no HD, ninguém vê. Você posta no Instagram, e pela primeira vez chega um direct: quanto custa?",
+  "texto": "Mas portfólio guardado no HD, ninguém vê. Então você posta o melhor do ensaio, e pela primeira vez chega um direct: quanto custa? Esse é o Instagram.",
   "ancoras": {
    "problema": {
     "palavra": "hd",
     "frac": 0.25
    },
-   "instagram": {
-    "palavra": "instagram",
-    "frac": 0.5,
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
     "depois": "problema"
+   },
+   "instagram": {
+    "palavra": "posta",
+    "frac": 0.5,
+    "depois": "entao"
    },
    "solucao": {
     "palavra": "direct",
     "frac": 0.75,
     "depois": "instagram"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.9,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s04",
-  "texto": "Você responde o preço num áudio. Ela visualiza e some. Na próxima, você manda uma proposta bonita, e ela pede pra fechar.",
+  "texto": "Mas você responde o preço num áudio, e ela visualiza e some. Então você manda uma proposta em PDF, bonita, com pacotes e fotos, e ela pede pra fechar. Essa é a proposta.",
   "ancoras": {
    "audio": {
     "palavra": "audio",
@@ -77,74 +108,114 @@
    },
    "problema": {
     "palavra": "visualiza",
-    "frac": 0.35,
+    "frac": 0.3,
     "depois": "audio"
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "proposta",
-    "frac": 0.7,
-    "depois": "problema"
+    "frac": 0.55,
+    "depois": "entao"
+   },
+   "nome": {
+    "palavra": "essa",
+    "frac": 0.9,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s05",
-  "texto": "Ela fechou pelo WhatsApp. Uma semana antes, desmarca e não quer pagar nada. Sem contrato, você não tem o que cobrar. Agora, tudo é assinado.",
+  "texto": "Ela fechou pelo WhatsApp, mas desmarcou uma semana antes, e você não tinha o que cobrar. Então você faz um contrato, com data, valor e multa, e tudo vai assinado. Esse é o contrato.",
   "ancoras": {
    "problema": {
-    "palavra": "desmarca",
+    "palavra": "desmarcou",
     "frac": 0.3
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.45,
+    "depois": "problema"
    },
    "contrato": {
     "palavra": "contrato",
     "frac": 0.55,
-    "depois": "problema"
+    "depois": "entao"
    },
    "solucao": {
     "palavra": "assinado",
-    "frac": 0.9,
+    "frac": 0.8,
     "depois": "contrato"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s06",
-  "texto": "Mas contrato sem sinal é só promessa. Você cobra trinta por cento na assinatura, e a data fica reservada pra quem pagou.",
+  "texto": "Mas contrato sem pagamento é só promessa, e ela ainda pode sumir. Então você cobra trinta por cento de sinal, e só quem pagou reserva a data. Esse é o sinal.",
   "ancoras": {
    "problema": {
     "palavra": "promessa",
-    "frac": 0.25
+    "frac": 0.2
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
+    "depois": "problema"
    },
    "trinta": {
     "palavra": "trinta",
-    "frac": 0.45,
-    "depois": "problema"
+    "frac": 0.5,
+    "depois": "entao"
    },
    "solucao": {
-    "palavra": "reservada",
+    "palavra": "reserva",
     "frac": 0.75,
     "depois": "trinta"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.9,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s07",
-  "texto": "Chegou o dia. Igreja escura, e a lente do kit entrega foto preta. Você troca por uma cinquenta milímetros. Entra luz, e o fundo desfoca.",
+  "texto": "Mas no dia, a igreja é escura, e a lente do kit deixa entrar pouca luz: a foto sai preta. Então você troca por uma cinquenta milímetros, que deixa entrar muita luz e desfoca o fundo. Essa é a lente.",
   "ancoras": {
    "problema": {
     "palavra": "preta",
-    "frac": 0.35
+    "frac": 0.3
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "cinquenta",
-    "frac": 0.6,
-    "depois": "problema"
+    "frac": 0.55,
+    "depois": "entao"
+   },
+   "nome": {
+    "palavra": "essa",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s08",
-  "texto": "Na hora do sim, o cartão de memória corrompe. Perdeu tudo? Não, porque a sua câmera tem dois slots e gravou tudo duas vezes.",
+  "texto": "Mas na hora do sim, o cartão de memória corrompe, e as fotos do beijo viram lixo. Então você usa uma câmera com dois slots, que grava tudo nos dois ao mesmo tempo. Esse é o cartão duplo.",
   "ancoras": {
    "sim": {
     "palavra": "sim",
@@ -152,123 +223,198 @@
    },
    "problema": {
     "palavra": "corrompe",
-    "frac": 0.3,
+    "frac": 0.25,
     "depois": "sim"
    },
-   "solucao": {
-    "palavra": "slots",
-    "frac": 0.75,
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
     "depois": "problema"
+   },
+   "slots": {
+    "palavra": "slots",
+    "frac": 0.55,
+    "depois": "entao"
+   },
+   "solucao": {
+    "palavra": "grava",
+    "frac": 0.7,
+    "depois": "slots"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s09",
-  "texto": "Começa a festa, apagam as luzes, e a pista vira breu. Sem flash, foto granulada. Com flash, o casal brilha no meio da pista.",
+  "texto": "Mas na festa as luzes apagam, e a pista vira breu. Sem flash, a foto sai escura e granulada. Então você usa flash apontado pro teto, e o casal brilha. Esse é o flash.",
   "ancoras": {
    "apagam": {
     "palavra": "apagam",
-    "frac": 0.2
+    "frac": 0.12
    },
    "problema": {
     "palavra": "breu",
-    "frac": 0.3,
+    "frac": 0.25,
     "depois": "apagam"
    },
    "segunda": {
     "palavra": "granulada",
-    "frac": 0.55,
+    "frac": 0.4,
     "depois": "problema"
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.5,
+    "depois": "segunda"
    },
    "solucao": {
     "palavra": "flash",
-    "frac": 0.72,
-    "depois": "segunda"
+    "frac": 0.65,
+    "depois": "entao"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s10",
-  "texto": "Você chega em casa, descarrega tudo, e o HD queima. Por isso a regra: três cópias. Dois HDs e uma nuvem.",
+  "texto": "Mas você descarrega tudo num HD, e ele queima. Casamento não se repete: perdeu o HD, perdeu o trabalho. Então você faz três cópias: uma num HD, outra em outro HD, e a terceira na nuvem. Esse é o backup.",
   "ancoras": {
    "descarrega": {
     "palavra": "descarrega",
-    "frac": 0.25
+    "frac": 0.1
    },
    "problema": {
     "palavra": "queima",
-    "frac": 0.35,
+    "frac": 0.25,
     "depois": "descarrega"
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.5,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "tres",
-    "frac": 0.7,
-    "depois": "problema"
+    "frac": 0.6,
+    "depois": "entao"
+   },
+   "dois": {
+    "palavra": "outro",
+    "frac": 0.75,
+    "depois": "solucao"
+   },
+   "nuvem": {
+    "palavra": "nuvem",
+    "frac": 0.9,
+    "depois": "dois"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.95,
+    "depois": "nuvem"
    }
   }
  },
  {
   "id": "s11",
-  "texto": "Fotos editadas, você manda pelo WhatsApp. A noiva abre e reclama: tá tudo pixelado. Então você entrega numa galeria online, em alta.",
+  "texto": "Mas você manda pelo WhatsApp, e a noiva reclama: tá tudo pixelado. O WhatsApp comprime as fotos. Então você entrega numa galeria online, em alta resolução. Essa é a galeria.",
   "ancoras": {
    "whatsapp": {
     "palavra": "whatsapp",
-    "frac": 0.25
+    "frac": 0.12
    },
    "problema": {
     "palavra": "pixelado",
-    "frac": 0.5,
+    "frac": 0.35,
     "depois": "whatsapp"
+   },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.55,
+    "depois": "problema"
    },
    "solucao": {
     "palavra": "galeria",
-    "frac": 0.8,
-    "depois": "problema"
+    "frac": 0.68,
+    "depois": "entao"
+   },
+   "nome": {
+    "palavra": "essa",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s12",
-  "texto": "Ela chorou vendo as fotos. Só que ninguém ficou sabendo. Você pede um depoimento e posta no seu perfil.",
+  "texto": "Ela chorou vendo as fotos, mas ninguém ficou sabendo. Então você pede um depoimento e posta no seu perfil. Esse é o depoimento, a melhor prova do seu trabalho.",
   "ancoras": {
    "problema": {
     "palavra": "ninguem",
     "frac": 0.35
    },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.5,
+    "depois": "problema"
+   },
    "depoimento": {
     "palavra": "depoimento",
-    "frac": 0.6,
-    "depois": "problema"
+    "frac": 0.65,
+    "depois": "entao"
    },
    "solucao": {
     "palavra": "posta",
     "frac": 0.8,
     "depois": "depoimento"
+   },
+   "nome": {
+    "palavra": "esse",
+    "frac": 0.92,
+    "depois": "solucao"
    }
   }
  },
  {
   "id": "s13",
-  "texto": "A madrinha vê o post e manda: você fotografa o meu casamento? Pronto. O ciclo fechou sozinho.",
+  "texto": "O post chega na madrinha, que manda: você fotografa o meu casamento? Então o melhor cliente é o que já chega confiando. Essa é a indicação. Pronto, o ciclo fechou sozinho.",
   "ancoras": {
    "problema": {
     "palavra": "madrinha",
     "frac": 0.05
    },
+   "entao": {
+    "palavra": "entao",
+    "frac": 0.4,
+    "depois": "problema"
+   },
+   "nome": {
+    "palavra": "essa",
+    "frac": 0.65,
+    "depois": "entao"
+   },
    "solucao": {
     "palavra": "pronto",
-    "frac": 0.65,
-    "depois": "problema"
+    "frac": 0.8,
+    "depois": "nome"
    }
   }
  },
  {
   "id": "s14",
-  "texto": "A maioria compra a câmera e para na peça um. Depois não entende por que não fatura. Comenta qual peça você quer ver desmontada.",
+  "texto": "Parabéns, você montou um negócio de fotografia. Comenta qual peça você quer ver desmontada.",
   "ancoras": {
    "problema": {
-    "palavra": "para",
-    "frac": 0.15
+    "palavra": "parabens",
+    "frac": 0.05
    },
    "solucao": {
     "palavra": "comenta",

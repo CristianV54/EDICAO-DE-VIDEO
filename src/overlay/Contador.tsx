@@ -10,7 +10,7 @@ export const Contador: React.FC = () => {
   let n = 0;
   let ultimo = Infinity;
   for (let p = 1; p <= 13; p++) {
-    const d = frame - LINHAS[p].toque;
+    const d = frame - LINHAS[p].nome; // o contador sobe quando o nome da peca e revelado
     if (d >= 0) {
       n++;
       ultimo = Math.min(ultimo, d);

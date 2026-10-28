@@ -6,14 +6,14 @@ import { MONO } from "../util/texto";
 
 const DESLOCA = 560;
 
-// O card entra deslizando de cima no inicio de cada segmento (s01 a s13), digita, mostra o check no momento da peca
+// O card (lista do fotografo) entra deslizando de cima no "Entao" de cada segmento (s01 a s13), digita, mostra o check quando a peca pousa
 // e sai deslizando para cima em max(momento + 0,5 s, min(momento + 1,2 s, contexto - 0,3 s)). Em s00 e s14 nao aparece.
 export const CardAnotacoes: React.FC = () => {
   const frame = useCurrentFrame();
   if (!cardVisivel(frame)) return null;
   const i = segDe(frame);
   const L = LINHAS[i];
-  const entra = easeInOutCubic((frame - L.ini) / CARD_SLIDE);
+  const entra = easeInOutCubic((frame - (L.cardIni - CARD_SLIDE)) / CARD_SLIDE);
   const sai = easeInOutCubic((frame - L.cardSai) / CARD_SLIDE);
   const y = -(1 - entra) * DESLOCA - sai * DESLOCA;
 
@@ -23,12 +23,12 @@ export const CardAnotacoes: React.FC = () => {
   const cursor = Math.floor(frame / 15) % 2 === 0;
 
   return (
-    <div style={{ position: "absolute", top: 250, left: 60, width: 960, transform: `translateY(${y}px)`, background: "#1B1D24", borderRadius: 22, boxShadow: "0 18px 40px rgba(0,0,0,0.35)", overflow: "hidden" }}>
+    <div style={{ position: "absolute", top: 275, left: 60, width: 960, transform: `translateY(${y}px)`, background: "#1B1D24", borderRadius: 22, boxShadow: "0 18px 40px rgba(0,0,0,0.35)", overflow: "hidden" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "18px 26px", borderBottom: "1px solid #2A2D37" }}>
         {["#FF5F57", "#FEBC2E", "#28C840"].map((c) => (
           <div key={c} style={{ width: 20, height: 20, borderRadius: 10, background: c }} />
         ))}
-        <div style={{ marginLeft: 14, fontFamily: MONO, fontWeight: 500, fontSize: 30, color: "#8A8F9C" }}>anotações · carreira</div>
+        <div style={{ marginLeft: 14, fontFamily: MONO, fontWeight: 500, fontSize: 30, color: "#8A8F9C" }}>lista do fotógrafo</div>
       </div>
       <div style={{ display: "flex", alignItems: "center", padding: "26px 30px 30px", fontFamily: MONO, fontWeight: 500, fontSize: 46, color: "#FFFFFF", whiteSpace: "pre", height: 60 }}>
         <span style={{ color: "#D4A537" }}>{"> "}</span>

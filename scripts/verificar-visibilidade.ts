@@ -68,7 +68,7 @@ for (let n = 1; n <= 13; n++) {
   if (azForcado !== null) pl.az = azForcado;
   const r = resolverPlano(pl);
   const pers = r.plano.lista.filter((id) => EH_PERS.test(id));
-  const alvos = [`peca${n}`, `plaq${n}`, ...([1, 7, 8, 9].indexOf(n) >= 0 ? [`tela${n}`] : [])].filter((id) => !(n === 12 && id === "peca12") && !(n === 13 && id === "peca13") && !(n === 13 && id === "plaq13" && false));
+  const alvos = [`peca${n}`, `plaq${n}`, ...([1, 2, 7, 8, 9].indexOf(n) >= 0 ? [`tela${n}`] : [])].filter((id) => !(n === 12 && id === "peca12") && !(n === 13 && id === "peca13") && !(n === 13 && id === "plaq13" && false));
   for (const id of alvos) {
     if (n === 2 && (id === "peca2" || id === "plaq2")) continue; // s02: os amigos ficam na frente do album ate sairem; o album tem close proprio
     let mn = 1;
