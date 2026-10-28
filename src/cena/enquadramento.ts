@@ -17,7 +17,9 @@ export type Janela = { x0: number; x1: number; y0: number; y1: number };
 // janelas uteis (px): com o card visivel o conteudo fica abaixo dele; sem card sobe ate y = 300
 export const JANELA_CARD: Janela = { x0: 50, x1: 1030, y0: 470, y1: 1540 };
 export const JANELA_LIVRE: Janela = { x0: 50, x1: 1030, y0: 300, y1: 1540 };
-export const JANELA_FINAL: Janela = { x0: 0, x1: 1080, y0: 640, y1: 1460 };
+export const JANELA_FINAL: Janela = { x0: 0, x1: 1080, y0: 520, y1: 1560 };
+export const JANELA_TOTAL: Janela = { x0: 0, x1: 1080, y0: 300, y1: 1540 }; // tabuleiro inteiro: a largura toda da tela
+export const JANELA_ABERTURA: Janela = { x0: 50, x1: 1030, y0: 480, y1: 1560 }; // s00: fotografo abaixo do card, camera da mao acima da legenda
 export const JANELA_UTIL = JANELA_CARD;
 const MARGEM = 30;
 // metas de tamanho (px)
@@ -82,7 +84,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "balao": {
       const p = posCli(n);
-      return { c: [p[0] + 0.45, Y_CASA + 2.0, p[2] + 0.25], t: [1.05, 0.45, 0.3] };
+      return { c: [p[0] - 0.2, Y_CASA + 2.0, p[2] + 0.25], t: [1.05, 0.45, 0.3] };
     }
     case "maoCam": {
       const p = posFot(n);
@@ -399,6 +401,15 @@ export const projetarEmProg = (plano: Plano, prog: number): Record<string, Retan
   for (const id of plano.lista.filter((x) => r.removidos.indexOf(x) < 0)) out[id] = projetarPontos(cantos(id));
   return out;
 };
+// retangulos projetados dos CORPOS (caixa fisica justa, sem a camera da mao) para o teste de sobreposicao entre personagens
+export const projetarCorposEmProg = (plano: Plano, prog: number): Record<string, Retangulo> => {
+  const r = resolverPlano(plano);
+  const alvo = new THREE.Vector3(...r.alvo);
+  posicionar(alvo, r.d * (1 - (plano.orbita?.push ?? PUSH_IN) * prog), plano.az + (plano.orbita?.az ?? AZ_ORBITA) * prog, plano.el);
+  const out: Record<string, Retangulo> = {};
+  for (const id of plano.lista.filter((x) => r.removidos.indexOf(x) < 0 && EH_PERSONAGEM.test(x))) out[id] = projetarPontos(cantosCaixa(corpoDe(id)));
+  return out;
+};
 // projecao das caixas "sensiveis" e do conjunto em um prog (usado pelo log)
 export const sensiveisProjetados = (plano: Plano, prog: number): { nome: string; r: Retangulo }[] => {
   const r = resolverPlano(plano);
@@ -415,7 +426,7 @@ const R = (ref: Ref["ref"], nome?: string, desl = 0): Ref => ({ ref, nome, desl 
 
 const AZ_REP = (n: number) => (n >= 6 && n <= 10 ? -30 : 30); // caminhada: o fotografo anda em direcao a camera
 // close e cena: camera a direita (az +30) em todas as casas; o layout das casas (peca no fundo a direita, personagens a esquerda) foi feito para isso
-const AZ_VISTA = 30;
+const AZ_VISTA = 15; // az 15 (minimo do prompt): afasta na tela o que esta a esquerda do que esta a direita
 const EL = 38;
 
 // quem esta em cena em cada casa
@@ -444,7 +455,7 @@ const baseClose = (n: number): Plano => {
   const madr = n === 13;
   const principal = madr ? "madrinha13" : `peca${n}`;
   return {
-    id: `${sid(n)}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, principal,
+    id: `${sid(n)}-close`, tipo: "close", az: AZ_VISTA, el: EL, casa: n, principal,
     lista: madr ? [principal, "balao13"] : n === 12 ? [principal] : [principal, `plaq${n}`], // s13: a madrinha e o balao dela, inteiros
     larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.4 * ALTURA_TELA : undefined, livreV: !madr, janela: JANELA_V,
   };
@@ -455,7 +466,7 @@ export const logAzClose: Record<number, string> = {};
 export const planoClose = (n: number): Plano => {
   const base = baseClose(n);
   if (n >= 12) return base;
-  const ocl = personagensDe(n).map((id) => corpoDe(id));
+  const ocl = (n === 2 ? ["fot2"] : personagensDe(n)).map((id) => corpoDe(id)); // s02: os amigos so entram depois do close do album
   let melhor: { p: Plano; k: number; vis: number; intr: number; score: number } | null = null;
   for (const k of [0, 10, -10, 20, -20, 30, -30, 40, -40, 50, -50, 60, -60]) {
     const p = { ...base, az: base.az + k };
@@ -489,19 +500,25 @@ export const planoClose = (n: number): Plano => {
 export const planoCena = (n: number): Plano => ({
   id: `${sid(n)}-cena`, tipo: "cena", az: AZ_VISTA, el: EL, casa: n, janela: JANELA_CENA, livreV: true,
   principal: `fot${n}`, alturaPx: ALT_CENA * 1.07, // o fotografo mede 50% da altura da tela; peca e personagens entram pela largura; placa tem plano proprio
-  lista: [...personagensDe(n), ...extrasDe(n), `peca${n}`],
+  lista: [...personagensDe(n), ...extrasDe(n), ...(n === 12 ? [] : [`peca${n}`])], // s12: o balao tem plano proprio (a caixa dele cobre a noiva e alarga o quadro)
 });
 // plano da placa de foto: a moldura ocupa 70% da largura (nos momentos em que a foto muda)
 export const planoPlaca = (n: number, sufixo: string): Plano => ({
-  id: `${sid(n)}-placa${sufixo}`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, lista: [`tela${n}`], principal: `tela${n}`, larguraPx: LARG_CLOSE, livreV: true, janela: JANELA_V,
+  id: `${sid(n)}-placa${sufixo}`, tipo: "close", az: AZ_VISTA, el: EL, casa: n, lista: [`tela${n}`], principal: `tela${n}`, larguraPx: LARG_CLOSE, livreV: true, janela: JANELA_V,
 });
 export const planoDetalhe = (n: number): Plano => ({
   id: `${sid(n)}-detalhe`, tipo: "detalhe", az: 24, el: 30, lista: [`maoCam${n}`], principal: `maoCam${n}`, larguraPx: LARG_DETALHE, janela: JANELA_V, livreV: true, casa: n,
 });
-export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_V, livreV: true, casa: 1, orbita: { az: 45, push: 0.1 } };
-export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 58, lista: ["tabuleiro"], janela: JANELA_LIVRE };
-export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_LIVRE, orbita: { az: 25, push: 0.08 } };
-export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_FINAL, orbita: { az: 40, push: 0.14 } };
+export const PLANO_ABERTURA: Plano = { id: "s00-abertura", tipo: "close", az: 22, el: 28, lista: ["fot1"], principal: "fot1", alturaPx: ALT_ABERTURA, janela: JANELA_ABERTURA, livreV: true, casa: 1, orbita: { az: 45, push: 0.1 } };
+export const PLANO_TABULEIRO: Plano = { id: "s00-tabuleiro", tipo: "aberto", az: 22, el: 52, lista: ["tabuleiro"], janela: JANELA_TOTAL, orbita: { az: 20, push: 0.06 } };
+export const PLANO_PRONTO: Plano = { id: "s13-pronto", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro", "seta"], janela: JANELA_TOTAL, orbita: { az: 25, push: 0.08 } };
+export const PLANO_FINAL: Plano = { id: "s14-final", tipo: "aberto", az: 22, el: 56, lista: ["tabuleiro"], janela: JANELA_FINAL, orbita: { az: 40, push: 0.14 } };
+// s02, os tres cliques: fotografo a esquerda virado para os amigos, amigos virados para ele, camera a esquerda vendo os dois em 3/4
+export const PLANO_CLIQUE: Plano = { id: "s02-clique", tipo: "cena", az: 0, el: 30, lista: ["fot2", "amigoA2", "amigoB2"], principal: "fot2", alturaPx: ALT_CENA, janela: JANELA_CENA, livreV: true, casa: 2 };
+// corte de reacao (ritmo): o fotografo mais perto, no meio dos planos cena longos
+export const planoReacao = (n: number): Plano => ({
+  id: `${sid(n)}-reacao`, tipo: "close", az: 25, el: 32, lista: [`fot${n}`], principal: `fot${n}`, alturaPx: 0.62 * ALTURA_TELA, livreV: true, janela: JANELA_V, casa: n,
+});
 export const PLANO_VOO: Plano = { id: "s12-voo", tipo: "close", az: 30, el: EL, lista: ["peca3", "plaq3"], principal: "peca3", larguraPx: LARG_CLOSE, janela: JANELA_V, livreV: true, casa: 3 };
 
 export const ETAPAS_SEG: EtapaPlano[][] = (() => {
@@ -519,8 +536,9 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
     e.push({ quando: R("cena"), plano: planoCena(n), trans: 0.5 });
     if (n === 7 || n === 8 || n === 9) {
       e.push({ quando: R("ev", "solucao", -0.1), plano: planoDetalhe(n), trans: 0.3 });
-      e.push({ quando: R("ev", "solucao", 1.1), plano: planoPlaca(n, ""), trans: 0.3 });
-      e.push({ quando: R("ev", "solucao", 2.5), plano: planoCena(n), trans: 0.4 });
+      if (n === 7) e.push({ quando: R("ev", "solucao", 1.1), plano: { ...planoClose(7), id: "s07-lente" }, trans: 0.3 }); // a lente gigante inteira, sem ninguem na frente
+      e.push({ quando: R("ev", "solucao", n === 7 ? 2.4 : 1.1), plano: planoPlaca(n, ""), trans: 0.3 });
+      e.push({ quando: R("ev", "solucao", n === 7 ? 3.8 : 2.5), plano: planoCena(n), trans: 0.4 });
     }
     // a placa de foto tem corte proprio quando a foto muda (s01: clique e manual; s08: foto corrompida)
     if (n === 1) {
@@ -529,9 +547,15 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
       e.push({ quando: R("ev", "solucao", 0.1), plano: planoPlaca(1, "b"), trans: 0.3 });
       e.push({ quando: R("ev", "solucao", 1.4), plano: planoCena(1), trans: 0.4 });
     }
-    if (n === 8) {
-      e.push({ quando: R("ev", "problema", 0.1), plano: planoPlaca(8, "a"), trans: 0.3 });
-      e.push({ quando: R("ev", "problema", 1.3), plano: planoCena(8), trans: 0.4 });
+    if (n === 8) { // cartao corrompe: primeiro na camera da mao (cartao vermelho), depois na placa
+      e.push({ quando: R("ev", "problema", -0.1), plano: planoDetalhe(8), trans: 0.3 });
+      e.push({ quando: R("ev", "problema", 1.1), plano: planoPlaca(8, "a"), trans: 0.3 });
+      e.push({ quando: R("ev", "problema", 2.3), plano: planoCena(8), trans: 0.4 });
+    }
+    if (n === 2) {
+      e.push({ quando: R("ev", "amigos", -0.3), plano: PLANO_CLIQUE, trans: 0.4 });
+      e.push({ quando: R("ev", "solucao", -0.1), plano: planoClose(2), trans: 0.35 }); // o album abre
+      e.push({ quando: R("ev", "solucao", 1.8), plano: planoCena(2), trans: 0.4 });
     }
     if (n === 7) { // foto escura na placa (antes da troca da lente)
       e.push({ quando: R("ev", "problema", 0.3), plano: planoPlaca(7, "a"), trans: 0.3 });
@@ -558,6 +582,7 @@ export const ETAPAS_SEG: EtapaPlano[][] = (() => {
 export const TODOS_PLANOS: Plano[] = (() => {
   const vistos = new Map<string, Plano>();
   ETAPAS_SEG.forEach((l) => l.forEach((e) => vistos.set(e.plano.id, e.plano)));
+  for (let n = 1; n <= 13; n++) vistos.set(planoReacao(n).id, planoReacao(n));
   return [...vistos.values()];
 })();
 export const PLANOS_RESOLVIDOS: Resolvido[] = TODOS_PLANOS.map(resolverPlano);

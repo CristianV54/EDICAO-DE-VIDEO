@@ -68,7 +68,7 @@ export const planoTitulo = (i: number) => {
   ys.sort((a, b) => Math.abs(a - Y_TITULO) - Math.abs(b - Y_TITULO));
   const dur0 = L.tituloFim - L.ini;
   let melhor = { ini: f0, fim: f0 + dur0, y: Y_TITULO_BAIXO, colisoes: 1e9 };
-  for (const dur of [dur0, Math.round(dur0 * 0.8), Math.round(dur0 * 0.6)]) {
+  for (const dur of [dur0, Math.round(dur0 * 0.8), Math.round(dur0 * 0.6), Math.round(dur0 * 0.45)]) {
     for (let t0 = f0; t0 + dur + 6 <= f1; t0 += 2) {
       for (const y of ys) {
         let n = 0;

@@ -100,6 +100,7 @@ export const LINHAS: Linha[] = ROTEIRO.map((r, i) => {
   Object.entries(t.ancoras).forEach(([nome, seg]) => {
     ev[nome] = sf(seg);
   });
+  ev.ini = ini; // etiquetas que entram no primeiro frame (s00)
   ev.problema = prob;
   ev.solucao = sol;
   return {
@@ -154,6 +155,6 @@ export const MARCOS = LINHAS.map((L) => ({ id: L.id, ini: L.ini, fim: L.fim, che
 // o card aparece nos segmentos s01 a s13, do inicio do segmento ate terminar de sair
 export const cardVisivel = (frame: number): boolean => {
   const i = segDe(frame);
-  if (i < 1 || i > 13) return false;
+  if (i < 0 || i > 13) return false; // o s00 tambem tem card (digitando no primeiro segundo)
   return frame < LINHAS[i].cardSai + CARD_SLIDE;
 };

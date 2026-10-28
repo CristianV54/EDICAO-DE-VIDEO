@@ -30,6 +30,9 @@ const DEFS = {
   bal_quanto: { t: "quanto custa?", ...BAL },
   bal_madrinha: { t: "você fotografa o meu casamento?", ...BAL, h: 260 },
   x_vermelho: { t: "X", fg: "#FFFFFF", w: 128, h: 128, peso: 900 },
+  n1: { t: "1", fg: "#FFFFFF", bg: "#D4A537", w: 192, h: 192, peso: 900 },
+  n2: { t: "2", fg: "#FFFFFF", bg: "#D4A537", w: 192, h: 192, peso: 900 },
+  n3: { t: "3", fg: "#FFFFFF", bg: "#D4A537", w: 192, h: 192, peso: 900 },
 } satisfies Record<string, Def>;
 
 export type NomeTex = keyof typeof DEFS;

@@ -139,7 +139,7 @@ const E03: React.FC<{ f: number }> = ({ f }) => {
           })}
         </group>
         <Fade op={out}>
-          <group position={[0.18, 1.65, 0.35]} scale={bal}>
+          <group position={[-0.55, 1.5, 0.35]} scale={bal}>
             <BalaoTex tex="bal_quanto" w={0.95} h={0.33} />
           </group>
         </Fade>
@@ -158,6 +158,16 @@ const E03: React.FC<{ f: number }> = ({ f }) => {
         </group>
       )}
     </>
+  );
+};
+
+const NumeroTex: React.FC<{ tex: NomeTex }> = ({ tex }) => {
+  const t = useTex(tex);
+  return (
+    <mesh>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial map={t} transparent toneMapped={false} depthWrite={false} />
+    </mesh>
   );
 };
 
@@ -203,13 +213,13 @@ const E04: React.FC<{ f: number }> = ({ f }) => {
           <B p={[0.3, -0.52, 0.03]} s={[0.05, 0.14, 0.01]} c="#EF4444" r={0.003} rot={[0, 0, -0.2]} sombra={false} />
         </group>
       </Peca>
-      {tAudio >= 0 && tAudio <= 1.3 && (() => {
+      {tAudio >= 0 && tAudio <= 2.3 && (() => {
         const e = easeInOutCubic(clamp01(tAudio));
         const p = mix(a, b, e);
-        const op = 1 - clamp01((tAudio - 1) / 0.3);
+        const op = 1 - clamp01((tAudio - 1.9) / 0.4); // a resposta em audio fica ~1 s ao lado da noiva
         return (
           <Fade op={op}>
-            <group position={[p[0], p[1] + 0.25 * Math.sin(Math.PI * e), p[2]]} scale={0.9}>
+            <group position={[p[0], p[1] + 0.25 * Math.sin(Math.PI * e), p[2]]} scale={1.6}>
               <B s={[0.5, 0.22, 0.06]} c="#25D366" r={0.08} />
               {[0.4, 0.7, 1, 0.6, 0.85, 0.45, 0.65].map((h, k) => <B key={k} p={[-0.18 + k * 0.06, 0, 0.034]} s={[0.025, 0.14 * h, 0.01]} c="#FFFFFF" r={0.004} sombra={false} />)}
             </group>
@@ -329,7 +339,6 @@ const E07: React.FC<{ f: number }> = ({ f }) => {
     const a = (k / 8) * Math.PI;
     return { x: Math.cos(a) * 1.05, y: Math.sin(a) * 1.05, a };
   });
-  const cores = ["#F59E0B", "#3B82F6", "#A855F7", "#EF4444", "#22C55E"];
   return (
     <>
       <Peca n={7} f={f} plq="plq_lente">
@@ -350,7 +359,7 @@ const E07: React.FC<{ f: number }> = ({ f }) => {
           <B p={[-1.05, 1.2, 0]} s={[0.22, 2.4, 0.22]} c="#F7F5F0" r={0.04} />
           <B p={[1.05, 1.2, 0]} s={[0.22, 2.4, 0.22]} c="#F7F5F0" r={0.04} />
           {arcos.map((a, k) => <B key={k} p={[a.x, 2.4 + a.y, 0]} s={[0.24, 0.3, 0.22]} c="#F7F5F0" r={0.04} rot={[0, 0, a.a - Math.PI / 2]} />)}
-          {cores.map((col, k) => <B key={k} p={[-0.64 + k * 0.32, 1.0 + (k % 2 ? 0.3 : 0.55), -0.05]} s={[0.26, 0.9 + (k === 2 ? 0.8 : 0), 0.06]} c={col} e={col} ei={0.35} r={0.04} sombra={false} />)}
+          <B p={[0, 1.55, -0.05]} s={[1.9, 2.3, 0.04]} c="#FFE9B0" e="#FFE9B0" ei={0.3} r={0.05} sombra={false} o={0.5} />
         </group>
       </Fade>
     </>
@@ -395,7 +404,7 @@ const E09: React.FC<{ f: number }> = ({ f }) => {
   const L = LINHAS[9];
   const e = EstrondoFlash(f);
   const c = centroCasa(9);
-  const yBola = lerp(6.5, 3.1, rampa(f, L.ini, 26)) + 3.4 * rampa(f, L.fim - 18, 18);
+  const yBola = lerp(6.5, 3.9, rampa(f, L.ini, 26)) + 3.4 * rampa(f, L.fim - 18, 18);
   return (
     <>
       <Peca n={9} f={f} plq="plq_flash">
@@ -408,11 +417,11 @@ const E09: React.FC<{ f: number }> = ({ f }) => {
         </group>
       </Peca>
       {f >= L.ini && f < L.fim && (
-      <group position={[c[0], yBola, c[2]]} rotation={[0, f * 0.06, 0]}>
+      <group position={[c[0] + 1.35, yBola, c[2] - 0.9]} rotation={[0, f * 0.06, 0]}>
         <Fade op={1 - rampa(f, L.fim - 6, 6)}>
           <Cil p={[0, 3, 0]} r={0.012} h={6} c="#6B7078" seg={4} />
           <mesh castShadow>
-            <icosahedronGeometry args={[0.38, 1]} />
+            <icosahedronGeometry args={[0.24, 1]} />
             <meshStandardMaterial color="#C9CED6" metalness={0.9} roughness={0.15} flatShading emissive="#6B7280" emissiveIntensity={0.4} />
           </mesh>
         </Fade>
@@ -436,8 +445,8 @@ const E10: React.FC<{ f: number }> = ({ f }) => {
       <Peca n={10} f={f} plq="plq_backup">
         {[-0.22, 0.22].map((x, k) => (
           <group key={k} position={[x, 0.07, 0.08]}>
-            <B s={[0.4, 0.14, 0.32]} c={queima && k === 0 ? "#3A3D46" : "#C5CAD3"} r={0.03} />
-            <B p={[0.12, 0.0, 0.165]} s={[0.05, 0.03, 0.01]} c={k === 0 ? (queima ? "#EF4444" : "#3DDC84") : tres ? "#3DDC84" : "#6B7078"} e={k === 0 ? (queima ? "#EF4444" : "#3DDC84") : tres ? "#3DDC84" : "#000000"} ei={0.8} r={0.003} sombra={false} />
+            <B s={[0.4, 0.14, 0.32]} c={queima && !tres && k === 0 ? "#3A3D46" : "#C5CAD3"} r={0.03} />
+            <B p={[0.12, 0.0, 0.165]} s={[0.05, 0.03, 0.01]} c={k === 0 ? (queima && !tres ? "#EF4444" : "#3DDC84") : tres ? "#3DDC84" : "#6B7078"} e={k === 0 ? (queima && !tres ? "#EF4444" : "#3DDC84") : tres ? "#3DDC84" : "#000000"} ei={0.8} r={0.003} sombra={false} />
           </group>
         ))}
         <Seg a={[-0.22, 0.15, 0.08]} b={[-0.1, 1.05, 0.0]} w={0.03} c="#2A2C33" />
@@ -450,13 +459,18 @@ const E10: React.FC<{ f: number }> = ({ f }) => {
             </mesh>
           ))}
         </group>
-        {queima && f < L.prob + 100 && [0, 1, 2, 3, 4, 5].map((j) => {
+        {queima && !tres && f < L.prob + 100 && [0, 1, 2, 3, 4, 5].map((j) => {
           const t = (((f - L.prob - j * 6) % 36) + 36) % 36 / 36;
           const sx = (Math.sin(j * 7.3) * 0.5) * 0.12;
           return (
             <Esf key={j} p={[-0.22 + sx + t * 0.08, 0.2 + t * 1.0, 0.1 + sx]} r={0.07 + t * 0.12} c="#7A7F8C" o={0.85 * (1 - t)} seg={7} />
           );
         })}
+        {tres && [[-0.22, 0.52], [0.22, 0.52], [0, 1.95]].map((q, k) => (
+          <group key={k} position={[q[0], q[1], 0.12]} scale={entrada(f - (L.sol + k * 10), 6) * 0.42}>
+            <NumeroTex tex={(["n1", "n2", "n3"] as NomeTex[])[k]} />
+          </group>
+        ))}
         {tres && (
           <mesh position={[0.82, 1.55, 0.1]} scale={entrada(f - L.sol, 8) * 0.6}>
             <planeGeometry args={[0.9, 0.675]} />
@@ -571,7 +585,7 @@ const E13: React.FC<{ f: number }> = ({ f }) => {
         </mesh>
       </Peca>
       {e > 0 && (
-        <group position={[c[0] + 0.45, Y_CASA + 2.0, c[2] + 0.25]} scale={e}>
+        <group position={[c[0] - 0.2, Y_CASA + 2.0, c[2] + 0.25]} scale={e}>
           <BalaoTex tex="bal_madrinha" w={1.05} h={0.43} />
         </group>
       )}

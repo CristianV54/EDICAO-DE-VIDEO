@@ -1,4 +1,4 @@
-import { ETAPAS_SEG, FOV, poseResolvida, EtapaPlano } from "./enquadramento";
+import { ETAPAS_SEG, FOV, poseResolvida, EtapaPlano, planoReacao } from "./enquadramento";
 import { posFot } from "../dados/posicoes";
 import type { V3 } from "../dados/posicoes";
 import { LINHAS, WALK, easeInOutCubic, clamp01, lerp, sf } from "../util/tempo";
@@ -35,7 +35,26 @@ export const ETAPAS: Etapa[] = (() => {
   out.forEach((et, k) => {
     et.fim = k + 1 < out.length ? out[k + 1].inicio : LINHAS[14].fim + 100000;
   });
-  return out;
+  // ritmo: plano cena de mais de 4,2 s ganha um corte de reacao (fotografo mais perto) de 1,3 s, mas nunca por cima de um momento-chave
+  // (de 0,3 s antes ate 1,8 s depois de cada ancora: problema, solucao e as extras)
+  const final: Etapa[] = [];
+  out.forEach((et) => {
+    final.push(et);
+    const p = et.e.plano;
+    if (p.tipo === "cena" && /-cena$/.test(p.id) && et.seg >= 1 && et.seg <= 13 && et.fim - et.inicio > sf(4.2)) {
+      const ancoras = Object.values(LINHAS[et.seg].ev);
+      const livre = (a: number, b: number) => ancoras.every((f) => b < f - sf(0.3) || a > f + sf(1.8));
+      for (let t0 = et.inicio + sf(1.0); t0 + sf(1.3) < et.fim - sf(0.5); t0 += sf(0.25)) {
+        const t1 = t0 + sf(1.3);
+        if (!livre(t0, t1)) continue;
+        final.push({ inicio: t0, fim: t1, e: { quando: et.e.quando, plano: planoReacao(et.seg), trans: 0.3 }, transicao: sf(0.3), seg: et.seg });
+        final.push({ inicio: t1, fim: et.fim, e: { quando: et.e.quando, plano: p, trans: 0.4 }, transicao: sf(0.4), seg: et.seg });
+        et.fim = t0;
+        break;
+      }
+    }
+  });
+  return final;
 })();
 
 const etapaDe = (frame: number): number => {

@@ -54,6 +54,8 @@ m.slice(1, 14).forEach((s) => {
     alvos.push({grupo: s.id, nome: `${s.id}_e_placa_auto`, frame: f(s.prob + 0.8 * FPS)});
     alvos.push({grupo: s.id, nome: `${s.id}_f_placa_manual`, frame: f(s.sol + 0.5 * FPS)});
   }
+  if (n === 10) alvos.push({grupo: s.id, nome: `${s.id}_e_tres_copias`, frame: f(s.sol + 1.2 * FPS)});
+  if (n === 7) alvos.push({grupo: s.id, nome: `${s.id}_g_lente_inteira`, frame: f(s.sol + 1.7 * FPS)});
   if (n === 12) alvos.push({grupo: s.id, nome: `${s.id}_e_voo`, frame: f(s.sol + 0.6 * FPS)});
   if (n === 13) alvos.push({grupo: s.id, nome: `${s.id}_e_pronto`, frame: f(s.sol + 1.5 * FPS)});
 });

@@ -85,6 +85,7 @@ export const fotografo = (f: number): EstadoFot => {
     rotY = a.rotY;
     passo = a.passo;
   }
+  if (i === 2) rotY = mixAng(rotY, 1.0, virarS2(f)); // de frente para os amigos nos cliques
   let lev = levantaEm(f);
   if (i === 0) lev = Math.max(lev, 0.5 * rampa(f, L.sol, 14));
   if (i === 7) lev = Math.max(lev, 0.15 * rampa(f, LINHAS[7].sol - 12, 8) * (1 - rampa(f, LINHAS[7].sol + 24, 10)));
@@ -154,7 +155,7 @@ export const noiva = (f: number): Estado => {
     }
   }
   if (i === 5) {
-    out.rotY += Math.PI * costas(f, 5);
+    // s05: a noiva fica parada (so cruza os bracos), sem virar de costas
     if (f >= prob && f < sol) {
       out.mp = [-0.12, 0.88, 0.2];
       out.mn = [0.12, 0.92, 0.2];
@@ -225,22 +226,26 @@ export const noivo = (f: number): Estado => {
 };
 
 // casal de amigos do s02: de maos dadas, posam em "amigos" e acenam na solucao
+// s02: gira o fotografo e os amigos um para o outro na ancora "amigos"; desfaz quando os amigos saem
+const fadeAmigosIni = () => Math.min(LINHAS[2].ev.amigos + 40, LINHAS[2].sol - 16);
+export const virarS2 = (f: number): number => rampa(f, LINHAS[2].ev.amigos - 8, 10) * (1 - rampa(f, fadeAmigosIni(), 14));
+
 export const amigos = (f: number): { a: Estado; b: Estado } => {
   const i = segDe(f);
   const L = LINHAS[i];
   const inv = { a: { ...INVISIVEL }, b: { ...INVISIVEL } };
   if (i !== 2) return inv;
-  const opac = Math.min(rampa(f, L.ini, 8), 1 - rampa(f, L.fim - 12, 12));
+  const opac = Math.min(rampa(f, L.prob - 6, 10), 1 - rampa(f, fadeAmigosIni(), 14)); // entram depois do close do album
   if (opac <= 0.01) return inv;
   const pa = posAmigoA(2);
   const pb = posAmigoB(2);
   const pose = rampa(f, L.ev.amigos, 8) * (1 - rampa(f, L.ev.amigos + 50, 10));
-  const mid: V3 = [(pa[0] + pb[0]) / 2, lerp(0.7, 1.0, pose), (pa[2] + pb[2]) / 2 + 0.05];
-  const ra = rotRepouso(2);
+  const mid: V3 = [(pa[0] + pb[0]) / 2, lerp(0.7, 1.0, pose), (pa[2] + pb[2]) / 2];
+  const ra = mixAng(rotRepouso(2), -1.0, virarS2(f));
   const a: Estado = { vis: true, opac, pos: pa, rotY: ra, passo: 0, expr: "feliz", mp: mundoParaLocal(pa, ra, mid), inclina: -0.06 * pose };
   const b: Estado = { vis: true, opac, pos: pb, rotY: ra, passo: 0, expr: "feliz", mn: mundoParaLocal(pb, ra, mid), inclina: 0.06 * pose };
-  if (f >= L.sol) {
-    const w = rampa(f, L.sol, 6);
+  if (f >= fadeAmigosIni() - 10) {
+    const w = rampa(f, fadeAmigosIni() - 10, 6);
     const osc = Math.sin(f * 0.7) * 0.08;
     a.mn = [lerp(-0.36, -0.46, w), lerp(0.57, 1.45, w) + osc * w, 0.1];
     b.mp = [lerp(0.36, 0.46, w), lerp(0.57, 1.45, w) + osc * w, 0.1];
