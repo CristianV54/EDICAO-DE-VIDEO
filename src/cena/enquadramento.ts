@@ -82,7 +82,7 @@ export const caixaDe = (id: string): Caixa => {
     }
     case "balao": {
       const p = posCli(n);
-      return { c: [p[0] + 0.45, Y_CASA + 2.3, p[2] + 0.25], t: [1.2, 0.75, 0.3] };
+      return { c: [p[0] + 0.45, Y_CASA + 2.0, p[2] + 0.25], t: [1.05, 0.45, 0.3] };
     }
     case "maoCam": {
       const p = posFot(n);
@@ -445,8 +445,8 @@ const baseClose = (n: number): Plano => {
   const principal = madr ? "madrinha13" : `peca${n}`;
   return {
     id: `${sid(n)}-close`, tipo: "close", az: AZ_VISTA * 0.85, el: EL, casa: n, principal,
-    lista: madr || n === 12 ? [principal] : [principal, `plaq${n}`],
-    larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.6 * ALTURA_TELA : undefined, livreV: true, janela: JANELA_V,
+    lista: madr ? [principal, "balao13"] : n === 12 ? [principal] : [principal, `plaq${n}`], // s13: a madrinha e o balao dela, inteiros
+    larguraPx: madr ? undefined : LARG_CLOSE, alturaPx: madr ? 0.4 * ALTURA_TELA : undefined, livreV: !madr, janela: JANELA_V,
   };
 };
 // close da peca: a lista e so a peca e a plaquinha. Se um personagem cobrir mais de 15% da peca, ou aparecer cortado na tela,

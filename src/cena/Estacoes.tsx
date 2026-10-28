@@ -571,8 +571,8 @@ const E13: React.FC<{ f: number }> = ({ f }) => {
         </mesh>
       </Peca>
       {e > 0 && (
-        <group position={[c[0] + 0.45, Y_CASA + 2.3, c[2] + 0.25]} scale={e}>
-          <BalaoTex tex="bal_madrinha" w={1.2} h={0.5} />
+        <group position={[c[0] + 0.45, Y_CASA + 2.0, c[2] + 0.25]} scale={e}>
+          <BalaoTex tex="bal_madrinha" w={1.05} h={0.43} />
         </group>
       )}
     </>
