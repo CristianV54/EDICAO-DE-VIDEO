@@ -1,64 +1,36 @@
-# Anúncio da mentoria dentro do vídeo WELKOME
+# Anúncio da mentoria dentro do vídeo WELKOME (versão 2)
 
-Escrito com a skill de copy de venda (Before, Bridge, After comprimido em 3 movimentos: dor reconhecível, virada, resultado e uma chamada para ação só). Tom direto, sem exclamação, sem emoji. Voz de quem fotografa (primeira pessoa).
+Reescrito depois do retorno: a v1 recontava o que o vídeo já mostra (drink, convidados, contrato), tinha dor genérica e CTA mole ("vê se faz sentido"). Esta versão parte de uma fala que acontece no vídeo, não recapitula nada, e fecha com ordem.
 
-**Base da análise:** só a transcrição do vídeo (`VIDEO WELKOME.txt` e `.json`). Os arquivos que você mandou agora são idênticos aos da vez anterior (conferi byte a byte) e **não chegou nenhum arquivo de vídeo ou áudio**. Eu não consigo ouvir áudio. Tudo que cito vem do texto transcrito, que tem erros.
+**Onde entra:** em 15:38 (937,8 s), no lugar da fala atual. O vídeo volta em "Estou lhe servindo" (1009,8 s). Duração: ≈ 31 s.
 
-**Público:** fotógrafo que já tem equipamento e não consegue transformar isso em faturamento. Não escrevi para iniciante.
+## Roteiro
 
-**Onde entra:** em 15:38 (937,8 s), no lugar da fala atual, até o vídeo voltar em "Estou lhe servindo" (1009,8 s).
-
-## Fatos usados e de onde vêm
-
-| fato | origem |
-|---|---|
-| Cem convidados, todos fotografados | transcrição 30:29 |
-| Contrato fechado há um ano e meio | transcrição 31:16 |
-| Foi ao Mato Grosso fotografar essa família | transcrição 31:22 |
-| O mentorado (Thiago) veio fotografar junto | transcrição 30:49 e 31:00 |
-| Quatro dias em Trancoso, na Bahia | **informado por você**, não está na transcrição |
-| A noiva o levou para lá | **informado por você** |
-| Mentoria ordem.club | **informado por você** |
-| Quem entra tem a chance de fotografar um casamento com você e voltar com portfólio | **informado por você** |
-| O casamento sai no próximo vídeo | **informado por você** |
-| A foto 360 com drone vem mais à frente | transcrição 23:25 e 26:57 a 30:04 |
-
-Não usei, por não ter como confirmar: o nome do local do casamento, "no Cristo" e o valor do contrato.
-
-## Variação A: gancho pela dor (recomendada), ≈ 44 s
-
-| tempo | voz (off) | imagem | texto na tela |
+| tempo | voz | imagem | texto na tela |
 |---|---|---|---|
-| 0:00 a 0:06 | "Você tem a câmera. Tem a lente. E o cliente que paga bem continua sem aparecer." | o mentorado fotografando ou o momento em que Fares conversa com ele | **TEM EQUIPAMENTO. NÃO FATURA?** |
-| 0:06 a 0:20 | "Hoje eu trouxe um mentorado pra um trabalho real. Cem convidados. Um contrato fechado há um ano e meio. Fui ao Mato Grosso fotografar essa família, e ela me levou pra quatro dias em Trancoso, na Bahia." | drone da praia, convidados, a noiva | **100 CONVIDADOS · 4 DIAS · TRANCOSO** |
-| 0:20 a 0:27 | "Ele não ficou assistindo. Fotografou do meu lado e viu como eu dirijo e como eu falo com o cliente." | o mentorado fotografando ao lado do Fares | **FOTOGRAFOU DO MEU LADO** |
-| 0:27 a 0:40 | "Essa é a mentoria ordem.club. Não é pra quem tá começando. É pra quem já tem equipamento e não consegue faturar. Quem entra tem a chance de fotografar um casamento comigo e voltar com portfólio." | Fares dirigindo a pose, fotos entregues piscando | **MENTORIA** e depois **NÃO É PRA QUEM ESTÁ COMEÇANDO** |
-| 0:40 a 0:44 | "Entra em ordem.club e vê se faz sentido pro seu momento." | **ordem.club** grande, parado | **ORDEM.CLUB** |
-| 0:44 a 0:51 | "Agora, voltando: o casamento sai no próximo vídeo, e daqui a pouco tem a foto 360 com drone." | volta ao vídeo | nenhum |
+| 0:00 a 0:03 | **fala original do vídeo (1133,3 a 1135,9 s):** "O jogo é de quem observa." | Fares e o Thiago, o momento | **O JOGO É DE QUEM OBSERVA** |
+| 0:03 a 0:13 | "Você tá assistindo. O Thiago tá dentro: do meu lado, vendo como eu dirijo o pai, como eu falo com a noiva, como eu resolvo na hora." | o Thiago fotografando; Fares dirigindo o pai e a noiva | **VOCÊ ASSISTE. ELE ESTÁ DENTRO.** |
+| 0:13 a 0:19 | "O que te trava não é equipamento. É nunca ter visto um casamento de verdade por dentro." | corte seco, mais rápido | **NÃO É EQUIPAMENTO** |
+| 0:19 a 0:27 | "Na ordem.club, você entra e fotografa casamento comigo. Já levei mentorado pra Trancoso e pro Cristo, no Rio. Volta com portfólio real." | fotos entregues piscando, Fares e o mentorado trabalhando | **FOTOGRAFE COMIGO** |
+| 0:27 a 0:30 | "Tem equipamento e não fatura? Link na descrição. Entra." | **ordem.club** grande | **ORDEM.CLUB · LINK NA DESCRIÇÃO** |
+| 0:30 a 0:31 | "Bora voltar." | volta ao vídeo | nenhum |
 
-Opcionais (adicionam uns 3 a 6 s cada):
-- **Valor do contrato:** troque "Um contrato fechado há um ano e meio." por "Um contrato de [R$ VALOR] fechado há um ano e meio." Só se você quiser mostrar o número.
-- **Prova extra:** depois de "voltar com portfólio", acrescente "Já levei vários mentorados pra Trancoso pra isso."
+A fala seguinte do vídeo é "Estou lhe servindo... Eu tô te observando" (1009,8 e 1016 s): ecoa o "observa" do gancho.
 
-## Variação B: gancho pelo momento (a sua ideia), ≈ 21 s + volta
+## Troca de gancho (se preferir)
 
-| tempo | voz | imagem |
-|---|---|---|
-| 0:00 a 0:05 | **fala original do vídeo, de 962,98 a 967,6 s:** "Qual a pergunta que eu tenho pra fazer? Tô aqui com o Fares. Como que o Fares faz isso?" | o mentorado, com a fala original |
-| 0:05 a 0:22 | "Se você gostaria de ter essa experiência, essa é a mentoria ordem.club. Não é pra quem tá começando. É pra quem já tem equipamento e não consegue faturar. Quem entra tem a chance de fotografar um casamento comigo e voltar com portfólio. Entra em ordem.club." | Fares e o mentorado trabalhando, depois **ordem.club** |
-| 0:22 a 0:29 | "Agora, voltando: o casamento sai no próximo vídeo, e daqui a pouco tem a foto 360 com drone." | volta ao vídeo |
+Em vez de "O jogo é de quem observa", abra com o mentorado: **"Qual a dúvida que eu tinha? Resolvi."** (960,74 a 962,28 s). Depois siga igual.
 
-Só use a B se essa fala (que a transcrição não marca de quem é) for mesmo da boca do mentorado, porque aí ela é a prova. Se for o Fares falando, use a A.
+## O que mudou e por quê
 
-## Por que a A é a recomendada
+- **Sem recontar o vídeo.** Tirei 100 convidados, contrato, Mato Grosso, quatro dias. Quem está vendo já sabe.
+- **Gancho vem de uma fala do vídeo** e vira mentoria na primeira frase de voz: "você tá assistindo, o Thiago tá dentro" (a diferença entre quem vê e quem vive).
+- **A dor agora aponta o erro de quem tem equipamento e não fatura**, e não uma lista de objetos: nunca ter visto um casamento de verdade por dentro.
+- **CTA em ordem, sem saída:** "Entra." no lugar de "vê se faz sentido pro seu momento".
+- **Sem prometer faturamento:** o texto promete fotografar casamento com você e voltar com portfólio.
 
-A abre pela dor do público certo (equipamento sem faturamento) e só depois mostra os fatos do dia como prova. Todos eles são específicos: 100 convidados, 1 ano e meio, 4 dias. O filtro "não é pra quem tá começando" aumenta a confiança de quem é o público. A B é mais curta e usa fala real, mas dá menos prova e fica mais longe do que o vídeo mostrou.
+## Confirmar
 
-## Confirmar antes de gravar
-
-1. A grafia **ordem.club** (você ditou, pode ter saído diferente).
-2. Os quatro dias em Trancoso e que a noiva é quem te levou.
-3. Que o casamento realmente sai no próximo vídeo e que a foto 360 com drone fica na edição.
-4. De quem é a fala de 962,98 a 967,6 s (necessário para a B).
-5. Se quer o valor do contrato.
-6. Se há alguma regra sua de não prometer resultado: o texto diz que a mentoria dá a chance de fotografar um casamento, e não promete faturamento.
+1. Que "O jogo é de quem observa" é a sua voz falando com o Thiago (a transcrição não marca quem fala; a linha anterior é "Seu nome, Thiago?").
+2. Que "Cristo, no Rio" está do jeito que você fala.
+3. Que o link da mentoria fica na descrição.
