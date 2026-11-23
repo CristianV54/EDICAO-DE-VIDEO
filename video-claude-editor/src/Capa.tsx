@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import './fontes';
 import {cores, vivas, fonte, fonteTitulo} from './tema';
 import {Icone3D} from './tres/Icone3D';
+import {AppCaido} from './tres/AppCaido';
 import {Bloco, Clipe3D, Luzes, ChaoSombra} from './tres/pecas';
 import {Camera} from './tres/Camera';
 
@@ -120,59 +121,40 @@ export const CapaB: React.FC = () => (
   </AbsoluteFill>
 );
 
-// Capa C: personagem com a tesoura cortando a tira de filme.
-const Filme: React.FC<{posicao: [number, number, number]; rotacao: [number, number, number]; quadros: string[]}> = ({posicao, rotacao, quadros}) => {
-  const larg = quadros.length * 1.5 + 0.2;
-  return (
-    <group position={posicao} rotation={rotacao}>
-      <Bloco tam={[larg, 1.7, 0.16]} cor="#262422" raio={0.06} rugosidade={0.5} />
-      {quadros.map((cor, i) => (
-        <Bloco key={i} tam={[1.25, 0.95, 0.06]} cor={cor} raio={0.05} posicao={[-larg / 2 + 0.85 + i * 1.5, 0, 0.09]} sombra={false} />
-      ))}
-      {Array.from({length: Math.floor(larg / 0.42)}).map((_, i) =>
-        [-0.68, 0.68].map((y) => <Bloco key={`${i}${y}`} tam={[0.2, 0.16, 0.05]} cor={cores.creme} raio={0.03} posicao={[-larg / 2 + 0.3 + i * 0.42, y, 0.08]} sombra={false} />)
-      )}
-    </group>
-  );
-};
-
-const Tesoura: React.FC<{posicao: [number, number, number]; rotacao: [number, number, number]; escala?: number}> = ({posicao, rotacao, escala = 1}) => (
-  <group position={posicao} rotation={rotacao} scale={escala}>
-    {[1, -1].map((s) => (
-      <group key={s} rotation={[0, 0, s * 0.4]} position={[0, 0, s * 0.04]}>
-        <Bloco tam={[2.2, 0.34, 0.08]} cor="#f1eee6" raio={0.035} rugosidade={0.2} posicao={[1.05, 0, 0]} />
-        <mesh position={[-0.86, -s * 0.2, 0]} castShadow>
-          <torusGeometry args={[0.38, 0.12, 16, 40]} />
-          <meshStandardMaterial color={cores.laranja} roughness={0.4} />
-        </mesh>
-      </group>
-    ))}
-    <mesh position={[0, 0, 0.1]}>
-      <cylinderGeometry args={[0.09, 0.09, 0.12, 20]} />
-      <meshStandardMaterial color="#8a877f" roughness={0.3} />
-    </mesh>
-  </group>
-);
+// Capa C: o bloco do Claude de pé, e os programas de edição caídos e rachados.
+const cacos: [number, number, number, number, string][] = [
+  // x, y, z, tamanho, cor
+  [-5.4, 0.12, 2.6, 0.34, '#2a2360'],
+  [-1.7, 0.1, 3.0, 0.26, '#2a2360'],
+  [-2.3, 0.14, 0.4, 0.4, '#8f8fe6'],
+  [-0.6, 0.1, 3.4, 0.22, '#3a3f49'],
+  [2.6, 0.12, 3.1, 0.3, '#3a3f49'],
+  [3.3, 0.1, 2.2, 0.2, '#e8b53a'],
+  [-4.6, 0.1, 3.5, 0.2, '#8f8fe6'],
+  [1.6, 0.1, 3.7, 0.24, '#d9566a'],
+];
 
 export const CapaC: React.FC = () => (
   <AbsoluteFill style={{fontFamily: fonte}}>
-    <Fundo brilhoX={82} brilhoY={36} />
+    <Fundo brilhoX={78} brilhoY={32} />
+    <AbsoluteFill style={{background: 'radial-gradient(circle at 78% 32%, rgba(255,150,90,0.5) 0%, rgba(255,150,90,0) 30%)'}} />
     <Tela3D>
-      <Camera pos={[0, 1.6, 12]} alvo={[0, 1.35, 0]} fov={34} />
+      <Camera pos={[0, 2.5, 11.5]} alvo={[0, 1.75, 0]} fov={34} />
       <Luzes />
-      <ChaoSombra y={-1.9} opacidade={0.4} />
-      <Filme posicao={[-3.05, -0.55, 0]} rotacao={[0.1, 0.25, -0.2]} quadros={[vivas.azul, vivas.verde, vivas.azul, vivas.vermelho]} />
-      <Filme posicao={[5.2, -0.2, 0.2]} rotacao={[0.1, -0.2, 0.3]} quadros={[vivas.verde, vivas.azul]} />
-      <Tesoura posicao={[1.95, 0.75, 1.2]} rotacao={[0, -0.15, -1.72]} escala={0.95} />
-      <Icone3D posicao={[4.3, 2.7, 0.6]} rotacao={[0.12, -0.5, 0.14]} escala={1.15} />
+      <ChaoSombra y={0} opacidade={0.55} />
+      <AppCaido tipo="premiere" posicao={[-3.7, 0.72, 2.0]} rotacao={[-0.86, 0.3, 0.24]} escala={1.18} />
+      <AppCaido tipo="davinci" posicao={[0.75, 0.85, 2.6]} rotacao={[-0.88, -0.28, -0.32]} escala={1.12} />
+      {cacos.map(([x, y, z, t, cor], i) => (
+        <mesh key={i} position={[x, y, z]} rotation={[i * 0.7, i * 1.3, i * 0.5]} scale={[1, 0.35, 0.8]} castShadow>
+          <tetrahedronGeometry args={[t * 0.9]} />
+          <meshStandardMaterial color={cor} roughness={0.5} />
+        </mesh>
+      ))}
+      <Icone3D posicao={[3.9, 3.05, 0]} rotacao={[0.1, -0.48, 0.12]} escala={1.42} brilho={0.6} />
     </Tela3D>
-    <Titulo tam={200} left={56} top={22}>
-      <div>
-        <span style={{color: cores.laranja}}>5</span> PASSOS
-      </div>
+    <Titulo tam={160} left={58} top={12}>
+      <div>ADEUS,</div>
+      <div style={{color: cores.laranja}}>EDITOR</div>
     </Titulo>
-    <Etiqueta left={62} top={262} tam={50}>
-      para editar com IA
-    </Etiqueta>
   </AbsoluteFill>
 );
