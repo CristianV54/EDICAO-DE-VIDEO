@@ -43,7 +43,7 @@ export const Clipe3D: React.FC<{
   );
 };
 
-export const Luzes: React.FC = () => (
+export const Luzes: React.FC<{corA?: string; corB?: string; forcaA?: number; forcaB?: number}> = ({corA = '#ff8a4c', corB = '#7ab0ff', forcaA = 160, forcaB = 120}) => (
   <>
     <ambientLight intensity={0.25} />
     <directionalLight
@@ -61,8 +61,8 @@ export const Luzes: React.FC = () => (
       shadow-radius={9}
     />
     <directionalLight position={[-6, 4, 5]} intensity={0.7} color="#ffe2cc" />
-    <pointLight position={[-5, 4, -3]} intensity={160} color="#ff8a4c" />
-    <pointLight position={[6, 4, -3]} intensity={120} color="#7ab0ff" />
+    <pointLight position={[-5, 4, -3]} intensity={forcaA} color={corA} />
+    <pointLight position={[6, 4, -3]} intensity={forcaB} color={corB} />
   </>
 );
 

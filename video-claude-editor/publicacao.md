@@ -16,11 +16,13 @@ O título 2 passa de 70 caracteres e pode aparecer cortado em algumas telas. A p
 
 | Opção | Arquivo | Ideia | Texto |
 |---|---|---|---|
-| A | capa/capa-a.png | Bloco do Claude em cima da linha do tempo, com o trecho vermelho cortado caindo | EDITADO POR IA, 0 editores |
-| B | capa/capa-b.png | Metade cinza com clipes bagunçados, metade colorida com clipes arrumados, bloco do Claude na divisa | BRUTO, CLAUDE |
-| C | capa/capa-c.png | Bloco do Claude de pé e brilhando, com os ícones do Premiere e do DaVinci caídos e rachados no chão | ADEUS, EDITOR |
+| A | capa/capa-a.png | Tela de edição estilhaçada, bloco do Claude gigante atravessando a tela, mascote à direita | EDITADO POR IA |
+| B | capa/capa-b.png | Metade esquerda cinza com a tela apagada, metade direita colorida, bloco do Claude quebrando a divisa | BRUTO, CLAUDE |
+| C | capa/capa-c.png | Bloco do Claude brilhando na frente de uma tela rachada, Premiere e DaVinci caídos e rachados | ADEUS, EDITOR |
 
-Todas em 1280x720, em 3D, geradas por código em `src/Capa.tsx`.
+Todas em 1280x720, geradas por código em `src/Capa.tsx`.
+
+Estrutura comum, tirada das capas de referência que o Cristian enviou: fundo de estúdio desfocado em azul-esverdeado, tela de programa de edição, objeto principal ocupando quase metade da altura, estilhaços de vidro, e texto de duas linhas em branco e laranja com degradê.
 
 ## Pares sugeridos
 

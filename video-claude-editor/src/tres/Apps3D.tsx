@@ -27,7 +27,7 @@ const Rachaduras: React.FC<{origem: [number, number]; semente: number; z: number
         if (Math.abs(x) > 0.98 || Math.abs(y) > 0.98) break;
         pts.push(new THREE.Vector3(x, y, 0));
       }
-      if (pts.length > 2) lista.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.05), 60, 0.028, 5, false));
+      if (pts.length > 2) lista.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.05), 60, 0.04, 5, false));
     }
     return lista;
   }, [origem[0], origem[1], semente]);

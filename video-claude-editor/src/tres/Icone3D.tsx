@@ -46,12 +46,13 @@ export const Icone3D: React.FC<{
   rotacao?: [number, number, number];
   escala?: number;
   brilho?: number; // 0 a 1: quanto o bloco e a estrela emitem luz
-}> = ({posicao = [0, 0, 0], rotacao = [0, 0, 0], escala = 1, brilho = 0.25}) => {
+  halo?: number; // tamanho do brilho atrás do bloco; 0 desliga
+}> = ({posicao = [0, 0, 0], rotacao = [0, 0, 0], escala = 1, brilho = 0.25, halo = 6.5}) => {
   const corpo = useMemo(() => placa(2.2, 2.2, 0.56, 0.42, 0.12), []);
   const estrela = useMemo(() => formaEstrela().map((f) => extrudar(f, 0.1, 0.016)), []);
   return (
     <group position={posicao} rotation={rotacao} scale={escala}>
-      {brilho > 0 ? <Halo cor="#ff7a3d" tam={6.5} forca={Math.min(1, brilho * 1.6)} /> : null}
+      {brilho > 0 && halo > 0 ? <Halo cor="#ff7a3d" tam={halo} forca={Math.min(1, brilho * 1.6)} /> : null}
       <mesh geometry={corpo} castShadow receiveShadow>
         <meshPhysicalMaterial color="#ea7648" roughness={0.42} clearcoat={0.35} clearcoatRoughness={0.4} emissive="#d2470f" emissiveIntensity={brilho} />
       </mesh>
