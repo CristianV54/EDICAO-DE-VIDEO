@@ -1,11 +1,10 @@
 import React from 'react';
-import {AbsoluteFill, useVideoConfig} from 'remotion';
-import {ThreeCanvas} from '@remotion/three';
-import * as THREE from 'three';
+import {AbsoluteFill} from 'remotion';
 import './fontes';
 import {cores, vivas, fonte, fonteTitulo} from './tema';
 import {Icone3D} from './tres/Icone3D';
-import {AppCaido} from './tres/AppCaido';
+import {DaVinci3D, Premiere3D} from './tres/Apps3D';
+import {Tela3D} from './tres/Tela3D';
 import {Bloco, Clipe3D, Luzes, ChaoSombra} from './tres/pecas';
 import {Camera} from './tres/Camera';
 
@@ -16,26 +15,6 @@ const Fundo: React.FC<{brilhoX?: number; brilhoY?: number}> = ({brilhoX = 74, br
     }}
   />
 );
-
-const Tela3D: React.FC<{children: React.ReactNode}> = ({children}) => {
-  const {width, height} = useVideoConfig();
-  return (
-    <ThreeCanvas
-      width={width}
-      height={height}
-      shadows
-      gl={{antialias: true, alpha: true}}
-      onCreated={({gl}) => {
-        gl.shadowMap.type = THREE.PCFSoftShadowMap;
-        gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.15;
-      }}
-      style={{position: 'absolute', inset: 0}}
-    >
-      {children}
-    </ThreeCanvas>
-  );
-};
 
 const sombraTexto = '0 2px 0 #000, 0 5px 0 rgba(0,0,0,0.85), 0 9px 0 rgba(0,0,0,0.6), 0 18px 30px rgba(0,0,0,0.6)';
 
@@ -142,15 +121,15 @@ export const CapaC: React.FC = () => (
       <Camera pos={[0, 2.5, 11.5]} alvo={[0, 1.75, 0]} fov={34} />
       <Luzes />
       <ChaoSombra y={0} opacidade={0.55} />
-      <AppCaido tipo="premiere" posicao={[-3.7, 0.72, 2.0]} rotacao={[-0.86, 0.3, 0.24]} escala={1.18} />
-      <AppCaido tipo="davinci" posicao={[0.75, 0.85, 2.6]} rotacao={[-0.88, -0.28, -0.32]} escala={1.12} />
+      <Premiere3D rachado vida={0.25} posicao={[-3.7, 0.72, 2.0]} rotacao={[-0.86, 0.3, 0.24]} escala={1.18} />
+      <DaVinci3D rachado vida={0.25} posicao={[0.75, 0.85, 2.6]} rotacao={[-0.88, -0.28, -0.32]} escala={1.12} />
       {cacos.map(([x, y, z, t, cor], i) => (
         <mesh key={i} position={[x, y, z]} rotation={[i * 0.7, i * 1.3, i * 0.5]} scale={[1, 0.35, 0.8]} castShadow>
           <tetrahedronGeometry args={[t * 0.9]} />
           <meshStandardMaterial color={cor} roughness={0.5} />
         </mesh>
       ))}
-      <Icone3D posicao={[3.9, 3.05, 0]} rotacao={[0.1, -0.48, 0.12]} escala={1.42} brilho={0.6} />
+      <Icone3D posicao={[3.9, 3.05, 0]} rotacao={[0.1, -0.48, 0.12]} escala={1.42} brilho={0.5} />
     </Tela3D>
     <Titulo tam={160} left={58} top={12}>
       <div>ADEUS,</div>

@@ -43,25 +43,26 @@ export const Clipe3D: React.FC<{
   );
 };
 
-export const Luzes: React.FC<{alvo?: [number, number, number]}> = () => (
+export const Luzes: React.FC = () => (
   <>
-    <ambientLight intensity={0.55} />
-    <hemisphereLight args={['#fff4e6', '#1a1512', 0.9]} />
+    <ambientLight intensity={0.25} />
     <directionalLight
-      position={[4, 9, 6]}
-      intensity={2.6}
+      position={[5, 9, 7]}
+      intensity={2.9}
       castShadow
-      shadow-mapSize-width={2048}
-      shadow-mapSize-height={2048}
+      shadow-mapSize-width={4096}
+      shadow-mapSize-height={4096}
       shadow-camera-left={-12}
       shadow-camera-right={12}
       shadow-camera-top={12}
       shadow-camera-bottom={-12}
-      shadow-bias={-0.0004}
-      shadow-radius={6}
+      shadow-bias={-0.0003}
+      shadow-normalBias={0.03}
+      shadow-radius={9}
     />
-    <pointLight position={[-5, 3, -4]} intensity={60} color="#D97757" />
-    <pointLight position={[6, 2, 4]} intensity={20} color="#6a9bcc" />
+    <directionalLight position={[-6, 4, 5]} intensity={0.7} color="#ffe2cc" />
+    <pointLight position={[-5, 4, -3]} intensity={160} color="#ff8a4c" />
+    <pointLight position={[6, 4, -3]} intensity={120} color="#7ab0ff" />
   </>
 );
 
