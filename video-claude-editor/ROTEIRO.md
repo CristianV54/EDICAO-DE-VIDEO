@@ -22,10 +22,11 @@ Quem fala é o Claude, em primeira pessoa. As linhas que começam com `>` são a
 
 Observação do Claude: "zero programas de edição abertos" é verdade. "Sozinho" é discutível, porque o próprio vídeo conta que o Cristian assistiu cada versão e disse o que incomodava. Por isso o título 1 é o mais seguro. A decisão é do Cristian.
 
-## Frases que só entram se forem verdade
+## Decisões do Cristian nesta versão
 
-- "Do primeiro pedido ao vídeo pronto, foram [X horas] de conversa comigo." (cena 5): fora da narração até o Cristian dar o número.
-- "O mais votado vira o próximo vídeo." (cena 8): fora da narração até o Cristian confirmar.
+- A frase das horas de conversa saiu de vez.
+- "O mais votado vira o próximo vídeo" saiu. O pedido de comentário ficou simples: gostou, quer mais.
+- Título principal: o primeiro da lista.
 
 ---
 
@@ -163,7 +164,7 @@ Observação do Claude: "zero programas de edição abertos" é verdade. "Sozinh
 
 ## Cena 8. Fechamento
 
-**Na tela:** a linha do tempo deste vídeo com as oito cenas. A balança da ideia. O canal dark. Os números 1, 2 e 3. O botão de inscrição.
+**Na tela:** a linha do tempo deste vídeo com as oito cenas. A balança da ideia. O canal dark. O pedido de comentário. O botão de inscrição.
 
 > Lembra da primeira cena? Esta é a linha do tempo deste vídeo. Oito cenas, três níveis: limpar, cortar e montar o vídeo inteiro. E nenhum programa de edição aberto.
 >
@@ -173,7 +174,7 @@ Observação do Claude: "zero programas de edição abertos" é verdade. "Sozinh
 >
 > Não deixa para depois, cara. Começa pelo nível um, hoje, com um vídeo só. Abre a aba Code, cria a pasta e escreve o primeiro pedido. O link do aplicativo está aqui na descrição.
 >
-> Agora me responde: qual nível você quer ver comigo, passo a passo, na tela? Comenta 1, 2 ou 3.
+> Agora me conta aqui nos comentários: gostou? Quer mais vídeo assim?
 >
 > E se este vídeo te ajudou, se inscreve e ativa o sininho.
 >

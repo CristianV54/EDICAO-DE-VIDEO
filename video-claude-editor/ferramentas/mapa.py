@@ -47,11 +47,11 @@ P = {
  (10, 11, 'Analogia: a tira do filme inteiro em cima e a página da legenda embaixo. Uma seta leva da linha marcada ao quadro certo', 'Vai da legenda até o quadro do filme', S, R),
  (12, 12, 'O vídeo em texto, com três marcações entrando nas falas: o erro riscado, o silêncio de 5 s, a frase forte em laranja', 'Desce pelo texto parando em cada marcação', 'Um som curto por marcação (3), diferentes entre si', R),
  (13, 13, 'Dois cartões: auto-editor (tira o silêncio) e FFmpeg (corta e junta)', 'Chega e assenta', 'Um estalo de madeira para os dois', R),
- (14, 16, 'auto-editor: a faixa de áudio com fala e silêncio. O medidor varre, cada silêncio fica vermelho com o nome dele (a pausa, a respiração, o tempo morto) e some. A fala se junta', 'Segue o medidor e recua quando a faixa encolhe', 'Um deslize baixo quando os silêncios somem', R),
- (17, 20, 'FFmpeg: um terminal. Cada comando aparece na palavra: corta, junta, muda. Em "quem escreve sou eu" a marca do Claude aparece ao lado do cursor', 'Desce comando por comando', 'Uma tecla por comando (3)', R),
+ (14, 16, '**Real:** a onda de uma gravação de teste de verdade, com os silêncios que o auto-editor achou nela. O medidor varre com a linha do limite de volume, cada silêncio fica vermelho com o nome dele (a pausa, a respiração, o tempo morto) e com quantos segundos tem. Depois eles somem, a fala se junta e aparece o antes e depois medido: duração de antes, duração de depois', 'Segue o medidor e recua quando a faixa encolhe', 'Um deslize baixo quando os silêncios somem', A),
+ (17, 20, '**Real:** os comandos de verdade que rodaram na gravação de teste, cada um na sua palavra: corta, junta, muda. Ao lado de cada comando, o efeito dele desenhado: um trecho sai, dois trechos se colam, o quadro deita e fica em pé. Em "quem escreve sou eu" a marca do Claude aparece ao lado do cursor', 'Desce comando por comando', 'Uma tecla por comando (3)', A),
  (21, 22, 'Janela do Claude Code: o pedido dos silêncios é digitado e fica parado para o print', 'Aproxima na digitação e recua para o pedido inteiro', 'Três teclas no começo', R),
- (23, 24, 'A lista de cortes: cada linha entra na fala, com o tempo e o motivo. O cursor clica em APROVAR e as linhas ganham o visto', 'Desce pela lista e fecha no botão', 'Clique e sucesso no APROVAR', R),
- (25, 25, 'Palavras em caixas, cada uma com o seu tempo. Elas se afastam e um risco de luz corta no vão. Um risco vermelho tenta cortar no meio de uma palavra e some', 'Aproxima no vão', 'Um som de corte no risco de luz', R),
+ (23, 24, '**Real:** a lista de cortes da gravação de teste, com os tempos de verdade. Cada linha entra na fala e, em cima, a mesma marca aparece na onda, para ligar a lista ao vídeo. O cursor clica em APROVAR e as linhas ganham o visto', 'Desce pela lista e fecha no botão', 'Clique e sucesso no APROVAR', A),
+ (25, 25, '**Real:** palavras da transcrição de teste em caixas, cada uma com o tempo que o Whisper mediu, em cima da onda. Elas se afastam e um risco de luz corta no vão, onde a onda está baixa. Um risco vermelho tenta cortar no meio de uma palavra, onde a onda está alta, e some', 'Aproxima no vão', 'Um som de corte no risco de luz', A),
  (26, 27, 'Objeção: "Mas Claude, e se eu gosto de editar do meu jeito?". Resposta: "fica à vontade"', 'Vai da pergunta para a resposta', S, R),
  (28, 28, 'A linha do tempo já cortada. Dela descem cinco etiquetas: Premiere, DaVinci Resolve, Final Cut, Shotcut, Kdenlive', 'Desce da linha do tempo para as etiquetas', 'Um estalo para a cascata', R),
  (29, 29, 'Selo "META BATIDA" carimba em cima do cartão do nível 1, com 12:00 aceso', 'Soco de zoom no carimbo', 'Um sucesso baixo no carimbo', NV),
@@ -108,7 +108,7 @@ P = {
  (9, 10, '"Canal dark": a silhueta sem rosto num cartão escuro. Embaixo: "assunto para outro vídeo"', 'Vai da silhueta para o texto', S, R),
  (11, 12, '"Não deixa para depois". O cartão do nível 1 volta, com "hoje, com um vídeo só"', 'Soco de zoom em "hoje"', 'Batida suave em "hoje"', NV),
  (13, 14, 'Três cartões nas palavras: abre a aba Code, cria a pasta, escreve o primeiro pedido. Depois uma seta para baixo: "link na descrição"', 'Passa pelos três e desce para a seta', 'Um estalo de madeira para a cascata', R),
- (15, 17, 'Três cartões grandes com os números 1, 2 e 3 e o nome de cada nível, cada um entrando na palavra', 'Chega de longe e passa pelos três', 'Batida suave em cada número (3)', A),
+ (15, 17, 'Uma caixa de comentário se abre e duas respostas são digitadas nas falas: "gostei" e "quero mais"', 'Aproxima na caixa de comentário', 'Um estalo baixo em cada resposta (2)', NV),
  (18, 18, 'Botão "INSCREVA-SE" com um sininho balançando ao lado', 'Chega com quique', 'Um sino bem baixo', A),
  (19, 21, 'A marca do Claude, "Valeu, galera!" e "até a próxima"', 'Recua devagar até o fim', S, R),
 ],
@@ -190,6 +190,27 @@ Refazer o vídeo com o roteiro novo (ROTEIRO.md, versão 4): três níveis com m
 - 2D é a base. O 3D fica na escada (agora de três degraus), no bloco do Claude e na volta da câmera do gancho.
 - Texto na tela só para ênfase, nunca legenda corrida.
 
+## Imagens reais e a explicação do corte
+
+Pedido do Cristian depois da prévia: mostrar o Claude Code de verdade quando ele é citado, e explicar melhor o corte.
+
+**O que o Claude consegue fazer daqui**
+- Rodar as ferramentas de verdade (Whisper, auto-editor e FFmpeg) numa gravação de teste, com erros e silêncios colocados de propósito.
+- Usar no vídeo o resultado real: a onda de áudio, os silêncios achados, os tempos de cada palavra, a lista de cortes, os comandos e a duração de antes e depois.
+- Os planos marcados com **Real** no nível 1 usam esse material, no lugar dos desenhos de exemplo da versão 3.
+
+**O que o Claude não consegue fazer daqui**
+- Capturar a tela do aplicativo do Claude Code no computador. O Claude trabalha num servidor, sem tela e sem o aplicativo aberto.
+
+**O que depende do Cristian (opcional, mas é o que deixa mais real)**
+Quatro gravações de tela curtas do aplicativo do Claude, aba Code, em tela cheia:
+1. Abrindo o aplicativo e clicando na aba Code (5 s).
+2. Escolhendo uma pasta (5 s).
+3. Digitando um pedido e o Claude começando a responder (10 s).
+4. O Claude mostrando uma lista e pedindo aprovação (10 s).
+
+Com elas, os planos em que a janela do Claude Code aparece desenhada passam a mostrar a gravação, dentro da moldura, com a câmera se movendo por cima. Sem elas, a janela continua desenhada, mas com o texto e os resultados reais.
+
 ## O que muda em relação à versão 3
 
 - **Escada 3D:** de cinco degraus para três, com o nome de cada nível.
@@ -223,6 +244,7 @@ Nenhuma.
 
 | Fase | O que é feito | Teste que prova |
 |---|---|---|
+| 0 | Gravação de teste e ferramentas reais | A gravação de teste existe, o Whisper, o auto-editor e o FFmpeg rodaram nela, e os números (silêncios, cortes, duração antes e depois) estão salvos num arquivo |
 | 1 | Peças novas e adaptadas | O projeto compila sem erro, e uma folha mostra cada peça nova em três momentos |
 | 2 | Cenas 1 e 2 montadas | Conferência das palavras-gatilho com zero faltas, e a folha das duas cenas sem plano vazio nem texto cortado |
 | 3 | Cenas 3, 4 e 5 (os três níveis) | A mesma conferência e as folhas das três cenas |
@@ -231,9 +253,9 @@ Nenhuma.
 
 ## Pendências do roteiro
 
-- "Foram [X horas] de conversa comigo" está fora da narração até o Cristian dar o número.
-- "O mais votado vira o próximo vídeo" está fora até o Cristian confirmar.
-- O título: o Claude recomenda o "3 níveis, sem programa de edição" como principal. A decisão é do Cristian.
+- A frase das horas e "o mais votado" saíram de vez. O pedido de comentário ficou simples: "gostou? quer mais vídeo assim?".
+- Título principal aprovado: "Como editar vídeos com o Claude (3 níveis, sem programa de edição)".
+- **Falta saber:** quais erros o Cristian viu na prévia da versão 2, para não repetir nesta.
 
 ---
 

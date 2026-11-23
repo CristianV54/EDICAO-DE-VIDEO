@@ -1,6 +1,6 @@
 {
  "voz": "pm_alex",
- "duracao": 51.28,
+ "duracao": 49.64,
  "frases": [
   {
    "txt": "Lembra da primeira cena?",
@@ -78,39 +78,39 @@
    "fim": 37.77
   },
   {
-   "txt": "Agora me responde:",
+   "txt": "Agora me conta aqui nos comentários:",
    "ini": 37.99,
-   "fim": 39.36
+   "fim": 40.17
   },
   {
-   "txt": "qual nível você quer ver comigo, passo a passo, na tela?",
-   "ini": 39.58,
-   "fim": 42.63
+   "txt": "gostou?",
+   "ini": 40.39,
+   "fim": 41.09
   },
   {
-   "txt": "Comenta 1, 2 ou 3.",
-   "ini": 42.85,
-   "fim": 44.44
+   "txt": "Quer mais vídeo assim?",
+   "ini": 41.31,
+   "fim": 42.8
   },
   {
    "txt": "E se este vídeo te ajudou, se inscreve e ativa o sininho.",
-   "ini": 44.66,
-   "fim": 47.71
+   "ini": 43.02,
+   "fim": 46.06
   },
   {
    "txt": "Valeu, galera.",
-   "ini": 47.93,
-   "fim": 48.97
+   "ini": 46.28,
+   "fim": 47.32
   },
   {
    "txt": "Até a próxima.",
-   "ini": 49.19,
-   "fim": 50.31
+   "ini": 47.54,
+   "fim": 48.66
   },
   {
    "txt": "Fui!",
-   "ini": 50.53,
-   "fim": 51.06
+   "ini": 48.88,
+   "fim": 49.42
   }
  ],
  "palavras": [
@@ -175,7 +175,7 @@
    "txt": "vídeo."
   },
   {
-   "ini": 4.26,
+   "ini": 4.24,
    "fim": 4.46,
    "txt": "Oito"
   },
@@ -185,7 +185,7 @@
    "txt": "cenas,"
   },
   {
-   "ini": 5.06,
+   "ini": 5.08,
    "fim": 5.22,
    "txt": "três"
   },
@@ -196,7 +196,7 @@
   },
   {
    "ini": 6.06,
-   "fim": 6.38,
+   "fim": 6.4,
    "txt": "Limpar,"
   },
   {
@@ -226,7 +226,7 @@
   },
   {
    "ini": 7.72,
-   "fim": 8.18,
+   "fim": 8.2,
    "txt": "inteiro."
   },
   {
@@ -256,7 +256,7 @@
   },
   {
    "ini": 10.04,
-   "fim": 10.48,
+   "fim": 10.5,
    "txt": "aberto."
   },
   {
@@ -311,11 +311,11 @@
   },
   {
    "ini": 13.52,
-   "fim": 13.9,
+   "fim": 13.88,
    "txt": "frente"
   },
   {
-   "ini": 13.9,
+   "ini": 13.88,
    "fim": 14.06,
    "txt": "a"
   },
@@ -366,26 +366,26 @@
   },
   {
    "ini": 17.12,
-   "fim": 17.26,
+   "fim": 17.24,
    "txt": "é"
   },
   {
-   "ini": 17.26,
+   "ini": 17.24,
    "fim": 17.4,
    "txt": "sua."
   },
   {
    "ini": 17.8,
    "fim": 17.94,
-   "txt": "À"
+   "txt": "Há"
   },
   {
    "ini": 17.94,
-   "fim": 18.44,
+   "fim": 18.42,
    "txt": "ideias."
   },
   {
-   "ini": 18.78,
+   "ini": 18.76,
    "fim": 18.92,
    "txt": "Eu"
   },
@@ -401,7 +401,7 @@
   },
   {
    "ini": 19.64,
-   "fim": 20.16,
+   "fim": 20.18,
    "txt": "decide."
   },
   {
@@ -481,7 +481,7 @@
   },
   {
    "ini": 24.1,
-   "fim": 24.32,
+   "fim": 24.34,
    "txt": "ninguém."
   },
   {
@@ -516,7 +516,7 @@
   },
   {
    "ini": 26.24,
-   "fim": 26.66,
+   "fim": 26.68,
    "txt": "vídeo."
   },
   {
@@ -536,11 +536,11 @@
   },
   {
    "ini": 27.8,
-   "fim": 28.2,
+   "fim": 28.18,
    "txt": "depois,"
   },
   {
-   "ini": 28.34,
+   "ini": 28.4,
    "fim": 28.6,
    "txt": "cara."
   },
@@ -551,31 +551,31 @@
   },
   {
    "ini": 29.36,
-   "fim": 29.58,
+   "fim": 29.6,
    "txt": "pelo"
   },
   {
-   "ini": 29.58,
-   "fim": 29.9,
+   "ini": 29.6,
+   "fim": 29.92,
    "txt": "nível"
   },
   {
-   "ini": 29.9,
-   "fim": 30.08,
+   "ini": 29.92,
+   "fim": 30.12,
    "txt": "1"
   },
   {
-   "ini": 30.08,
+   "ini": 30.12,
    "fim": 30.4,
    "txt": "hoje"
   },
   {
    "ini": 30.4,
-   "fim": 30.64,
+   "fim": 30.66,
    "txt": "com"
   },
   {
-   "ini": 30.64,
+   "ini": 30.66,
    "fim": 30.98,
    "txt": "vídeo"
   },
@@ -586,11 +586,11 @@
   },
   {
    "ini": 31.62,
-   "fim": 31.84,
+   "fim": 31.86,
    "txt": "Abre"
   },
   {
-   "ini": 31.84,
+   "ini": 31.86,
    "fim": 31.94,
    "txt": "a"
   },
@@ -601,16 +601,16 @@
   },
   {
    "ini": 32.72,
-   "fim": 32.9,
-   "txt": "crie"
+   "fim": 32.92,
+   "txt": "cria"
   },
   {
-   "ini": 32.9,
-   "fim": 33.02,
+   "ini": 32.92,
+   "fim": 33.04,
    "txt": "a"
   },
   {
-   "ini": 33.02,
+   "ini": 33.04,
    "fim": 33.28,
    "txt": "pasta"
   },
@@ -661,16 +661,16 @@
   },
   {
    "ini": 36.24,
-   "fim": 36.64,
+   "fim": 36.62,
    "txt": "está"
   },
   {
-   "ini": 36.64,
-   "fim": 36.96,
+   "ini": 36.62,
+   "fim": 36.94,
    "txt": "aqui"
   },
   {
-   "ini": 36.96,
+   "ini": 36.94,
    "fim": 37.06,
    "txt": "na"
   },
@@ -680,188 +680,148 @@
    "txt": "descrição."
   },
   {
-   "ini": 37.96,
-   "fim": 38.24,
+   "ini": 37.98,
+   "fim": 38.22,
    "txt": "Agora"
   },
   {
-   "ini": 38.24,
-   "fim": 38.48,
+   "ini": 38.22,
+   "fim": 38.4,
    "txt": "me"
   },
   {
-   "ini": 38.48,
-   "fim": 39.26,
-   "txt": "responde."
+   "ini": 38.4,
+   "fim": 38.74,
+   "txt": "conta"
   },
   {
-   "ini": 39.56,
-   "fim": 39.68,
-   "txt": "Qual"
+   "ini": 38.74,
+   "fim": 39.06,
+   "txt": "aqui"
   },
   {
-   "ini": 39.68,
-   "fim": 39.94,
-   "txt": "nível"
+   "ini": 39.06,
+   "fim": 39.22,
+   "txt": "nos"
   },
   {
-   "ini": 39.94,
-   "fim": 40.24,
-   "txt": "você"
+   "ini": 39.22,
+   "fim": 39.84,
+   "txt": "comentários."
   },
   {
-   "ini": 40.24,
-   "fim": 40.42,
-   "txt": "quer"
+   "ini": 40.44,
+   "fim": 40.86,
+   "txt": "Gostou?"
   },
   {
-   "ini": 40.42,
-   "fim": 40.68,
-   "txt": "ver"
+   "ini": 41.3,
+   "fim": 41.44,
+   "txt": "Quer"
   },
   {
-   "ini": 40.68,
-   "fim": 41.08,
-   "txt": "comigo,"
+   "ini": 41.44,
+   "fim": 41.76,
+   "txt": "mais"
   },
   {
-   "ini": 41.38,
-   "fim": 41.58,
-   "txt": "passo"
+   "ini": 41.76,
+   "fim": 42.2,
+   "txt": "vídeo"
   },
   {
-   "ini": 41.58,
-   "fim": 41.72,
-   "txt": "a"
+   "ini": 42.2,
+   "fim": 42.52,
+   "txt": "assim?"
   },
   {
-   "ini": 41.72,
-   "fim": 41.96,
-   "txt": "passo"
+   "ini": 43.02,
+   "fim": 43.12,
+   "txt": "E"
   },
   {
-   "ini": 41.96,
-   "fim": 42.16,
-   "txt": "na"
+   "ini": 43.12,
+   "fim": 43.18,
+   "txt": "se"
   },
   {
-   "ini": 42.16,
-   "fim": 42.48,
-   "txt": "tela."
-  },
-  {
-   "ini": 42.84,
-   "fim": 43.2,
-   "txt": "Comenta"
-  },
-  {
-   "ini": 43.2,
+   "ini": 43.18,
    "fim": 43.44,
-   "txt": "um,"
+   "txt": "este"
   },
   {
-   "ini": 43.54,
+   "ini": 43.44,
    "fim": 43.7,
-   "txt": "dois"
+   "txt": "vídeo"
   },
   {
    "ini": 43.7,
    "fim": 43.88,
-   "txt": "ou"
-  },
-  {
-   "ini": 43.88,
-   "fim": 44.18,
-   "txt": "três."
-  },
-  {
-   "ini": 44.64,
-   "fim": 44.78,
-   "txt": "E"
-  },
-  {
-   "ini": 44.78,
-   "fim": 44.82,
-   "txt": "se"
-  },
-  {
-   "ini": 44.82,
-   "fim": 45.06,
-   "txt": "este"
-  },
-  {
-   "ini": 45.06,
-   "fim": 45.34,
-   "txt": "vídeo"
-  },
-  {
-   "ini": 45.34,
-   "fim": 45.52,
    "txt": "te"
   },
   {
-   "ini": 45.52,
-   "fim": 45.94,
+   "ini": 43.88,
+   "fim": 44.3,
    "txt": "ajudou,"
   },
   {
-   "ini": 46.1,
-   "fim": 46.2,
+   "ini": 44.48,
+   "fim": 44.56,
    "txt": "se"
   },
   {
-   "ini": 46.2,
-   "fim": 46.7,
+   "ini": 44.56,
+   "fim": 45.06,
    "txt": "inscreve"
   },
   {
-   "ini": 46.7,
-   "fim": 46.82,
+   "ini": 45.06,
+   "fim": 45.16,
    "txt": "e"
   },
   {
-   "ini": 46.82,
-   "fim": 47.12,
+   "ini": 45.16,
+   "fim": 45.48,
    "txt": "ativa"
   },
   {
-   "ini": 47.12,
-   "fim": 47.24,
+   "ini": 45.48,
+   "fim": 45.6,
    "txt": "o"
   },
   {
-   "ini": 47.24,
-   "fim": 47.58,
+   "ini": 45.6,
+   "fim": 45.92,
    "txt": "sininho."
   },
   {
-   "ini": 47.88,
-   "fim": 48.36,
+   "ini": 46.22,
+   "fim": 46.7,
    "txt": "Valeu,"
   },
   {
-   "ini": 48.38,
-   "fim": 48.58,
+   "ini": 46.76,
+   "fim": 46.92,
    "txt": "galera."
   },
   {
-   "ini": 49.14,
-   "fim": 49.38,
+   "ini": 47.48,
+   "fim": 47.74,
    "txt": "Até"
   },
   {
-   "ini": 49.38,
-   "fim": 49.56,
+   "ini": 47.74,
+   "fim": 47.94,
    "txt": "a"
   },
   {
-   "ini": 49.56,
-   "fim": 49.94,
+   "ini": 47.94,
+   "fim": 48.3,
    "txt": "próxima."
   },
   {
-   "ini": 50.5,
-   "fim": 50.76,
+   "ini": 48.84,
+   "fim": 49.12,
    "txt": "Foi."
   }
  ]
