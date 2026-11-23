@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aprovado pelo Cristian. Fase 0 concluída. Roteiro (fase 2) aprovado. Capas A, B e C em 3D entregues, aguardando aprovação.
+Situação: aprovado pelo Cristian. Fases 0 e 2 concluídas. Fase 1 (capas) passou para o Cristian. Fase atual: 3 (prova de estilo, cena 1 em 3D).
 
 ## 1. Objetivo
 
@@ -25,6 +25,8 @@ Já aprovado pelo Cristian:
 5. **Retenção.** O vídeo precisa prender a atenção do começo ao fim. O Cristian vai enviar dicas de retenção, que entram como regras do roteiro na fase 2.
 6. **Visual em 3D.** Capas e vídeo usam objetos em 3D, com volume, luz e sombra, e não só desenho plano. Textos continuam nítidos por cima da cena. O teste de 5 segundos da fase 0 era plano e não vale mais como referência de estilo.
 7. **Teste A/B/C.** Três capas e três títulos, registrados em publicacao.md.
+8. **Capas.** Em 23/11/2026 o Cristian decidiu montar as capas ele mesmo, com outra IA de imagem. As capas A, B e C feitas por código ficam em `capa/` como rascunho e referência de ideia. O Claude foca no vídeo.
+9. **Personagens no vídeo.** Proposta em uso, ainda sem resposta do Cristian: o mascote de blocos é quem age nas cenas, e o bloco laranja com a estrela aparece como a marca do Claude.
 
 ## 3. Quem usa
 
