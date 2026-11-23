@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aguardando aprovação do Cristian. Nada de código ou roteiro antes da aprovação.
+Situação: aprovado pelo Cristian. Fase atual: 0.
 
 ## 1. Objetivo
 
@@ -16,14 +16,13 @@ Já aprovado pelo Cristian:
 - Duração: alvo de 12 minutos, podendo passar disso, com teto de 20.
 - Cada passo mostra o processo de verdade: a pasta do computador, o arquivo sendo colocado, o Claude acessando, o nome da ferramenta usada e o que ela faz.
 
-## 2. Decisões que ainda dependem do Cristian
+## 2. Decisões tomadas pelo Cristian
 
-Estas eu não posso assumir. Abaixo de cada uma está a minha proposta.
-
-1. **Material de exemplo da parte prática.** O vlog de Orlando está fora. Proposta: não usar gravação real de ninguém. As telas do computador (pasta, conversa com o Claude, linha do tempo) são recriadas em animação, e o vídeo que aparece sendo editado dentro da história é este próprio vídeo. Assim não dependemos de nenhum arquivo seu.
-2. **Público.** Proposta: pessoa que cria conteúdo e nunca programou. Linguagem simples, nenhum termo técnico sem explicação.
-3. **Canal.** Em qual canal do YouTube vai ser postado. Preciso do nome para a tela final e para a descrição.
-4. **Entrega do arquivo final.** Um vídeo de 12 minutos passa do limite de 100 MB do GitHub. Proposta: eu envio para o seu Google Drive, que já está conectado. Isso é testado na fase 0, antes de qualquer trabalho longo.
+1. **Material de exemplo.** Nenhuma gravação real é usada, porque os vídeos disponíveis são de clientes. Tudo é animação, inclusive o "vídeo enviado" que aparece dentro da história. Isso reforça que o vídeo foi 100% construído pelo Claude.
+2. **Público.** Criadores de conteúdo, editores, pessoas começando e pessoas interessadas em IA e automação. Linguagem simples, nenhum termo técnico sem explicação.
+3. **Canal.** Canal novo do Cristian, com o nome provisório "Cristian Moraes". Como o nome pode mudar, a tela final não mostra o nome do canal escrito, só a chamada para se inscrever.
+4. **Entrega.** Vídeo final enviado para o Google Drive do Cristian.
+5. **Retenção.** O vídeo precisa prender a atenção do começo ao fim. O Cristian vai enviar dicas de retenção, que entram como regras do roteiro na fase 2.
 
 ## 3. Quem usa
 
@@ -35,7 +34,7 @@ Estas eu não posso assumir. Abaixo de cada uma está a minha proposta.
 
 ### Fluxo de produção
 
-1. Cristian aprova este plano e responde as 4 decisões da seção 2.
+1. Cristian aprova este plano e toma as decisões da seção 2 (feito).
 2. Claude prepara o projeto e faz um teste de 5 segundos (fase 0).
 3. Claude entrega a capa. Cristian aprova ou pede ajuste (fase 1).
 4. Claude entrega o roteiro completo, com o texto da narração e a descrição de cada cena. Cristian aprova (fase 2).
@@ -101,8 +100,8 @@ Cada item de `cenas.json` tem: número, nome, texto da narração, duração est
 
 Nenhuma conta nova é obrigatória.
 
-1. **Canal do YouTube:** você já tem. Só preciso do nome (decisão 3).
-2. **Google Drive:** já conectado. Usado para a entrega do vídeo final, se você aprovar a decisão 4.
+1. **Canal do YouTube:** você já tem. Nome provisório: Cristian Moraes.
+2. **Google Drive:** já conectado. Usado para a entrega do vídeo final.
 3. **Música de fundo:** Biblioteca de Áudio do YouTube, que é gratuita. Passo a passo: abrir o YouTube Studio, clicar em "Biblioteca de áudio" no menu da esquerda, filtrar por "Atribuição não necessária", baixar uma faixa calma e me enviar o arquivo. Na fase 7 eu digo o clima e a duração que procurar.
 4. **Voz de IA (opcional, só se você desistir de narrar):** Higgsfield ou vidIQ, que já estão conectados e gastam créditos. Eu informo o custo antes de gerar.
 
