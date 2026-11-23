@@ -6,6 +6,7 @@ import {aleatorio, expoOut, power3In, rampa, V3} from '../anim';
 import {Tela3D} from '../tres/Tela3D';
 import {Camera} from '../tres/Camera';
 import {Luzes} from '../tres/pecas';
+import {texturaHalo} from '../tres/formas';
 
 // ---------- O mundo: chão em grade, névoa, painéis ao longe e poeira no ar ----------
 const texturaGrade = (cor: string): THREE.CanvasTexture => {
@@ -129,9 +130,16 @@ const texturaFuros = (): THREE.CanvasTexture => {
   return t;
 };
 
+const LUZES_LONGE: {p: V3; t: number}[] = Array.from({length: 26}).map((_, i) => {
+  const ang = (i / 26) * Math.PI * 2 + aleatorio(i + 70) * 0.5;
+  const raio = 30 + aleatorio(i + 80) * 26;
+  return {p: [Math.sin(ang) * raio, 2 + aleatorio(i + 90) * 22, Math.cos(ang) * raio] as V3, t: 5 + aleatorio(i + 100) * 9};
+});
+
 export const Mundo: React.FC<{f: number; escuro?: number; tema?: Tema}> = ({f, escuro = 0, tema = TEMAS.estudio}) => {
   const grade = useMemo(() => texturaGrade(tema.grade), [tema.grade]);
-  const paineis = useMemo(() => PAINEIS.map((_, i) => texturaPainel(i + 1)), []);
+  const bokehA = useMemo(() => texturaHalo(tema.luzA), [tema.luzA]);
+  const bokehB = useMemo(() => texturaHalo(tema.luzB), [tema.luzB]);
   const espuma = useMemo(() => (tema.extra === 'espuma' ? texturaEspuma() : null), [tema.extra]);
   const furos = useMemo(() => (tema.extra === 'furos' ? texturaFuros() : null), [tema.extra]);
   const poeira = useMemo(() => {
@@ -148,19 +156,17 @@ export const Mundo: React.FC<{f: number; escuro?: number; tema?: Tema}> = ({f, e
   }, []);
   return (
     <>
-      <fog attach="fog" args={[tema.neblina, 16, 78]} />
+      <fog attach="fog" args={[tema.neblina, 11, 52]} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[280, 280]} />
-        <meshStandardMaterial color={tema.neblina} roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.55 * (1 - escuro * 0.7)} />
+        <meshStandardMaterial color={tema.neblina} roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.3 * (1 - escuro * 0.7)} />
       </mesh>
-      {!tema.extra || tema.extra === 'sol'
-        ? PAINEIS.map((pa, i) => (
-            <mesh key={i} position={[pa.p[0], pa.p[1] + Math.sin(f / 70 + i * 2) * 0.6, pa.p[2]]} rotation={[0, pa.r, Math.sin(f / 110 + i) * 0.03]}>
-              <planeGeometry args={[pa.l, pa.l * 0.5625]} />
-              <meshBasicMaterial map={paineis[i]} transparent opacity={(tema.extra === 'sol' ? 0.3 : 0.8) * (1 - escuro * 0.8)} side={THREE.DoubleSide} />
-            </mesh>
-          ))
-        : null}
+      {/* luzes desfocadas ao longe, no lugar de objetos nítidos que brigam com a frente */}
+      {LUZES_LONGE.map((l, i) => (
+        <sprite key={i} position={[l.p[0] + Math.sin(f / 120 + i) * 1.2, l.p[1] + Math.cos(f / 95 + i * 2) * 0.8, l.p[2]]} scale={[l.t, l.t, 1]}>
+          <spriteMaterial map={i % 3 === 0 ? bokehB : bokehA} transparent opacity={(0.2 + 0.14 * Math.sin(f / 40 + i * 1.7)) * (1 - escuro * 0.7) * (tema.extra === 'espuma' || tema.extra === 'furos' ? 0.5 : 1)} blending={THREE.AdditiveBlending} depthWrite={false} fog={false} />
+        </sprite>
+      ))}
       {espuma ? (
         <mesh position={[6, 11, -8]} receiveShadow>
           <planeGeometry args={[110, 38]} />

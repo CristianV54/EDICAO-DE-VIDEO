@@ -262,35 +262,42 @@ export const cenaLongo = (g: G, w: number, h: number, f: number) => {
 // ---- Cena "canal dark": cidade à noite, narrador sem rosto e a voz em barras ----
 export const cenaDark = (g: G, w: number, h: number, f: number) => {
   semSombra(g);
-  g.fillStyle = '#0b1026';
+  const ceu = g.createLinearGradient(0, 0, 0, h);
+  ceu.addColorStop(0, '#1b1f5e');
+  ceu.addColorStop(1, '#4a2a7a');
+  g.fillStyle = ceu;
   g.fillRect(0, 0, w, h);
+  g.fillStyle = 'rgba(255,255,255,0.8)';
+  for (let i = 0; i < 30; i++) g.fillRect((i * 97.3) % w, (i * 53.7) % (h * 0.5), 3, 3);
   sombra(g);
-  peca(g, '#e2e8f0', () => g.arc(w * 0.78, h * 0.2, h * 0.09, 0, Math.PI * 2));
+  peca(g, '#fef3c7', () => g.arc(w * 0.8, h * 0.2, h * 0.1, 0, Math.PI * 2));
   for (let i = 0; i < 7; i++) {
     const x = i * w * 0.15 - 10;
-    const alt = h * (0.28 + ((i * 37) % 5) * 0.06);
-    peca(g, '#111a3a', () => g.rect(x, h * 0.9 - alt, w * 0.13, alt), false);
+    const alt = h * (0.3 + ((i * 37) % 5) * 0.07);
+    peca(g, i % 2 ? '#2a2f7a' : '#343a8f', () => g.rect(x, h * 0.92 - alt, w * 0.13, alt), false);
     semSombra(g);
     for (let j = 0; j < 6; j++) {
-      if ((i * 7 + j * 3 + Math.floor(f / 9)) % 4 === 0) {
+      if ((i * 7 + j * 3 + Math.floor(f / 9)) % 3 !== 0) {
         g.fillStyle = '#fbbf24';
-        g.fillRect(x + 10 + (j % 2) * w * 0.055, h * 0.9 - alt + 14 + Math.floor(j / 2) * h * 0.07, w * 0.035, h * 0.035);
+        g.fillRect(x + 10 + (j % 2) * w * 0.055, h * 0.92 - alt + 14 + Math.floor(j / 2) * h * 0.075, w * 0.035, h * 0.04);
       }
     }
     sombra(g);
   }
-  boneco(g, w * 0.5, h * 1.02, h * 0.86, {silhueta: '#05070f'});
+  // narrador sem rosto, grande, com contorno claro para destacar do fundo
+  boneco(g, w * 0.5, h * 1.34, h * 1.41, {silhueta: '#a78bfa'});
+  boneco(g, w * 0.5, h * 1.32, h * 1.35, {silhueta: '#070914'});
   semSombra(g);
   g.fillStyle = '#f2622e';
-  g.font = `900 ${h * 0.2}px Montserrat`;
+  g.font = `900 ${h * 0.26}px Montserrat`;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.fillText('?', w * 0.5, h * 0.44);
+  g.fillText('?', w * 0.5, h * 0.36);
   for (let i = 0; i < 19; i++) {
-    const a = Math.abs(Math.sin(f / 3 + i * 1.1) * Math.cos(f / 7 + i * 0.6)) * h * 0.1 + 5;
+    const a = Math.abs(Math.sin(f / 3 + i * 1.1) * Math.cos(f / 7 + i * 0.6)) * h * 0.14 + 6;
     g.fillStyle = '#f2622e';
     g.beginPath();
-    g.roundRect(w * 0.12 + i * w * 0.04, h * 0.92 - a / 2, w * 0.02, a, 4);
+    g.roundRect(w * 0.12 + i * w * 0.04, h * 0.88 - a / 2, w * 0.022, a, 5);
     g.fill();
   }
 };
@@ -301,8 +308,8 @@ export const recorteFalando = (g: G, w: number, h: number, f: number) => {
   boneco(g, w * 0.5, h * 0.97, h * 0.92, {
     boca: Math.abs(Math.sin(f * 0.9)),
     cabeca: Math.sin(f / 6) * 0.06,
-    bracoD: 1.2 + Math.sin(f / 5) * 0.5,
-    bracoE: 0.3 + Math.abs(Math.sin(f / 8)) * 0.4,
+    bracoD: 0.75 + Math.sin(f / 5) * 0.4,
+    bracoE: 0.2 + Math.sin(f / 7 + 1) * 0.15,
     roupa: '#2563eb',
   });
 };

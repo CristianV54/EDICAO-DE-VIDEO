@@ -12,7 +12,7 @@ import {EsperaFonte, Rotulo3D, Texto3D} from '../tres/Rotulo';
 import {Halo} from '../tres/Halo';
 import {Destaque, Palco, TEMAS} from './mundo';
 import {TelaPapel} from '../tres/Papel';
-import {cenaAnimacao, cenaCorte, cenaDark, cenaLongo, recorteComemora, recorteFalando} from '../papel';
+import {cenaCorte, cenaDark, cenaLongo, recorteComemora, recorteFalando} from '../papel';
 
 // Cena 1 do roteiro: o gancho, versão 2.
 // Feita seguindo o MAPA-GANCHO.md: linha do tempo em pé, câmera que nunca para,
@@ -63,6 +63,111 @@ const PecaClipe: React.FC<{c: Clipe; cor: string; i: number}> = ({c, cor, i}) =>
           })
         : Array.from({length: n}).map((_, k) => <Bloco key={k} tam={[0.82, 0.5, 0.05]} cor={claro} raio={0.05} sombra={false} posicao={[-c.l / 2 + 0.6 + k * 1.1, 0, 0.16]} />)}
     </>
+  );
+};
+
+// As animações de edição que nascem na palavra "animação".
+const formaCoracao = (): THREE.Shape => {
+  const s = new THREE.Shape();
+  s.moveTo(0, -0.55);
+  s.bezierCurveTo(-1.1, 0.15, -0.6, 0.95, 0, 0.45);
+  s.bezierCurveTo(0.6, 0.95, 1.1, 0.15, 0, -0.55);
+  return s;
+};
+const LETRAS = ['A', 'N', 'I', 'M', 'A', 'Ç', 'Ã', 'O'];
+
+const Animacoes: React.FC<{f: number; fim: number}> = ({f, fim}) => {
+  const coracao = useMemo(() => new THREE.ExtrudeGeometry(formaCoracao(), {depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 5, curveSegments: 24}), []);
+  const anel = rampa(f, 155, 172, power2Out);
+  const arcoAnel = useMemo(() => new THREE.TorusGeometry(0.62, 0.13, 14, 60, Math.max(0.02, anel * Math.PI * 2)), [Math.round(anel * 60)]);
+  const seta = rampa(f, 157, 170, power2Out);
+  const curvaSeta = useMemo(() => new THREE.QuadraticBezierCurve3(new THREE.Vector3(-1.7, -1.75, 0.2), new THREE.Vector3(0.6, -2.5, 0.6), new THREE.Vector3(2.0, -1.5, 0.2)), []);
+  const tuboSeta = useMemo(() => {
+    if (seta < 0.03) return null;
+    const pts = Array.from({length: 25}).map((_, k) => curvaSeta.getPoint((k / 24) * seta));
+    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.07, 8, false);
+  }, [Math.round(seta * 40)]);
+  const pontaSeta = curvaSeta.getPoint(seta);
+  const dirSeta = curvaSeta.getTangent(seta);
+  const grafico = [0.7, 1.15, 0.9, 1.7];
+  const mCoracao = mola(f, 151, {damping: 8});
+  const mBotao = mola(f, 153, {damping: 9});
+  return (
+    <group position={[-2.2, 6.15, 1.7]} scale={fim}>
+      {/* a palavra, letra por letra, com quique */}
+      {LETRAS.map((letra, i) => {
+        const m = mola(f, 142 + i * 2, {damping: 11, stiffness: 170});
+        const y = 1.75 + (1 - m) * 3.2 + Math.sin(f / 5 + i * 0.8) * 0.06;
+        const x = (i - 3.5) * 0.74;
+        return (
+          <group key={i} position={[x, y, 0.3]} rotation={[0, 0, (1 - m) * (i % 2 ? 0.9 : -0.9)]} scale={Math.max(0.001, m)}>
+            <Rotulo3D texto={letra} larg={5.2} cor="#3b1206" posicao={[0.05, -0.06, -0.05]} />
+            <Rotulo3D texto={letra} larg={5.2} cor={i >= 5 ? '#ffb27a' : '#ffffff'} />
+          </group>
+        );
+      })}
+      {/* gráfico de barras crescendo */}
+      <group position={[2.5, -0.95, 0]}>
+        {grafico.map((h, k) => {
+          const m = mola(f, 148 + k * 3, {damping: 10});
+          const cor = ['#22d3ee', '#a78bfa', '#f472b6', '#f2622e'][k];
+          return <Bloco key={k} tam={[0.42, Math.max(0.02, h * m), 0.42]} cor={cor} raio={0.08} posicao={[k * 0.56, (h * m) / 2, 0]} emissivo={cor} intensidade={0.5} />;
+        })}
+        <Bloco tam={[2.5, 0.08, 0.6]} cor="#ffffff" raio={0.03} posicao={[0.84, -0.04, 0]} />
+      </group>
+      {/* curtida: coração pulsando e corações subindo */}
+      <group position={[-3.2, 0.2, 0.3]} scale={Math.max(0.001, mCoracao) * (0.82 + Math.abs(Math.sin(f / 4)) * 0.16)} rotation={[0, 0.25, -0.12]}>
+        <mesh geometry={coracao} castShadow>
+          <meshStandardMaterial color="#f43f5e" roughness={0.3} emissive="#f43f5e" emissiveIntensity={0.55} />
+        </mesh>
+      </group>
+      {[0, 1, 2].map((k) => {
+        const t = ((f - 154 + k * 7) % 21) / 21;
+        if (f < 154) return null;
+        return (
+          <mesh key={k} geometry={coracao} position={[-3.2 + (k - 1) * 0.5 + Math.sin(t * 6 + k) * 0.15, 0.9 + t * 1.8, 0.4]} scale={0.26 * (1 - t)}>
+            <meshStandardMaterial color="#fb7185" emissive="#fb7185" emissiveIntensity={0.8} />
+          </mesh>
+        );
+      })}
+      {/* botão de inscrição com o sino balançando */}
+      <group position={[-0.5, -0.75, 0.4]} scale={[Math.max(0.001, mBotao), Math.max(0.001, mBotao) * (1 + (1 - mBotao) * 0.4), Math.max(0.001, mBotao)]}>
+        <Bloco tam={[3.0, 0.86, 0.34]} cor="#dc2626" raio={0.3} emissivo="#dc2626" intensidade={0.4} rugosidade={0.3} />
+        <Rotulo3D texto="INSCREVA-SE" larg={2.5} posicao={[-0.1, 0, 0.18]} />
+        <group position={[1.95, 0.25, 0.1]} rotation={[0, 0, Math.sin(f / 2.2) * 0.45 * (1 - rampa(f, 153, 176) * 0.5)]}>
+          <mesh position={[0, -0.28, 0]} castShadow>
+            <coneGeometry args={[0.36, 0.55, 24, 1, true]} />
+            <meshStandardMaterial color="#facc15" roughness={0.3} emissive="#facc15" emissiveIntensity={0.5} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, -0.6, 0]}>
+            <sphereGeometry args={[0.11, 16, 12]} />
+            <meshStandardMaterial color="#facc15" emissive="#facc15" emissiveIntensity={0.5} />
+          </mesh>
+        </group>
+      </group>
+      {/* anel de progresso enchendo */}
+      <group position={[3.25, 1.5, 0.2]} rotation={[0, -0.25, Math.PI / 2]}>
+        <mesh>
+          <torusGeometry args={[0.62, 0.11, 12, 60]} />
+          <meshStandardMaterial color="#1c2b2e" roughness={0.6} />
+        </mesh>
+        <mesh geometry={arcoAnel} scale={[1, -1, 1]}>
+          <meshStandardMaterial color="#2dd4bf" emissive="#2dd4bf" emissiveIntensity={1.3} />
+        </mesh>
+      </group>
+      {/* seta se desenhando até o gráfico */}
+      {tuboSeta ? (
+        <>
+          <mesh geometry={tuboSeta}>
+            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.1} />
+          </mesh>
+          <mesh position={[pontaSeta.x, pontaSeta.y, pontaSeta.z]} rotation={[0, 0, Math.atan2(dirSeta.y, dirSeta.x) - Math.PI / 2]}>
+            <coneGeometry args={[0.2, 0.42, 16]} />
+            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.1} />
+          </mesh>
+        </>
+      ) : null}
+    </group>
   );
 };
 
@@ -119,10 +224,9 @@ const LinhaDoTempo: React.FC = () => {
   const fecha = mola(f, 126, {damping: 14});
   const clarao = f >= 119 ? 1 - rampa(f, 119, 128) : 0;
 
-  // animação: um quadro salta da parede com bonecos de papel se mexendo,
-  // e os pontos-chave acendem embaixo conforme a agulhinha passa
-  const quadro = mola(f, 141, {damping: 11}) * (1 - rampa(f, 173, 181, power4In));
-  const xChave = -2.7 + rampa(f, 144, 174, (n) => n) * 5.4;
+  // animação: a própria palavra entra letra por letra, e em volta dela nascem
+  // as coisas que um editor anima: gráfico, botão com sino, curtida, anel de progresso e seta
+  const fimAnim = 1 - rampa(f, 173, 181, power4In);
 
   return (
     <AbsoluteFill>
@@ -169,30 +273,10 @@ const LinhaDoTempo: React.FC = () => {
         {CLIPES.map((c, i) => (
           <Bloco key={`v${i}`} tam={[c.l, 0.82, 0.12]} cor={c.cor} raio={0.05} posicao={[c.x, c.y, -0.42]} emissivo={c.cor} intensidade={0.25} sombra={false} />
         ))}
-        {/* o quadro com a animação de papel */}
-        {quadro > 0.01 ? (
-          <group position={[-2.2, 6.2, 1.2]} scale={quadro} rotation={[0, (1 - quadro) * -0.9, 0]}>
-            <Halo cor="#fde047" tam={11} z={-0.4} forca={0.45} />
-            <Bloco tam={[5.95, 3.5, 0.22]} cor="#0d1416" raio={0.14} />
-            <TelaPapel desenhar={cenaAnimacao} f={f - 141} larg={5.6} alt={3.15} posicao={[0, 0, 0.12]} />
-            <Bloco tam={[5.95, 0.42, 0.16]} cor="#0d1416" raio={0.1} posicao={[0, -2.08, 0]} />
-            {[-2.4, -1.2, 0, 1.2, 2.4].map((x, k) => {
-              const aceso = xChave >= x ? 1 : 0;
-              const m = mola(f, 144 + k * 3, {damping: 9});
-              return (
-                <mesh key={k} position={[x, -2.08, 0.12]} rotation={[0, 0, Math.PI / 4]} scale={[m * 0.2, m * 0.2, 0.08]}>
-                  <boxGeometry args={[1, 1, 1]} />
-                  <meshStandardMaterial color={aceso ? '#f2622e' : '#3a4a4d'} emissive="#f2622e" emissiveIntensity={aceso * 1.4} />
-                </mesh>
-              );
-            })}
-            <Bloco tam={[0.05, 0.5, 0.05]} cor="#ffffff" raio={0.02} posicao={[xChave, -2.08, 0.16]} emissivo="#ffffff" intensidade={2} sombra={false} />
-          </group>
-        ) : null}
+        {f >= 141 && fimAnim > 0.01 ? <Animacoes f={f} fim={fimAnim} /> : null}
       </Palco>
       <Destaque texto="100% *CLAUDE" de={70} ate={100} />
       <Destaque texto="*CORTE" de={119} ate={138} tam={170} />
-      <Destaque texto="*ANIMAÇÃO" de={146} ate={172} tam={150} onde="topo" />
       <Destaque texto="*CÂMERA" de={182} ate={218} tam={170} />
     </AbsoluteFill>
   );
