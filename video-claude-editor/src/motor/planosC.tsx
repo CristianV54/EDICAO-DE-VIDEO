@@ -369,14 +369,14 @@ export const PConta: P<{ferramentas: number; claude: number; valor: number; nota
 };
 
 // ---------- Momento 3D: a escada, com o mascote subindo até o degrau do passo ----------
-const DEG = [0, 1, 2, 3, 4].map((i) => ({x: -6 + i * 3, h: (i + 1) * 0.85}));
+const DEG = [0, 1, 2].map((i) => ({x: -3.4 + i * 3.4, h: (i + 1) * 1.15}));
 const Degraus: React.FC<{acesos: number[]}> = ({acesos}) => (
   <>
     {DEG.map((d, i) => {
       const cor = new THREE.Color('#15191c').lerp(new THREE.Color('#ea7648'), acesos[i]).getStyle();
       return (
         <group key={i} position={[d.x, 0, 0]}>
-          <Bloco tam={[2.92, d.h, 3.2]} cor={cor} raio={0.12} posicao={[0, d.h / 2, 0]} emissivo="#d2470f" intensidade={acesos[i] * 0.45} rugosidade={0.4} />
+          <Bloco tam={[3.3, d.h, 3.2]} cor={cor} raio={0.12} posicao={[0, d.h / 2, 0]} emissivo="#d2470f" intensidade={acesos[i] * 0.45} rugosidade={0.4} />
           <Texto3D texto={String(i + 1)} tam={0.5} posicao={[0, d.h - 0.43, 1.62]} emissao={0.25 + acesos[i] * 0.6} prof={0.08} />
         </group>
       );
@@ -387,7 +387,7 @@ const Degraus: React.FC<{acesos: number[]}> = ({acesos}) => (
 export const PEscada: P<{passo: number; nome: string}> = ({c, passo, nome}) => {
   const f = c.f;
   const i = passo - 1;
-  const de: [number, number] = i === 0 ? [-9.2, 0] : [DEG[i - 1].x, DEG[i - 1].h];
+  const de: [number, number] = i === 0 ? [-7, 0] : [DEG[i - 1].x, DEG[i - 1].h];
   const para: [number, number] = [DEG[i].x, DEG[i].h];
   const pulo = rampa(f, 14, 30, Easing.inOut(Easing.quad));
   const xM = de[0] + (para[0] - de[0]) * pulo;
@@ -405,7 +405,7 @@ export const PEscada: P<{passo: number; nome: string}> = ({c, passo, nome}) => {
         <Degraus acesos={acesos} />
         <Mascote3D posicao={[xM, yM, 0.2]} rotacao={[0, 0.45, 0]} escala={0.85} passo={f * 0.8} />
       </Palco>
-      <Destaque texto={`PASSO ${passo}`} de={4} ate={Math.min(40, c.dur)} onde="topo" tam={110} />
+      <Destaque texto={`NÍVEL ${passo}`} de={4} ate={Math.min(40, c.dur)} onde="topo" tam={110} />
       <Destaque texto={`*${nome}`} de={40} ate={c.dur + 20} tam={170} />
     </AbsoluteFill>
   );
@@ -420,8 +420,8 @@ export const PEscadaFinal: P = ({c}) => {
   return (
     <AbsoluteFill>
       <Palco f={f} pos={pos} alvo={[0, 2.2, 0]} tema={TEMAS.aurora} borrao={chegadaRampa(f, 20) ** 2 * 16}>
-        <Degraus acesos={[1, 1, 1, 1, 1]} />
-        <Mascote3D posicao={[6, 4.25 + Math.abs(Math.sin(f / 6)) * 0.5, 0.2]} rotacao={[0, -0.3, 0]} escala={0.85} passo={f * 0.8} />
+        <Degraus acesos={[1, 1, 1]} />
+        <Mascote3D posicao={[3.4, 3.45 + Math.abs(Math.sin(f / 6)) * 0.5, 0.2]} rotacao={[0, -0.3, 0]} escala={0.85} passo={f * 0.8} />
       </Palco>
     </AbsoluteFill>
   );
@@ -448,8 +448,8 @@ export const PLinhaVideo: P<{cenas: string[]; duracoes: number[]}> = ({c, cenas,
           );
         })}
       </div>
-      <div style={{position: 'absolute', left: 110, top: 600, fontFamily: SANS, fontWeight: 900, fontSize: 110, color: C.texto, letterSpacing: -3, ...surge(ap(c.f, c.p('dez') || 60))}}>
-        10 cenas, <span style={{color: C.acento, textShadow: brilho(C.acento, 0.9)}}>0 programas</span>
+      <div style={{position: 'absolute', left: 110, top: 600, fontFamily: SANS, fontWeight: 900, fontSize: 110, color: C.texto, letterSpacing: -3, ...surge(ap(c.f, c.p('nenhum') || c.p('dez') || 60))}}>
+        {cenas.length} cenas, <span style={{color: C.acento, textShadow: brilho(C.acento, 0.9)}}>0 programas</span>
       </div>
     </AbsoluteFill>
   );

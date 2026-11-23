@@ -37,7 +37,7 @@ export type Plano = {
 export type Abertura = {C: Plano['C']; props?: Record<string, unknown>; dur: number; sons?: Som[]};
 
 // o Whisper às vezes escreve uma palavra de outro jeito: estas são as formas alternativas
-const APELIDOS: Record<string, string[]> = {claude: ['cloud', 'claud', 'clod'], corte: ['curte'], ia: ['dia'], exporte: ['esporte'], '1': ['um'], '2': ['dois'], cinquenta: ['50'], doze: ['12'], vinte: ['20'], dezessete: ['17'], olha: ['olhe'], cria: ['crie'], corto: ['cordo', 'curto'], dez: ['10', 'descortes']};
+const APELIDOS: Record<string, string[]> = {claude: ['cloud', 'claud', 'clod'], corte: ['curte'], ia: ['dia'], exporte: ['esporte'], '1': ['um'], '2': ['dois'], cinquenta: ['50'], doze: ['12'], vinte: ['20'], dezessete: ['17'], olha: ['olhe'], cria: ['crie'], corto: ['cordo', 'curto'], dez: ['10', 'descortes'], tres: ['3'], instala: ['installa']};
 const FOLGA = 5; // o plano entra um pouco antes da primeira palavra
 
 const limpar = (x: string) => x.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
@@ -146,6 +146,13 @@ const camera = (plano: Plano, c: Ctx, indice: number): string => {
     z = trilho1(c.f, q2, f2(zs));
     fx = trilho1(c.f, q2, f2(xs)) + Math.sin(c.f / 70 + indice) * 6;
     fy = trilho1(c.f, q2, f2(ys));
+  }
+  // a câmera nunca sai da área da tela: assim nenhum texto perto da borda é cortado
+  if (z > 1) {
+    const mx = 30 + 960 / z;
+    const my = 10 + 540 / z;
+    fx = mx <= 1920 - mx ? Math.min(1920 - mx, Math.max(mx, fx)) : 960;
+    fy = my <= 1080 - my ? Math.min(1080 - my, Math.max(my, fy)) : 540;
   }
   return `translate(${(960 - fx * z).toFixed(2)}px, ${(540 - fy * z).toFixed(2)}px) scale(${z.toFixed(4)})`;
 };

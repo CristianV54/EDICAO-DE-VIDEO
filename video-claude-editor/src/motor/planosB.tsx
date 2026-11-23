@@ -55,8 +55,8 @@ const TEXTO: Trecho[] = [
   {txt: 'Editar deixou de ser a parte chata.', tipo: 'forte'},
   {txt: 'Depois disso entra a animação.', tipo: 'normal'},
 ];
-export const PMapa: P<{erro?: number; silencio?: number; bom?: number; forte?: number; legenda?: number; rotulo?: string}> = ({c, erro, silencio, bom, forte, legenda, rotulo = 'O VÍDEO INTEIRO, EM TEXTO'}) => {
-  const q = (i?: number) => (i === undefined ? 99999 : c.t(i) + 4);
+export const PMapa: P<{erro?: number | string; silencio?: number | string; bom?: number | string; forte?: number | string; legenda?: number; rotulo?: string}> = ({c, erro, silencio, bom, forte, legenda, rotulo = 'O VÍDEO INTEIRO, EM TEXTO'}) => {
+  const q = (i?: number | string) => (i === undefined ? 99999 : typeof i === 'string' ? c.p(i) || 24 : c.t(i) + 4);
   const quando: Record<string, number> = {erro: q(erro), silencio: q(silencio), bom: q(bom), forte: q(forte), normal: 99999};
   const tLeg = q(legenda);
   return (

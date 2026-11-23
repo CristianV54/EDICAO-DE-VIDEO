@@ -254,10 +254,10 @@ export const PBilhetes: P = ({c}) => {
 };
 
 // ---------- Gravação crua, cheia de erro ----------
-export const PCrua: P = ({c}) => (
+export const PCrua: P<{titulo?: [string, string]}> = ({c, titulo}) => (
   <AbsoluteFill>
-    <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 96, letterSpacing: -2, color: C.texto, ...surge(ap(c.f, c.t(1) - 6), 30)}}>
-      e se você só tem a gravação <span style={{color: C.acento, textShadow: brilho(C.acento, 0.8)}}>crua</span>?
+    <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 96, letterSpacing: -2, color: C.texto, ...surge(ap(c.f, titulo ? 2 : c.t(1) - 6), 30)}}>
+      {titulo ? titulo[0] : 'e se você só tem a gravação'} <span style={{color: C.acento, textShadow: brilho(C.acento, 0.8)}}>{titulo ? titulo[1] : 'crua'}</span>{titulo ? '' : '?'}
     </div>
     {Array.from({length: 7}).map((_, i) => {
       const e = mola(c.f, 6 + i * 5, {damping: 10});
@@ -274,7 +274,7 @@ export const PCrua: P = ({c}) => (
 // ---------- A parte chata: ouvir tudo de novo ----------
 export const PFone: P = ({c}) => {
   const tO = q(c, 'ouvir', c.t(1));
-  const tS = c.t(2);
+  const tS = c.p('deixa') || c.t(2);
   const lento = rampa(c.f, tO, tS, (n) => n) * 0.34;
   const troca = rampa(c.f, tS + 4, tS + 22, power4InOut);
   return (

@@ -2,7 +2,7 @@
 foram mesmo ditas dentro do plano. Uso: python3 ferramentas/conferir_palavras.py"""
 import json, re, unicodedata
 T = json.load(open('src/motor/tempos.json'))
-AP = {'claude': ['cloud', 'claud', 'clod'], 'corte': ['curte'], 'ia': ['dia'], 'exporte': ['esporte'], 'cinquenta': ['50'], 'doze': ['12'], 'vinte': ['20'], 'dezessete': ['17'], 'olha': ['olhe'], 'cria': ['crie'], 'corto': ['cordo', 'curto'], 'dez': ['10', 'descortes']}
+AP = {'claude': ['cloud', 'claud', 'clod'], 'corte': ['curte'], 'ia': ['dia'], 'exporte': ['esporte'], 'cinquenta': ['50'], 'doze': ['12'], 'vinte': ['20'], 'dezessete': ['17'], 'olha': ['olhe'], 'cria': ['crie'], 'corto': ['cordo', 'curto'], 'dez': ['10', 'descortes'], 'tres': ['3'], 'instala': ['installa']}
 def limpar(x):
     x = unicodedata.normalize('NFD', x.lower())
     return re.sub('[^a-z0-9]', '', x)

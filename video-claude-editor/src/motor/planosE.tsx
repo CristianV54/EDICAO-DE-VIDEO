@@ -246,9 +246,9 @@ export const PFerramentas: P = ({c}) => {
 
 // ---------- "A regra do jogo é simples: cinco passos, quatro ferramentas e dois jeitos de usar." (3D) ----------
 export const PRegra: P = ({c}) => {
-  const t5 = q(c, 'cinco', 60);
+  const t5 = q(c, 'três', 60);
   const t4 = q(c, 'quatro', t5 + 40);
-  const t2 = q(c, 'dois', t4 + 36);
+  const t2 = q(c, 'pasta', t4 + 36);
   const Bloco: React.FC<{n: string; nome: string; de: number}> = ({n, nome, de}) => {
     const e = mola(c.f, de - 2, {damping: 11});
     return (
@@ -264,7 +264,7 @@ export const PRegra: P = ({c}) => {
       <Etiqueta style={{position: 'absolute', left: 0, right: 0, top: 90, justifyContent: 'center', opacity: ap(c.f, 8) * (1 - rampa(c.f, t5 - 14, t5 - 6))}}>A REGRA DO JOGO</Etiqueta>
       <div style={{position: 'absolute', left: 0, right: 0, bottom: 90, display: 'flex', justifyContent: 'center', gap: 40}}>
         <Bloco n="4" nome="ferramentas" de={t4} />
-        <Bloco n="2" nome="jeitos de usar" de={t2} />
+        <Bloco n="1" nome="pasta" de={t2} />
       </div>
     </AbsoluteFill>
   );

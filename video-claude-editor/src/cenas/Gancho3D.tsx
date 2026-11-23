@@ -367,7 +367,7 @@ const Humano: React.FC = () => {
 };
 
 // ====================== Trecho 4: os cinco passos (uma escada) ======================
-const DEGRAUS = [0, 1, 2, 3, 4].map((i) => ({x: -6 + i * 3, h: (i + 1) * 0.85}));
+const DEGRAUS = [0, 1, 2].map((i) => ({x: -3.4 + i * 3.4, h: (i + 1) * 1.15}));
 
 const Escada: React.FC<{f: number; sobe?: boolean; acesos: number[]}> = ({f, sobe = true, acesos}) => (
   <>
@@ -377,7 +377,7 @@ const Escada: React.FC<{f: number; sobe?: boolean; acesos: number[]}> = ({f, sob
       const cor = new THREE.Color('#15191c').lerp(new THREE.Color('#ea7648'), a).getStyle();
       return (
         <group key={i} position={[d.x, 0, 0]} scale={[1, Math.max(0.001, m), 1]}>
-          <Bloco tam={[2.92, d.h, 3.2]} cor={cor} raio={0.12} posicao={[0, d.h / 2, 0]} emissivo="#d2470f" intensidade={a * 0.45} rugosidade={0.4} />
+          <Bloco tam={[3.3, d.h, 3.2]} cor={cor} raio={0.12} posicao={[0, d.h / 2, 0]} emissivo="#d2470f" intensidade={a * 0.45} rugosidade={0.4} />
           <Texto3D texto={String(i + 1)} tam={0.5} posicao={[0, d.h - 0.43, 1.62]} emissao={0.25 + a * 0.6} prof={0.08} />
         </group>
       );
@@ -392,11 +392,11 @@ export const CincoPassos: React.FC<{atraso?: number; sai?: number}> = ({atraso =
   const q = [0, 40, sai - 27, sai];
   const pos = somar(somar(trilho(f, q, [[-9, 2.2, 10], [-5, 3.4, 10.5], [5.5, 7, 12], [2.5, 6, 16.5]]), [0, -8, 0], c), [10, 0, 0], s);
   const alvo = somar(somar(trilho(f, q, [[-6.5, 1, 0], [-4, 1.6, 0], [4, 3.6, 0], [0.5, 2.4, 0]]), [0, -8, 0], c), [10, 0, 0], s);
-  const pouso = (i: number) => 24 + atraso + i * 17;
-  const pts: [number, number][] = [[-9.2, 0], ...DEGRAUS.map((d) => [d.x, d.h] as [number, number])];
+  const pouso = (i: number) => 24 + atraso + i * 20;
+  const pts: [number, number][] = [[-7, 0], ...DEGRAUS.map((d) => [d.x, d.h] as [number, number])];
   let xM = pts[0][0];
   let yM = 0;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < DEGRAUS.length; i++) {
     const t = rampa(f, pouso(i) - 13, pouso(i), Easing.inOut(Easing.quad));
     if (t > 0) {
       xM = lerp(pts[i][0], pts[i + 1][0], t);
@@ -410,7 +410,7 @@ export const CincoPassos: React.FC<{atraso?: number; sai?: number}> = ({atraso =
         <Escada f={f} acesos={acesos} />
         <Mascote3D posicao={[xM, yM, 0.2]} rotacao={[0, 0.45, 0]} escala={0.85} passo={f * 0.8} />
       </Palco>
-      <Destaque texto="*5 PASSOS" de={14 + atraso} ate={52 + atraso} onde="topo" tam={160} />
+      <Destaque texto="*3 NÍVEIS" de={14 + atraso} ate={52 + atraso} onde="topo" tam={160} />
     </AbsoluteFill>
   );
 };

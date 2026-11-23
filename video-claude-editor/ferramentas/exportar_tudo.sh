@@ -4,7 +4,7 @@
 cd "$(dirname "$0")/.."
 B=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell
 mkdir -p out/cenas
-CENAS=${@:-"Cena01 Cena02 Cena03 Cena04 Cena05 Cena06 Cena07 Cena08 Cena09 Cena10"}
+CENAS=${@:-"Cena01 Cena02 Cena03 Cena04 Cena05 Cena06 Cena07 Cena08"}
 for c in $CENAS; do
   ini=$(date +%s)
   npx remotion render src/index.ts $c out/cenas/$c.mp4 --browser-executable=$B --gl=swangle --concurrency=4 --crf=17 --log=error 2>&1 | tail -3
