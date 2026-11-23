@@ -1,4 +1,4 @@
-# Mapa de animações: cena 1, o gancho (versão 2)
+# Mapa de animações: cena 1, o gancho (versão 3)
 
 Feito depois da crítica do Cristian à versão 1, seguindo o fluxo de edição de Lucas Leite (github.com/LeiteZ/fluxo-de-edicao), que ele indicou. Este arquivo é o plano das animações do gancho. O código está em `src/cenas/Gancho.tsx`.
 
@@ -38,6 +38,23 @@ Tempos em quadros a 30 por segundo, estimados pelo texto. Serão refeitos pelas 
 | mo06 | 555 a 690 | "cortes curtos, vídeos longos e até um canal dark inteiro." | Três objetos em fila, um por vez: um celular na vertical com a legenda trocando, uma tela larga com linha do tempo comprida e agulha andando, e um cartão preto com uma pessoa sem rosto. No terceiro, a luz do ambiente apaga | Para em cada um e dá um passo rápido até o próximo | Os nomes ficam embaixo de cada objeto: CORTES, VÍDEOS LONGOS, CANAL DARK | speed ramp para a direita |
 | mo07 | 690 a 825 | "Com o nome de cada ferramenta e o pedido exato que você escreve." | Cinco caixas com os nomes das ferramentas caem numa prateleira, em cascata, amassando ao bater. Depois sobe uma barra de pedido e o texto é digitado | Aproxima devagar e inclina para baixo abrindo espaço para a barra | Nenhuma: os nomes estão nas caixas e o pedido está na barra | mergulho para frente |
 | mo08 | 825 a 900 | "Passo um." | A escada de volta, só o degrau 1 aceso. A câmera mergulha até o número 1 encher a tela | Mergulho do plano aberto até o degrau | PREPARAR | clarão laranja para a cena 2 |
+
+## Mudanças da versão 3
+
+Crítica do Cristian à versão 2, em 23/11/2026: a curva com losangos não representa animação, o movimento de câmera ainda estava fraco, o microfone ficava tempo demais sozinho, o celular e a tela larga estavam vazios, e o fundo era sempre o mesmo. Ele também pediu que eu resolva esse tipo de coisa sozinho, sem ele precisar apontar.
+
+| Trecho | O que mudou |
+|---|---|
+| mo02b, "animação" | Saiu a curva. Um quadro salta da parede com animação de papel recortado: um boneco pulando, sol girando, nuvens e estrelas. Embaixo, cinco pontos-chave acendem conforme a agulhinha passa |
+| mo02c, "câmera" | Ganhou 15 quadros. A câmera dá uma volta de cerca de 270 graus em torno da parede, sobe, inclina para os dois lados, abre a lente de 40 para 58 graus e fecha de novo, e mostra o verso da parede |
+| mo03 | Ambiente roxo, diferente do estúdio |
+| mo04, "a voz" | Encurtado de 135 para 125 quadros. Um boneco humano de papel fala no microfone, e a voz sai como uma onda viajando para um lado. Depois do clique no botão, outro boneco comemora. Ambiente de estúdio de gravação, com espuma acústica |
+| mo05 e mo08 | Ambiente de céu azul com um sol laranja atrás da escada |
+| mo06 | O celular mostra um vídeo vertical de papel, com corte seco a cada meio segundo e legenda. A tela larga mostra o dia virando noite com o boneco andando e o relógio correndo. O canal dark mostra uma cidade à noite, o narrador sem rosto e a voz em barras. Ambiente rosa |
+| mo07 | Ambiente de oficina, com parede de furos |
+| Abertura | Os clipes já estão chegando no quadro zero, para a tela não abrir vazia |
+
+Regra nova para o resto do vídeo: toda tela que aparecer (celular, monitor, janela) mostra alguma coisa acontecendo dentro, e cada trecho tem o seu ambiente.
 
 ## O que ainda falta e depende de outras fases
 

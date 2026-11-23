@@ -8,17 +8,18 @@ import {Camera} from '../tres/Camera';
 import {Luzes} from '../tres/pecas';
 
 // ---------- O mundo: chão em grade, névoa, painéis ao longe e poeira no ar ----------
-const texturaGrade = (): THREE.CanvasTexture => {
+const texturaGrade = (cor: string): THREE.CanvasTexture => {
   const c = document.createElement('canvas');
   c.width = 256;
   c.height = 256;
   const g = c.getContext('2d')!;
   g.fillStyle = '#000';
   g.fillRect(0, 0, 256, 256);
-  g.strokeStyle = '#2dd4bf';
+  g.strokeStyle = cor;
   g.lineWidth = 5;
   g.strokeRect(0, 0, 256, 256);
-  g.strokeStyle = 'rgba(45,212,191,0.35)';
+  g.strokeStyle = cor;
+  g.globalAlpha = 0.35;
   g.lineWidth = 2;
   g.beginPath();
   g.moveTo(128, 0);
@@ -72,9 +73,67 @@ const PAINEIS: {p: V3; l: number; r: number}[] = [
   {p: [0, 14, 44], l: 22, r: Math.PI},
 ];
 
-export const Mundo: React.FC<{f: number; escuro?: number}> = ({f, escuro = 0}) => {
-  const grade = useMemo(texturaGrade, []);
+// Cada trecho do vídeo tem o seu ambiente, para o fundo não ser sempre o mesmo.
+export type Tema = {grade: string; neblina: string; ceu: string; luzA: string; luzB: string; poeira: string; extra?: 'espuma' | 'furos' | 'sol'};
+export const TEMAS: Record<string, Tema> = {
+  estudio: {grade: '#2dd4bf', neblina: '#04100f', ceu: 'radial-gradient(ellipse at 50% 38%, #0c3b37 0%, #051514 55%, #020807 100%)', luzA: '#2dd4bf', luzB: '#22d3ee', poeira: '#8ff5e6'},
+  cemiterio: {grade: '#a78bfa', neblina: '#090614', ceu: 'radial-gradient(ellipse at 50% 30%, #3b1d6e 0%, #140a2a 55%, #05030b 100%)', luzA: '#a78bfa', luzB: '#f472b6', poeira: '#d8c9ff'},
+  gravacao: {grade: '#fb923c', neblina: '#120904', ceu: 'radial-gradient(ellipse at 50% 35%, #6b2d0c 0%, #24100a 55%, #0a0403 100%)', luzA: '#fb923c', luzB: '#fde68a', poeira: '#ffd9a8', extra: 'espuma'},
+  aurora: {grade: '#38bdf8', neblina: '#050a1c', ceu: 'linear-gradient(180deg, #0b1140 0%, #1d2a78 45%, #b4532a 100%)', luzA: '#38bdf8', luzB: '#fb923c', poeira: '#c7e9ff', extra: 'sol'},
+  vitrine: {grade: '#f472b6', neblina: '#12050d', ceu: 'radial-gradient(ellipse at 50% 35%, #7a1f52 0%, #2a0c1f 55%, #0a0308 100%)', luzA: '#f472b6', luzB: '#60a5fa', poeira: '#ffc9e3'},
+  oficina: {grade: '#60a5fa', neblina: '#040a16', ceu: 'radial-gradient(ellipse at 50% 35%, #173a7a 0%, #0a1630 55%, #03060e 100%)', luzA: '#60a5fa', luzB: '#22d3ee', poeira: '#c9dcff', extra: 'furos'},
+};
+
+const texturaEspuma = (): THREE.CanvasTexture => {
+  const c = document.createElement('canvas');
+  c.width = 128;
+  c.height = 128;
+  const g = c.getContext('2d')!;
+  const tri = (pts: number[], cor: string) => {
+    g.fillStyle = cor;
+    g.beginPath();
+    g.moveTo(pts[0], pts[1]);
+    g.lineTo(pts[2], pts[3]);
+    g.lineTo(pts[4], pts[5]);
+    g.fill();
+  };
+  tri([0, 0, 128, 0, 64, 64], '#5a2a14');
+  tri([128, 0, 128, 128, 64, 64], '#3d1b0c');
+  tri([0, 128, 128, 128, 64, 64], '#2a1208');
+  tri([0, 0, 0, 128, 64, 64], '#4a2210');
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = THREE.RepeatWrapping;
+  t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(34, 12);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+};
+const texturaFuros = (): THREE.CanvasTexture => {
+  const c = document.createElement('canvas');
+  c.width = 64;
+  c.height = 64;
+  const g = c.getContext('2d')!;
+  g.fillStyle = '#0f2a55';
+  g.fillRect(0, 0, 64, 64);
+  g.fillStyle = '#050d1e';
+  g.beginPath();
+  g.arc(32, 32, 9, 0, Math.PI * 2);
+  g.fill();
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = THREE.RepeatWrapping;
+  t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(70, 26);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  return t;
+};
+
+export const Mundo: React.FC<{f: number; escuro?: number; tema?: Tema}> = ({f, escuro = 0, tema = TEMAS.estudio}) => {
+  const grade = useMemo(() => texturaGrade(tema.grade), [tema.grade]);
   const paineis = useMemo(() => PAINEIS.map((_, i) => texturaPainel(i + 1)), []);
+  const espuma = useMemo(() => (tema.extra === 'espuma' ? texturaEspuma() : null), [tema.extra]);
+  const furos = useMemo(() => (tema.extra === 'furos' ? texturaFuros() : null), [tema.extra]);
   const poeira = useMemo(() => {
     const n = 260;
     const pos = new Float32Array(n * 3);
@@ -89,19 +148,45 @@ export const Mundo: React.FC<{f: number; escuro?: number}> = ({f, escuro = 0}) =
   }, []);
   return (
     <>
-      <fog attach="fog" args={['#04100f', 16, 78]} />
+      <fog attach="fog" args={[tema.neblina, 16, 78]} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[280, 280]} />
-        <meshStandardMaterial color="#04100f" roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.55 * (1 - escuro * 0.7)} />
+        <meshStandardMaterial color={tema.neblina} roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.55 * (1 - escuro * 0.7)} />
       </mesh>
-      {PAINEIS.map((pa, i) => (
-        <mesh key={i} position={[pa.p[0], pa.p[1] + Math.sin(f / 70 + i * 2) * 0.6, pa.p[2]]} rotation={[0, pa.r, Math.sin(f / 110 + i) * 0.03]}>
-          <planeGeometry args={[pa.l, pa.l * 0.5625]} />
-          <meshBasicMaterial map={paineis[i]} transparent opacity={0.8 * (1 - escuro * 0.8)} side={THREE.DoubleSide} />
+      {!tema.extra || tema.extra === 'sol'
+        ? PAINEIS.map((pa, i) => (
+            <mesh key={i} position={[pa.p[0], pa.p[1] + Math.sin(f / 70 + i * 2) * 0.6, pa.p[2]]} rotation={[0, pa.r, Math.sin(f / 110 + i) * 0.03]}>
+              <planeGeometry args={[pa.l, pa.l * 0.5625]} />
+              <meshBasicMaterial map={paineis[i]} transparent opacity={(tema.extra === 'sol' ? 0.3 : 0.8) * (1 - escuro * 0.8)} side={THREE.DoubleSide} />
+            </mesh>
+          ))
+        : null}
+      {espuma ? (
+        <mesh position={[6, 11, -8]} receiveShadow>
+          <planeGeometry args={[110, 38]} />
+          <meshStandardMaterial map={espuma} roughness={0.95} />
         </mesh>
-      ))}
+      ) : null}
+      {furos ? (
+        <mesh position={[0, 11, -5]} receiveShadow>
+          <planeGeometry args={[120, 44]} />
+          <meshStandardMaterial map={furos} roughness={0.8} />
+        </mesh>
+      ) : null}
+      {tema.extra === 'sol' ? (
+        <group position={[5, 7, -30]}>
+          <mesh>
+            <circleGeometry args={[11, 64]} />
+            <meshBasicMaterial color="#ff7a3d" fog={false} />
+          </mesh>
+          <mesh position={[0, 0, -0.5]}>
+            <circleGeometry args={[19, 64]} />
+            <meshBasicMaterial color="#ff7a3d" transparent opacity={0.22} fog={false} />
+          </mesh>
+        </group>
+      ) : null}
       <points geometry={poeira} position={[Math.sin(f / 160) * 2, Math.sin(f / 90) * 0.6, f * 0.012]}>
-        <pointsMaterial color="#8ff5e6" size={0.11} sizeAttenuation transparent opacity={0.75} depthWrite={false} />
+        <pointsMaterial color={tema.poeira} size={0.11} sizeAttenuation transparent opacity={0.75} depthWrite={false} />
       </points>
     </>
   );
@@ -116,14 +201,15 @@ export const Palco: React.FC<{
   fov?: number;
   borrao?: number; // desfoque de movimento nas trocas de cena, em px
   escuro?: number; // 0 a 1: apaga o ambiente
+  tema?: Tema;
   children: React.ReactNode;
-}> = ({f, pos, alvo, rolo = 0, fov = 40, borrao = 0, escuro = 0, children}) => (
-  <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 38%, #0c3b37 0%, #051514 55%, #020807 100%)'}}>
+}> = ({f, pos, alvo, rolo = 0, fov = 40, borrao = 0, escuro = 0, tema = TEMAS.estudio, children}) => (
+  <AbsoluteFill style={{background: tema.ceu}}>
     <AbsoluteFill style={{filter: borrao > 0.4 ? `blur(${borrao.toFixed(1)}px)` : undefined, transform: borrao > 0.4 ? `scale(${1 + borrao * 0.004})` : undefined}}>
       <Tela3D>
         <Camera pos={pos} alvo={alvo} fov={fov} rolo={rolo} />
-        <Luzes corA="#2dd4bf" corB="#22d3ee" forcaA={260 * (1 - escuro * 0.75)} forcaB={220 * (1 - escuro * 0.75)} />
-        <Mundo f={f} escuro={escuro} />
+        <Luzes corA={tema.luzA} corB={tema.luzB} forcaA={260 * (1 - escuro * 0.75)} forcaB={220 * (1 - escuro * 0.75)} />
+        <Mundo f={f} escuro={escuro} tema={tema} />
         {children}
       </Tela3D>
     </AbsoluteFill>
