@@ -1,1103 +1,503 @@
 {
  "voz": "pm_alex",
- "duracao": 64.63,
+ "duracao": 29.52,
  "frases": [
   {
-   "txt": "Você escreve:",
+   "txt": "Primeira:",
    "ini": 0.0,
-   "fim": 1.02
+   "fim": 0.74
   },
   {
-   "txt": "\"exporte o vídeo final\".",
-   "ini": 1.24,
-   "fim": 2.76
+   "txt": "aprove a lista antes do corte.",
+   "ini": 0.96,
+   "fim": 2.87
   },
   {
-   "txt": "Eu junto os cortes, as animações e a música, e gero um arquivo pronto para o YouTube.",
-   "ini": 2.98,
-   "fim": 7.62
+   "txt": "É o que faz o vídeo ser seu, e não só meu.",
+   "ini": 3.09,
+   "fim": 5.33
   },
   {
-   "txt": "Depois eu confiro.",
-   "ini": 7.84,
-   "fim": 9.26
+   "txt": "Segunda:",
+   "ini": 5.55,
+   "fim": 6.37
   },
   {
-   "txt": "O tamanho da imagem, a duração, o volume do áudio.",
-   "ini": 9.48,
-   "fim": 12.29
+   "txt": "peça por partes.",
+   "ini": 6.59,
+   "fim": 7.85
   },
   {
-   "txt": "E tiro fotos de vários pontos do vídeo para procurar tela preta, texto cortado ou legenda fora do lugar.",
-   "ini": 12.51,
-   "fim": 18.54
+   "txt": "Primeiro limpar, depois cortar, depois animar.",
+   "ini": 8.07,
+   "fim": 10.83
   },
   {
-   "txt": "Aí vem a parte mais importante do processo inteiro, entende?",
-   "ini": 18.76,
-   "fim": 22.27
+   "txt": "Pedido vago gera corte genérico.",
+   "ini": 11.05,
+   "fim": 13.23
   },
   {
-   "txt": "Você assiste.",
-   "ini": 22.49,
-   "fim": 23.59
+   "txt": "Terceira:",
+   "ini": 13.45,
+   "fim": 14.26
   },
   {
-   "txt": "E me fala o que sentiu.",
-   "ini": 23.81,
-   "fim": 25.27
+   "txt": "assista e me fale o que sentiu.",
+   "ini": 14.48,
+   "fim": 16.33
   },
   {
-   "txt": "\"O começo está lento.\" \"Esta parte ficou confusa.\" \"A música está alta aqui.\" Eu corrijo e exporto de novo.",
-   "ini": 25.49,
-   "fim": 31.26
+   "txt": "\"O começo está lento.\" \"A música está alta aqui.\" Eu corrijo e exporto de novo.",
+   "ini": 16.55,
+   "fim": 20.78
   },
   {
-   "txt": "Foi assim com a abertura deste vídeo.",
-   "ini": 31.48,
-   "fim": 33.73
+   "txt": "Não é papo de coach, tá?",
+   "ini": 21.0,
+   "fim": 22.53
   },
   {
-   "txt": "A cada versão, o Cristian assistiu e disse o que incomodava.",
-   "ini": 33.95,
-   "fim": 37.29
+   "txt": "É por isso que o gosto continua sendo seu.",
+   "ini": 22.75,
+   "fim": 25.18
   },
   {
-   "txt": "A primeira tinha a linha do tempo deitada, de lado.",
-   "ini": 37.51,
-   "fim": 40.18
+   "txt": "E agora, o que eu prometi lá no começo:",
+   "ini": 25.4,
+   "fim": 27.55
   },
   {
-   "txt": "Outra ficou colorida demais.",
-   "ini": 40.4,
-   "fim": 42.23
-  },
-  {
-   "txt": "Mas Claude, por que você não acerta de primeira?",
-   "ini": 42.45,
-   "fim": 45.22
-  },
-  {
-   "txt": "Porque eu não adivinho o seu gosto.",
-   "ini": 45.44,
-   "fim": 47.48
-  },
-  {
-   "txt": "Eu aprendo com o que você me fala.",
-   "ini": 47.7,
-   "fim": 49.63
-  },
-  {
-   "txt": "Quem decide se o vídeo está bom é você.",
-   "ini": 49.85,
-   "fim": 52.22
-  },
-  {
-   "txt": "E como eu já li o vídeo inteiro, eu também entrego o que vai em volta dele:",
-   "ini": 52.44,
-   "fim": 56.73
-  },
-  {
-   "txt": "ideias de título, a descrição e os capítulos com o tempo certo.",
-   "ini": 56.95,
-   "fim": 60.53
-  },
-  {
-   "txt": "Esses são os cinco passos.",
-   "ini": 60.75,
-   "fim": 62.28
-  },
-  {
-   "txt": "Agora, os dois jeitos de usar.",
-   "ini": 62.5,
-   "fim": 64.41
+   "txt": "quanto custa tudo isso.",
+   "ini": 27.77,
+   "fim": 29.3
   }
  ],
  "palavras": [
   {
    "ini": 0.0,
-   "fim": 0.28,
-   "txt": "Você"
+   "fim": 0.62,
+   "txt": "primeiras,"
   },
   {
-   "ini": 0.28,
-   "fim": 0.88,
-   "txt": "escreve,"
+   "ini": 0.9,
+   "fim": 1.06,
+   "txt": "a"
+  },
+  {
+   "ini": 1.06,
+   "fim": 1.26,
+   "txt": "prova"
   },
   {
    "ini": 1.26,
-   "fim": 1.62,
-   "txt": "esporte"
+   "fim": 1.78,
+   "txt": "lista"
   },
   {
-   "ini": 1.62,
-   "fim": 1.84,
-   "txt": "o"
-  },
-  {
-   "ini": 1.84,
+   "ini": 1.78,
    "fim": 2.1,
-   "txt": "vídeo"
+   "txt": "antes"
   },
   {
    "ini": 2.1,
-   "fim": 2.5,
-   "txt": "final."
+   "fim": 2.32,
+   "txt": "do"
   },
   {
-   "ini": 3.02,
-   "fim": 3.1,
-   "txt": "Eu"
+   "ini": 2.32,
+   "fim": 3.04,
+   "txt": "corte."
   },
   {
-   "ini": 3.1,
-   "fim": 3.38,
-   "txt": "junto"
+   "ini": 3.04,
+   "fim": 3.18,
+   "txt": "É"
   },
   {
-   "ini": 3.38,
-   "fim": 3.52,
-   "txt": "os"
+   "ini": 3.18,
+   "fim": 3.26,
+   "txt": "o"
   },
   {
-   "ini": 3.52,
-   "fim": 3.98,
-   "txt": "cortes,"
+   "ini": 3.26,
+   "fim": 3.36,
+   "txt": "que"
   },
   {
-   "ini": 4.14,
+   "ini": 3.36,
+   "fim": 3.58,
+   "txt": "faz"
+  },
+  {
+   "ini": 3.58,
+   "fim": 3.72,
+   "txt": "o"
+  },
+  {
+   "ini": 3.72,
+   "fim": 3.94,
+   "txt": "vídeo"
+  },
+  {
+   "ini": 3.94,
    "fim": 4.18,
-   "txt": "as"
+   "txt": "ser"
   },
   {
    "ini": 4.18,
-   "fim": 4.66,
-   "txt": "animações"
-  },
-  {
-   "ini": 4.66,
-   "fim": 4.86,
-   "txt": "e"
-  },
-  {
-   "ini": 4.86,
-   "fim": 4.96,
-   "txt": "a"
-  },
-  {
-   "ini": 4.96,
-   "fim": 5.24,
-   "txt": "música"
-  },
-  {
-   "ini": 5.24,
-   "fim": 5.72,
-   "txt": "e"
-  },
-  {
-   "ini": 5.72,
-   "fim": 5.92,
-   "txt": "gera"
-  },
-  {
-   "ini": 5.92,
-   "fim": 6.04,
-   "txt": "um"
-  },
-  {
-   "ini": 6.04,
-   "fim": 6.38,
-   "txt": "arquivo"
-  },
-  {
-   "ini": 6.38,
-   "fim": 6.72,
-   "txt": "pronto"
-  },
-  {
-   "ini": 6.72,
-   "fim": 6.98,
-   "txt": "para"
-  },
-  {
-   "ini": 6.98,
-   "fim": 7.04,
-   "txt": "o"
-  },
-  {
-   "ini": 7.04,
-   "fim": 7.36,
-   "txt": "YouTube."
-  },
-  {
-   "ini": 7.8,
-   "fim": 8.22,
-   "txt": "Depois"
-  },
-  {
-   "ini": 8.22,
-   "fim": 8.48,
-   "txt": "é"
-  },
-  {
-   "ini": 8.48,
-   "fim": 8.54,
-   "txt": "o"
-  },
-  {
-   "ini": 8.54,
-   "fim": 9.1,
-   "txt": "confiro,"
-  },
-  {
-   "ini": 9.46,
-   "fim": 9.58,
-   "txt": "o"
-  },
-  {
-   "ini": 9.58,
-   "fim": 9.78,
-   "txt": "tamanho"
-  },
-  {
-   "ini": 9.78,
-   "fim": 9.98,
-   "txt": "da"
-  },
-  {
-   "ini": 9.98,
-   "fim": 10.32,
-   "txt": "imagem,"
-  },
-  {
-   "ini": 10.6,
-   "fim": 10.64,
-   "txt": "a"
-  },
-  {
-   "ini": 10.64,
-   "fim": 11.12,
-   "txt": "duração,"
-  },
-  {
-   "ini": 11.34,
-   "fim": 11.36,
-   "txt": "o"
-  },
-  {
-   "ini": 11.36,
-   "fim": 11.58,
-   "txt": "volume"
-  },
-  {
-   "ini": 11.58,
-   "fim": 11.78,
-   "txt": "do"
-  },
-  {
-   "ini": 11.78,
-   "fim": 12.2,
-   "txt": "áudio."
-  },
-  {
-   "ini": 12.54,
-   "fim": 12.64,
-   "txt": "E"
-  },
-  {
-   "ini": 12.64,
-   "fim": 12.84,
-   "txt": "tiro"
-  },
-  {
-   "ini": 12.84,
-   "fim": 13.18,
-   "txt": "fotos"
-  },
-  {
-   "ini": 13.18,
-   "fim": 13.4,
-   "txt": "de"
-  },
-  {
-   "ini": 13.4,
-   "fim": 13.66,
-   "txt": "vários"
-  },
-  {
-   "ini": 13.66,
-   "fim": 13.96,
-   "txt": "pontos"
-  },
-  {
-   "ini": 13.96,
-   "fim": 14.2,
-   "txt": "do"
-  },
-  {
-   "ini": 14.2,
-   "fim": 14.54,
-   "txt": "vídeo"
-  },
-  {
-   "ini": 14.54,
-   "fim": 14.74,
-   "txt": "para"
-  },
-  {
-   "ini": 14.74,
-   "fim": 15.08,
-   "txt": "procurar"
-  },
-  {
-   "ini": 15.08,
-   "fim": 15.4,
-   "txt": "tela"
-  },
-  {
-   "ini": 15.4,
-   "fim": 15.92,
-   "txt": "preta,"
-  },
-  {
-   "ini": 16.16,
-   "fim": 16.34,
-   "txt": "texto"
-  },
-  {
-   "ini": 16.34,
-   "fim": 16.92,
-   "txt": "cortado"
-  },
-  {
-   "ini": 16.92,
-   "fim": 17.2,
-   "txt": "ou"
-  },
-  {
-   "ini": 17.2,
-   "fim": 17.56,
-   "txt": "legenda"
-  },
-  {
-   "ini": 17.56,
-   "fim": 17.92,
-   "txt": "fora"
-  },
-  {
-   "ini": 17.92,
-   "fim": 18.08,
-   "txt": "do"
-  },
-  {
-   "ini": 18.08,
-   "fim": 18.38,
-   "txt": "lugar."
-  },
-  {
-   "ini": 18.74,
-   "fim": 18.9,
-   "txt": "Aí"
-  },
-  {
-   "ini": 18.9,
-   "fim": 19.12,
-   "txt": "vem"
-  },
-  {
-   "ini": 19.12,
-   "fim": 19.32,
-   "txt": "a"
-  },
-  {
-   "ini": 19.32,
-   "fim": 19.56,
-   "txt": "parte"
-  },
-  {
-   "ini": 19.56,
-   "fim": 19.88,
-   "txt": "mais"
-  },
-  {
-   "ini": 19.88,
-   "fim": 20.42,
-   "txt": "importante"
-  },
-  {
-   "ini": 20.42,
-   "fim": 20.66,
-   "txt": "do"
-  },
-  {
-   "ini": 20.66,
-   "fim": 21.02,
-   "txt": "processo"
-  },
-  {
-   "ini": 21.02,
-   "fim": 21.5,
-   "txt": "inteiro,"
-  },
-  {
-   "ini": 21.58,
-   "fim": 22.1,
-   "txt": "entende."
-  },
-  {
-   "ini": 22.48,
-   "fim": 22.74,
-   "txt": "Você"
-  },
-  {
-   "ini": 22.74,
-   "fim": 23.52,
-   "txt": "assiste"
-  },
-  {
-   "ini": 23.52,
-   "fim": 23.88,
-   "txt": "e"
-  },
-  {
-   "ini": 23.88,
-   "fim": 24.0,
-   "txt": "me"
-  },
-  {
-   "ini": 24.0,
-   "fim": 24.3,
-   "txt": "fala"
-  },
-  {
-   "ini": 24.3,
-   "fim": 24.46,
-   "txt": "o"
-  },
-  {
-   "ini": 24.46,
-   "fim": 24.54,
-   "txt": "que"
-  },
-  {
-   "ini": 24.54,
-   "fim": 25.1,
-   "txt": "sentiu."
-  },
-  {
-   "ini": 25.46,
-   "fim": 25.6,
-   "txt": "O"
-  },
-  {
-   "ini": 25.6,
-   "fim": 25.9,
-   "txt": "começo"
-  },
-  {
-   "ini": 25.9,
-   "fim": 26.14,
-   "txt": "está"
-  },
-  {
-   "ini": 26.14,
-   "fim": 26.5,
-   "txt": "lento,"
-  },
-  {
-   "ini": 26.68,
-   "fim": 26.88,
-   "txt": "esta"
-  },
-  {
-   "ini": 26.88,
-   "fim": 27.12,
-   "txt": "parte"
-  },
-  {
-   "ini": 27.12,
-   "fim": 27.46,
-   "txt": "ficou"
-  },
-  {
-   "ini": 27.46,
-   "fim": 28.02,
-   "txt": "confusa."
-  },
-  {
-   "ini": 28.02,
-   "fim": 28.26,
-   "txt": "A"
-  },
-  {
-   "ini": 28.26,
-   "fim": 28.48,
-   "txt": "música"
-  },
-  {
-   "ini": 28.48,
-   "fim": 28.78,
-   "txt": "está"
-  },
-  {
-   "ini": 28.78,
-   "fim": 29.04,
-   "txt": "alta"
-  },
-  {
-   "ini": 29.04,
-   "fim": 29.32,
-   "txt": "aqui,"
-  },
-  {
-   "ini": 29.58,
-   "fim": 29.7,
-   "txt": "eu"
-  },
-  {
-   "ini": 29.7,
-   "fim": 30.18,
-   "txt": "corrijo"
-  },
-  {
-   "ini": 30.18,
-   "fim": 30.26,
-   "txt": "e"
-  },
-  {
-   "ini": 30.26,
-   "fim": 30.7,
-   "txt": "esporto"
-  },
-  {
-   "ini": 30.7,
-   "fim": 30.82,
-   "txt": "de"
-  },
-  {
-   "ini": 30.82,
-   "fim": 31.1,
-   "txt": "novo."
-  },
-  {
-   "ini": 31.42,
-   "fim": 31.6,
-   "txt": "Foi"
-  },
-  {
-   "ini": 31.6,
-   "fim": 31.96,
-   "txt": "assim"
-  },
-  {
-   "ini": 31.96,
-   "fim": 32.2,
-   "txt": "com"
-  },
-  {
-   "ini": 32.2,
-   "fim": 32.32,
-   "txt": "a"
-  },
-  {
-   "ini": 32.32,
-   "fim": 32.76,
-   "txt": "abertura"
-  },
-  {
-   "ini": 32.76,
-   "fim": 33.06,
-   "txt": "deste"
-  },
-  {
-   "ini": 33.06,
-   "fim": 33.54,
-   "txt": "vídeo."
-  },
-  {
-   "ini": 33.88,
-   "fim": 34.04,
-   "txt": "A"
-  },
-  {
-   "ini": 34.04,
-   "fim": 34.24,
-   "txt": "cada"
-  },
-  {
-   "ini": 34.24,
-   "fim": 34.64,
-   "txt": "versão,"
-  },
-  {
-   "ini": 34.88,
-   "fim": 34.9,
-   "txt": "o"
-  },
-  {
-   "ini": 34.9,
-   "fim": 35.28,
-   "txt": "Cristiano"
-  },
-  {
-   "ini": 35.28,
-   "fim": 35.9,
-   "txt": "assistiu"
-  },
-  {
-   "ini": 35.9,
-   "fim": 36.08,
-   "txt": "e"
-  },
-  {
-   "ini": 36.08,
-   "fim": 36.3,
-   "txt": "disse"
-  },
-  {
-   "ini": 36.3,
-   "fim": 36.46,
-   "txt": "o"
-  },
-  {
-   "ini": 36.46,
-   "fim": 36.54,
-   "txt": "que"
-  },
-  {
-   "ini": 36.54,
-   "fim": 37.16,
-   "txt": "incomodava."
-  },
-  {
-   "ini": 37.5,
-   "fim": 37.58,
-   "txt": "A"
-  },
-  {
-   "ini": 37.58,
-   "fim": 37.9,
-   "txt": "primeira"
-  },
-  {
-   "ini": 37.9,
-   "fim": 38.24,
-   "txt": "tinha"
-  },
-  {
-   "ini": 38.24,
-   "fim": 38.4,
-   "txt": "a"
-  },
-  {
-   "ini": 38.4,
-   "fim": 38.56,
-   "txt": "linha"
-  },
-  {
-   "ini": 38.56,
-   "fim": 38.74,
-   "txt": "do"
-  },
-  {
-   "ini": 38.74,
-   "fim": 38.94,
-   "txt": "tempo"
-  },
-  {
-   "ini": 38.94,
-   "fim": 39.48,
-   "txt": "deitada,"
-  },
-  {
-   "ini": 39.62,
-   "fim": 39.72,
-   "txt": "de"
-  },
-  {
-   "ini": 39.72,
-   "fim": 40.02,
-   "txt": "lado."
-  },
-  {
-   "ini": 40.38,
-   "fim": 40.64,
-   "txt": "Outra"
-  },
-  {
-   "ini": 40.64,
-   "fim": 40.98,
-   "txt": "ficou"
-  },
-  {
-   "ini": 40.98,
-   "fim": 41.56,
-   "txt": "colorida"
-  },
-  {
-   "ini": 41.56,
-   "fim": 41.88,
-   "txt": "demais."
-  },
-  {
-   "ini": 42.44,
-   "fim": 42.62,
-   "txt": "Mas,"
-  },
-  {
-   "ini": 42.76,
-   "fim": 43.16,
-   "txt": "Cláudia,"
-  },
-  {
-   "ini": 43.28,
-   "fim": 43.48,
-   "txt": "porque"
-  },
-  {
-   "ini": 43.48,
-   "fim": 43.76,
-   "txt": "você"
-  },
-  {
-   "ini": 43.76,
-   "fim": 43.94,
-   "txt": "não"
-  },
-  {
-   "ini": 43.94,
-   "fim": 44.4,
-   "txt": "acerta"
-  },
-  {
-   "ini": 44.4,
-   "fim": 44.58,
-   "txt": "de"
-  },
-  {
-   "ini": 44.58,
-   "fim": 45.0,
-   "txt": "primeira."
-  },
-  {
-   "ini": 45.38,
-   "fim": 45.68,
-   "txt": "Porque"
-  },
-  {
-   "ini": 45.68,
-   "fim": 45.86,
-   "txt": "eu"
-  },
-  {
-   "ini": 45.86,
-   "fim": 46.0,
-   "txt": "não"
-  },
-  {
-   "ini": 46.0,
-   "fim": 46.62,
-   "txt": "adivinho"
-  },
-  {
-   "ini": 46.62,
-   "fim": 46.78,
-   "txt": "o"
-  },
-  {
-   "ini": 46.78,
-   "fim": 46.88,
+   "fim": 4.44,
    "txt": "seu"
   },
   {
-   "ini": 46.88,
-   "fim": 47.28,
-   "txt": "gosto."
-  },
-  {
-   "ini": 47.68,
-   "fim": 47.8,
-   "txt": "Eu"
-  },
-  {
-   "ini": 47.8,
-   "fim": 48.3,
-   "txt": "aprendo"
-  },
-  {
-   "ini": 48.3,
-   "fim": 48.5,
-   "txt": "com"
-  },
-  {
-   "ini": 48.5,
-   "fim": 48.6,
-   "txt": "o"
-  },
-  {
-   "ini": 48.6,
-   "fim": 48.68,
-   "txt": "que"
-  },
-  {
-   "ini": 48.68,
-   "fim": 48.96,
-   "txt": "você"
-  },
-  {
-   "ini": 48.96,
-   "fim": 49.14,
-   "txt": "me"
-  },
-  {
-   "ini": 49.14,
-   "fim": 49.46,
-   "txt": "fala."
-  },
-  {
-   "ini": 49.8,
-   "fim": 50.0,
-   "txt": "Quem"
-  },
-  {
-   "ini": 50.0,
-   "fim": 50.44,
-   "txt": "decide"
-  },
-  {
-   "ini": 50.44,
-   "fim": 50.72,
-   "txt": "se"
-  },
-  {
-   "ini": 50.72,
-   "fim": 50.8,
-   "txt": "o"
-  },
-  {
-   "ini": 50.8,
-   "fim": 51.08,
-   "txt": "vídeo"
-  },
-  {
-   "ini": 51.08,
-   "fim": 51.36,
-   "txt": "está"
-  },
-  {
-   "ini": 51.36,
-   "fim": 51.64,
-   "txt": "bom"
-  },
-  {
-   "ini": 51.64,
-   "fim": 51.74,
-   "txt": "é"
-  },
-  {
-   "ini": 51.74,
-   "fim": 52.02,
-   "txt": "você."
-  },
-  {
-   "ini": 52.4,
-   "fim": 52.56,
-   "txt": "E"
-  },
-  {
-   "ini": 52.56,
-   "fim": 52.72,
-   "txt": "como"
-  },
-  {
-   "ini": 52.72,
-   "fim": 52.84,
-   "txt": "eu"
-  },
-  {
-   "ini": 52.84,
-   "fim": 53.02,
-   "txt": "já"
-  },
-  {
-   "ini": 53.02,
-   "fim": 53.12,
-   "txt": "li"
-  },
-  {
-   "ini": 53.12,
-   "fim": 53.2,
-   "txt": "o"
-  },
-  {
-   "ini": 53.2,
-   "fim": 53.44,
-   "txt": "vídeo"
-  },
-  {
-   "ini": 53.44,
-   "fim": 53.9,
-   "txt": "inteiro,"
-  },
-  {
-   "ini": 54.26,
-   "fim": 54.36,
-   "txt": "eu"
-  },
-  {
-   "ini": 54.36,
-   "fim": 54.68,
-   "txt": "também"
-  },
-  {
-   "ini": 54.68,
-   "fim": 55.32,
-   "txt": "entrego"
-  },
-  {
-   "ini": 55.32,
-   "fim": 55.44,
-   "txt": "o"
-  },
-  {
-   "ini": 55.44,
-   "fim": 55.5,
-   "txt": "que"
-  },
-  {
-   "ini": 55.5,
-   "fim": 55.68,
-   "txt": "vai"
-  },
-  {
-   "ini": 55.68,
-   "fim": 55.92,
-   "txt": "em"
-  },
-  {
-   "ini": 55.92,
-   "fim": 56.2,
-   "txt": "volta"
-  },
-  {
-   "ini": 56.2,
-   "fim": 56.6,
-   "txt": "dele."
-  },
-  {
-   "ini": 56.6,
-   "fim": 57.28,
-   "txt": "Ideias"
-  },
-  {
-   "ini": 57.28,
-   "fim": 57.38,
-   "txt": "de"
-  },
-  {
-   "ini": 57.38,
-   "fim": 57.82,
-   "txt": "título,"
-  },
-  {
-   "ini": 58.1,
-   "fim": 58.12,
-   "txt": "a"
-  },
-  {
-   "ini": 58.12,
-   "fim": 58.56,
-   "txt": "descrição"
-  },
-  {
-   "ini": 58.56,
-   "fim": 58.82,
+   "ini": 4.44,
+   "fim": 4.62,
    "txt": "e"
   },
   {
-   "ini": 58.82,
-   "fim": 58.92,
-   "txt": "os"
+   "ini": 4.62,
+   "fim": 4.72,
+   "txt": "não"
   },
   {
-   "ini": 58.92,
-   "fim": 59.44,
-   "txt": "capítulos"
+   "ini": 4.72,
+   "fim": 4.94,
+   "txt": "só"
   },
   {
-   "ini": 59.44,
-   "fim": 59.66,
-   "txt": "com"
+   "ini": 4.94,
+   "fim": 5.18,
+   "txt": "meu."
   },
   {
-   "ini": 59.66,
-   "fim": 59.76,
+   "ini": 5.6,
+   "fim": 6.12,
+   "txt": "Segunda,"
+  },
+  {
+   "ini": 6.54,
+   "fim": 6.86,
+   "txt": "peça"
+  },
+  {
+   "ini": 6.86,
+   "fim": 7.08,
+   "txt": "por"
+  },
+  {
+   "ini": 7.08,
+   "fim": 7.54,
+   "txt": "partes,"
+  },
+  {
+   "ini": 8.0,
+   "fim": 8.42,
+   "txt": "primeiro"
+  },
+  {
+   "ini": 8.42,
+   "fim": 8.86,
+   "txt": "limpar,"
+  },
+  {
+   "ini": 9.04,
+   "fim": 9.22,
+   "txt": "depois"
+  },
+  {
+   "ini": 9.22,
+   "fim": 9.76,
+   "txt": "cortar,"
+  },
+  {
+   "ini": 10.04,
+   "fim": 10.18,
+   "txt": "depois"
+  },
+  {
+   "ini": 10.18,
+   "fim": 10.76,
+   "txt": "animar."
+  },
+  {
+   "ini": 11.02,
+   "fim": 11.44,
+   "txt": "Pedido"
+  },
+  {
+   "ini": 11.44,
+   "fim": 11.84,
+   "txt": "vago"
+  },
+  {
+   "ini": 11.84,
+   "fim": 12.12,
+   "txt": "gera"
+  },
+  {
+   "ini": 12.12,
+   "fim": 12.58,
+   "txt": "corte"
+  },
+  {
+   "ini": 12.58,
+   "fim": 13.1,
+   "txt": "genérico."
+  },
+  {
+   "ini": 13.56,
+   "fim": 14.08,
+   "txt": "Terceira,"
+  },
+  {
+   "ini": 14.6,
+   "fim": 14.98,
+   "txt": "assista"
+  },
+  {
+   "ini": 14.98,
+   "fim": 15.04,
+   "txt": "e"
+  },
+  {
+   "ini": 15.04,
+   "fim": 15.14,
+   "txt": "me"
+  },
+  {
+   "ini": 15.14,
+   "fim": 15.42,
+   "txt": "fale"
+  },
+  {
+   "ini": 15.42,
+   "fim": 15.54,
    "txt": "o"
   },
   {
-   "ini": 59.76,
-   "fim": 59.96,
-   "txt": "tempo"
+   "ini": 15.54,
+   "fim": 15.66,
+   "txt": "que"
   },
   {
-   "ini": 59.96,
-   "fim": 60.36,
-   "txt": "certo."
+   "ini": 15.66,
+   "fim": 16.18,
+   "txt": "sentiu."
   },
   {
-   "ini": 60.74,
-   "fim": 60.98,
-   "txt": "Esses"
+   "ini": 16.56,
+   "fim": 16.66,
+   "txt": "O"
   },
   {
-   "ini": 60.98,
-   "fim": 61.18,
-   "txt": "são"
+   "ini": 16.66,
+   "fim": 16.92,
+   "txt": "começo"
   },
   {
-   "ini": 61.18,
-   "fim": 61.34,
-   "txt": "os"
+   "ini": 16.92,
+   "fim": 17.18,
+   "txt": "está"
   },
   {
-   "ini": 61.34,
-   "fim": 61.58,
-   "txt": "cinco"
+   "ini": 17.18,
+   "fim": 17.56,
+   "txt": "lento,"
   },
   {
-   "ini": 61.58,
-   "fim": 62.22,
-   "txt": "passos."
+   "ini": 17.8,
+   "fim": 17.84,
+   "txt": "a"
   },
   {
-   "ini": 62.46,
-   "fim": 62.72,
-   "txt": "Agora,"
+   "ini": 17.84,
+   "fim": 18.06,
+   "txt": "música"
   },
   {
-   "ini": 62.94,
-   "fim": 63.06,
-   "txt": "os"
+   "ini": 18.06,
+   "fim": 18.34,
+   "txt": "está"
   },
   {
-   "ini": 63.06,
-   "fim": 63.26,
-   "txt": "dois"
+   "ini": 18.34,
+   "fim": 18.56,
+   "txt": "alta"
   },
   {
-   "ini": 63.26,
-   "fim": 63.82,
-   "txt": "jeitos"
+   "ini": 18.56,
+   "fim": 18.86,
+   "txt": "aqui,"
   },
   {
-   "ini": 63.82,
-   "fim": 63.94,
+   "ini": 19.14,
+   "fim": 19.22,
+   "txt": "eu"
+  },
+  {
+   "ini": 19.22,
+   "fim": 19.7,
+   "txt": "corrijo"
+  },
+  {
+   "ini": 19.7,
+   "fim": 19.78,
+   "txt": "e"
+  },
+  {
+   "ini": 19.78,
+   "fim": 20.22,
+   "txt": "exporto"
+  },
+  {
+   "ini": 20.22,
+   "fim": 20.34,
    "txt": "de"
   },
   {
-   "ini": 63.94,
-   "fim": 64.14,
-   "txt": "usar."
+   "ini": 20.34,
+   "fim": 20.62,
+   "txt": "novo."
+  },
+  {
+   "ini": 21.0,
+   "fim": 21.14,
+   "txt": "Não"
+  },
+  {
+   "ini": 21.14,
+   "fim": 21.3,
+   "txt": "é"
+  },
+  {
+   "ini": 21.3,
+   "fim": 21.56,
+   "txt": "papo"
+  },
+  {
+   "ini": 21.56,
+   "fim": 21.7,
+   "txt": "de"
+  },
+  {
+   "ini": 21.7,
+   "fim": 22.22,
+   "txt": "coaxe,"
+  },
+  {
+   "ini": 22.24,
+   "fim": 22.34,
+   "txt": "tá?"
+  },
+  {
+   "ini": 22.74,
+   "fim": 22.84,
+   "txt": "É"
+  },
+  {
+   "ini": 22.84,
+   "fim": 22.98,
+   "txt": "por"
+  },
+  {
+   "ini": 22.98,
+   "fim": 23.2,
+   "txt": "isso"
+  },
+  {
+   "ini": 23.2,
+   "fim": 23.36,
+   "txt": "que"
+  },
+  {
+   "ini": 23.36,
+   "fim": 23.48,
+   "txt": "o"
+  },
+  {
+   "ini": 23.48,
+   "fim": 23.72,
+   "txt": "gosto"
+  },
+  {
+   "ini": 23.72,
+   "fim": 24.34,
+   "txt": "continua"
+  },
+  {
+   "ini": 24.34,
+   "fim": 24.64,
+   "txt": "sendo"
+  },
+  {
+   "ini": 24.64,
+   "fim": 25.02,
+   "txt": "seu."
+  },
+  {
+   "ini": 25.36,
+   "fim": 25.48,
+   "txt": "E"
+  },
+  {
+   "ini": 25.48,
+   "fim": 25.76,
+   "txt": "agora"
+  },
+  {
+   "ini": 25.76,
+   "fim": 25.98,
+   "txt": "o"
+  },
+  {
+   "ini": 25.98,
+   "fim": 26.06,
+   "txt": "que"
+  },
+  {
+   "ini": 26.06,
+   "fim": 26.18,
+   "txt": "eu"
+  },
+  {
+   "ini": 26.18,
+   "fim": 26.72,
+   "txt": "prometi"
+  },
+  {
+   "ini": 26.72,
+   "fim": 26.9,
+   "txt": "lá"
+  },
+  {
+   "ini": 26.9,
+   "fim": 27.0,
+   "txt": "no"
+  },
+  {
+   "ini": 27.0,
+   "fim": 27.38,
+   "txt": "começo?"
+  },
+  {
+   "ini": 27.8,
+   "fim": 27.98,
+   "txt": "Quanto"
+  },
+  {
+   "ini": 27.98,
+   "fim": 28.42,
+   "txt": "custa"
+  },
+  {
+   "ini": 28.42,
+   "fim": 28.66,
+   "txt": "tudo"
+  },
+  {
+   "ini": 28.66,
+   "fim": 29.08,
+   "txt": "isso?"
   }
  ]
 }

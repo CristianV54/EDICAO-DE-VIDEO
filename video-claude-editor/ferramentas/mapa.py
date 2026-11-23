@@ -1,149 +1,243 @@
-"""Gera o MAPA-VIDEO.md: o plano de animações, câmera e som de cada plano, com o tempo de cada fala.
-Uso: python3 ferramentas/mapa.py
-"""
-import json
-T = json.load(open('src/motor/tempos.json'))
-NOMES = {1: 'Gancho', 2: 'Passo 1: Preparar', 3: 'Passo 2: Entender', 4: 'Passo 3: Cortar', 5: 'Passo 4: Animar', 6: 'Passo 5: Finalizar', 7: 'Na prática: cortes', 8: 'Na prática: vídeo inteiro', 9: 'Quanto custa e o que não funciona', 10: 'Fechamento'}
-FRASES = {n: [f['txt'] for f in json.load(open(f'audio/cena{n:02d}_palavras.json'))['frases']] for n in range(1, 11)}
-ABERTURA = {3: 'ENTENDER', 4: 'CORTAR', 5: 'ANIMAR', 6: 'FINALIZAR'}
+"""Gera o MAPA-VIDEO.md: o plano de edição (animação, câmera e som de cada plano), com o tempo de cada fala.
+Uso: python3 ferramentas/mapa.py     Lê audio/cenaNN_palavras.json (a voz-guia do roteiro versão 4)."""
+import json, re
+N = 8
+NOMES = {1: 'Gancho', 2: 'O ambiente', 3: 'Nível 1: Limpar', 4: 'Nível 2: Cortes', 5: 'Nível 3: O vídeo inteiro', 6: 'As três regras', 7: 'A conta', 8: 'Fechamento'}
+D = {n: json.load(open(f'audio/cena{n:02d}_palavras.json')) for n in range(1, N + 1)}
+ABERTURA = {3: ('1', 'LIMPAR'), 4: ('2', 'CORTES'), 5: ('3', 'O VÍDEO INTEIRO')}
 S = 'sem som'
-# cada plano: (primeira frase, última frase, animação, câmera e movimento, som)
+R = 'pronta'      # peça que já existe
+A = 'adaptar'     # peça que existe e muda pouco
+NV = '**nova**'   # peça que precisa ser construída
+# cada plano: (primeira frase, última frase, animação, câmera, som, estado da peça)
 P = {
 1: [
- (0, 0, 'A janela do editor se monta: monitor, painel do Claude e linha do tempo com os clipes chegando. **3D:** o bloco do Claude chega girando por cima, e a janela desfoca atrás', 'Abre colada na linha do tempo e recua', 'Whoosh grave na chegada do bloco. Batida suave em "Claude"'),
- (1, 2, 'Três ícones de programa de edição entram e apagam um a um. Um contador desce de 3 a 0, e o zero acende em laranja na palavra "zero"', 'Aproxima devagar no número', 'Um estalo de desligar no último ícone. Impacto baixo no zero'),
- (3, 3, 'Os ícones afundam. Embaixo do zero a frase entra palavra por palavra: "pessoas abriram um programa de edição"', 'Desce do número para a frase', S),
- (4, 5, 'Volta ao editor. Dois cortes limpos, o trecho ruim fica vermelho e cai. A câmera entra no monitor e a linha laranja se desenha. **3D:** a janela inclina no espaço na palavra "câmera". Fecha com "fui eu"', 'Três movimentos emendados, sem parar: aproxima no corte, entra no monitor, dá a volta na janela', 'Um som de corte em cada corte. Whoosh longo na volta da câmera'),
- (6, 6, '"Você pode fazer o mesmo" em texto grande, com três cartões apagados chegando por trás', 'Deriva lateral', S),
- (7, 7, 'Os cartões acendem na palavra: "a sua voz" (onda sendo gravada), "voz de IA" (onda gerada) e "o que você quer" (pedido digitado). Depois o botão APROVAR, com o cursor chegando em arco e clicando', 'Passa de cartão em cartão e fecha no botão', 'Clique e um som de sucesso no APROVAR. Os cartões entram mudos'),
- (8, 8, 'Uma barra cresce: a parte de "Você" pequena e a do "Claude" grande. "O resto eu faço"', 'Aproxima na barra', S),
- (9, 9, 'Um celular com legenda palavra por palavra entra em "cortes curtos". Uma tela larga com fotos de história entra em "vídeo inteiro"', 'Desliza do celular para a tela larga', 'Um estalo baixo em cada um'),
- (10, 11, 'Quatro cartões com os nomes das ferramentas entram em cascata. Sobe a janela do Claude Code com um pedido sendo digitado. "Fica aí"', 'Desce dos cartões para a janela', 'Um estalo só para a cascata inteira. Três teclas no começo da digitação'),
- (12, 14, 'A marca do Claude entra pulsando no centro. "Fala, galera!" e depois "Claude aqui"', 'Chega de longe e assenta', S),
- (15, 16, '**3D:** a escada de cinco degraus sobe do chão e o mascote sobe pulando. Embaixo entram "4 ferramentas" e "2 jeitos de usar" nas palavras', 'Sobe junto com o mascote, como uma grua', 'Um passo de madeira em cada degrau, bem baixo'),
- (17, 17, '"Quanto custa?" grande, com a interrogação pulsando', 'Aproxima devagar', S),
- (18, 18, '**3D:** a câmera mergulha até o degrau 1. Entra "PREPARAR"', 'Mergulho', 'Whoosh grave no mergulho e batida no título'),
+ (0, 0, 'A janela do editor se monta: monitor, painel do Claude e linha do tempo com os clipes chegando. **3D:** o bloco do Claude chega girando por cima', 'Abre colada na linha do tempo e recua', 'Whoosh grave na chegada do bloco. Batida suave em "Claude"', R),
+ (1, 3, 'Três ícones de programa de edição apagam um a um, o contador desce de 3 a 0 e o zero acende na palavra. Depois o zero sobe e a frase "pessoas abriram um programa de edição" entra palavra por palavra', 'Aproxima no número e desce para a frase', 'Um estalo de desligar. Impacto baixo no zero', R),
+ (4, 5, 'Volta ao editor: dois cortes, o trecho ruim fica vermelho e cai, a câmera entra no monitor e a linha se desenha. **3D:** a janela inclina no espaço em "câmera". Fecha com "fui eu" grande', 'Três movimentos emendados: aproxima no corte, entra no monitor, dá a volta na janela', 'Um som de corte em cada corte. Whoosh longo na volta', R),
+ (6, 7, '"Você pode fazer o mesmo" sobe para o topo. Três cartões acendem na palavra: a sua voz, voz de IA, o que você quer. O cursor chega em arco e clica em APROVAR', 'Passa de cartão em cartão e fecha no botão', 'Clique e sucesso no APROVAR', R),
+ (8, 8, 'A barra "Você / Claude" cresce. "O resto eu faço"', 'Aproxima na barra', S, R),
+ (9, 10, 'Três cartões de nível sobem em escada, cada um com o número e a meta: 1 Limpar "20:00 vira 12:00", 2 Cortes "1 vídeo, 10 cortes", 3 Vídeo inteiro "do bruto ao pronto". Em "o pedido que você escreve" uma linha de pedido é digitada embaixo', 'Sobe junto com os cartões, do 1 ao 3', 'Um estalo de madeira por cartão (3). Três teclas no pedido', NV),
+ (11, 11, '"Fica aí" entra carimbado no canto, com os três cartões ainda na tela', 'Soco curto de zoom', S, NV),
+ (12, 14, 'A marca do Claude entra pulsando. "Fala, galera!" e depois "Claude aqui"', 'Chega de longe e assenta', S, R),
+ (15, 16, '**3D:** a escada agora tem três degraus. Ela sobe do chão e o mascote sobe pulando nos três. Embaixo entram "4 ferramentas" e "1 pasta" nas palavras', 'Sobe junto com o mascote, como uma grua', 'Um passo de madeira em cada degrau (3), bem baixo', A),
+ (17, 17, '"Antes do fim: quanto custa?" palavra por palavra', 'Aproxima devagar', S, R),
+ (18, 18, 'A escada desce para fora do quadro e sobra o chão: nele nasce uma pasta, com a etiqueta "O AMBIENTE"', 'Mergulho até a pasta', 'Whoosh grave no mergulho', NV),
 ],
 2: [
- (0, 3, 'Duas janelas lado a lado. À esquerda o chat: entra a pergunta, entra a resposta em linhas de texto. Em "Claude Code" a janela da direita acende, com os arquivos de uma pasta aparecendo um a um, e a da esquerda apaga', 'Começa no chat e desliza para a janela da direita', 'Um estalo baixo quando a janela do Claude Code acende'),
- (4, 6, 'Janela do Claude Code "dentro de uma pasta do seu computador". Três linhas acendem nas palavras: abrindo arquivos, instalando programas, executando comandos. Em "ordens escritas" uma linha de comando é digitada embaixo', 'Aproximação lenta, descendo linha por linha', 'Um tique baixo em cada linha (3)'),
- (7, 7, '"Você pede, eu faço" em texto grande', 'Soco curto de zoom em "faço"', 'Batida suave em "faço"'),
- (8, 9, '"Três movimentos" com três marcadores numerados acendendo. "Se liga"', 'Sobe e assenta', S),
- (10, 12, 'Cartão 01: "Instale o aplicativo do Claude, abra a aba Code". Entra o selo "plano pago" e uma seta para a descrição', 'Aproxima no cartão e desliza para o selo', 'Um estalo na entrada do cartão'),
- (13, 15, 'Área de trabalho: a pasta "meus-videos" nasce, o cursor arrasta três arquivos para dentro e a pasta acende. Em "Bruto é a gravação crua" entra a legenda explicando', 'Acompanha o cursor até a pasta', 'Um som de gaveta quando os arquivos entram'),
- (16, 18, 'Janela do Claude Code com o pedido sendo digitado: "prepare esta pasta para edição de vídeo"', 'Aproxima na linha digitada', 'Três teclas no começo'),
- (19, 21, '"Daqui eu assumo". Linhas acendem nas palavras: instalando Whisper, auto-editor, FFmpeg, Remotion, e por fim dividindo a pasta', 'Desce pelas linhas', 'Um som de sucesso só no fim da lista'),
- (22, 23, 'A pasta por dentro: três pastas nascem nas palavras bruto, trabalho e pronto. Em "nenhuma ferramenta à mão" um aviso "tudo instalado por mim"', 'Deriva da esquerda para a direita pelas três pastas', 'Um estalo baixo em cada pasta (3)'),
- (24, 25, 'Objeção em texto grande: "Mas Claude, e se você estragar o meu vídeo?". Resposta embaixo: "não estraga"', 'Soco de zoom na pergunta', S),
- (26, 28, 'O cadeado fecha na pasta bruto. Dois arquivos novos de corte aparecem na pasta trabalho. Uma seta de "pedir de novo" gira', 'Aproxima no cadeado, depois vai para os arquivos novos', 'Um som de trava no cadeado'),
- (29, 31, 'As quatro ferramentas em cartões, cada uma ganhando o selo "grátis". Um quinto cartão com interrogação: "o que custa dinheiro: no fim"', 'Percorre os cartões e para na interrogação', 'Um estalo para a cascata dos selos'),
- (32, 34, '"Eu ainda não sei o que tem dentro do seu vídeo", palavra por palavra. Embaixo: "é isso que o passo 2 resolve"', 'Aproximação lenta', 'Subida de ar bem baixa no fim, levando para a escada'),
+ (0, 2, 'Duas janelas lado a lado. No chat entram a pergunta e a resposta em texto. Em "Claude Code" a janela da direita acende com os arquivos da pasta, e a do chat apaga', 'Começa no chat e desliza para a direita', 'Um estalo baixo quando o Claude Code acende', R),
+ (3, 4, 'Janela "dentro de uma pasta do seu computador". "Não é mágica" entra como primeira linha, e depois as linhas acendem nas palavras: abrindo arquivos, instalando programas, executando comandos, ordens escritas', 'Aproximação lenta, descendo linha por linha', 'Um tique baixo por linha (3)', R),
+ (5, 5, '"Você pede, eu faço" em texto grande', 'Soco curto de zoom em "faço"', 'Batida suave em "faço"', R),
+ (6, 7, '"Três movimentos" com três marcadores acendendo: instalar, criar a pasta, pedir', 'Sobe e assenta', S, R),
+ (8, 10, 'Cartão 01: "Instale o aplicativo do Claude, abra a aba Code". Entra o cartão "planos pagos" com a seta para a descrição', 'Vai de um cartão ao outro', 'Um estalo de madeira no primeiro cartão', R),
+ (11, 13, 'Área de trabalho: a pasta "meus-videos" nasce, o cursor arrasta três arquivos para dentro e a pasta acende. Entra a legenda "bruto = a gravação crua"', 'Acompanha o cursor até a pasta', 'Um som de gaveta quando os arquivos entram', R),
+ (14, 16, 'Janela do Claude Code: "pasta escolhida: meus-videos" e o pedido "prepare esta pasta para edição de vídeo" sendo digitado', 'Aproxima na linha digitada', 'Três teclas no começo', R),
+ (17, 18, '"Pronto" e as linhas acendendo: instalando Whisper, auto-editor, FFmpeg, Remotion, dividindo a pasta em três', 'Desce pelas linhas', 'Um sucesso baixo no fim da lista', R),
+ (19, 20, 'A pasta por dentro: bruto, trabalho e pronto nascem nas palavras. Embaixo: "nada instalado à mão"', 'Deriva da esquerda para a direita pelas três pastas', 'Um estalo baixo por pasta (3)', R),
+ (21, 22, 'Objeção: "Mas Claude, e se você estragar o meu vídeo?". Resposta: "não estraga"', 'Vai da pergunta para a resposta', S, R),
+ (23, 25, 'O cadeado fecha na pasta bruto. Dois arquivos novos aparecem na pasta trabalho. A seta de "é só pedir de novo" gira', 'Vai do cadeado para os arquivos novos e para a seta', 'Um som de trava no cadeado', R),
+ (26, 27, '"Ambiente montado" com um visto. Depois "só que tem um problema"', 'Aproxima devagar', S, NV),
+ (28, 29, '"Eu ainda não sei o que tem dentro do seu vídeo", palavra por palavra, com um arquivo de vídeo fechado e uma interrogação pulsando dentro. Embaixo: "o nível 1 começa resolvendo"', 'Aproximação lenta no arquivo', 'Subida de ar bem baixa, levando para a escada', A),
 ],
 3: [
- (0, 2, '"Eu não assisto. Eu leio." A palavra "leio" acende', 'Soco de zoom em "leio"', 'Batida suave em "leio"'),
- (3, 5, 'Whisper: uma onda de áudio comprida. Uma agulha varre a onda, a parte lida fica laranja, as palavras caem embaixo uma a uma, e cada uma ganha o seu tempo', 'Segue a agulha da esquerda para a direita', 'Um deslize baixo quando a varredura começa. As palavras caem mudas'),
- (6, 9, 'Janela do Claude Code: o pedido "transcreva este vídeo palavra por palavra" é digitado. Linha "1 hora de vídeo virou texto" e depois "lido em segundos"', 'Aproxima na digitação e desce para o resultado', 'Três teclas. Um sucesso baixo no resultado'),
- (10, 11, 'Analogia: uma tira de filme comprida de um lado e, do outro, uma página de legenda com uma linha marcada. Uma seta leva da linha marcada direto ao quadro certo do filme', 'Vai da legenda até o quadro do filme', S),
- (12, 16, 'O vídeo inteiro em texto. Cada tipo de trecho é marcado na sua fala: erro riscado em vermelho, silêncio de 5 s, trecho bom sublinhado, frase forte em laranja', 'Desce pelo texto parando em cada marcação', 'Um som curto por marcação (4), baixos e diferentes entre si'),
- (17, 17, 'Uma tira de quadros do vídeo. Três riscos de luz batem em pontos diferentes e três fotos saltam para fora', 'Corre pela tira e recua para mostrar as fotos', 'Um obturador de câmera na primeira foto só'),
- (18, 19, 'O mapa: o mesmo texto já todo marcado. A legenda entra nas palavras: o que sai, o que fica, os melhores momentos', 'Recua para mostrar o mapa inteiro', S),
- (20, 20, 'Um arquivo vira cinquenta: os arquivos se multiplicam numa grade. "O pedido é o mesmo"', 'Recua enquanto a grade cresce', 'Um tique baixo no começo da multiplicação'),
- (21, 21, '"Cortar vira a parte fácil"', 'Aproximação lenta', S),
+ (0, 3, 'Cartão grande "NÍVEL 1 · LIMPAR". Embaixo a meta: o contador 20:00 desce para 12:00 e acende, com a barra encolhendo junto', 'Chega no cartão e desce para o contador', 'Batida suave quando vira 12:00', NV),
+ (4, 6, '"O segredo de tudo" e depois "Eu não assisto. Eu leio."', 'Soco de zoom em "leio"', 'Batida suave em "leio"', R),
+ (7, 7, 'Whisper: a onda de áudio comprida, com os selos "grátis" e "roda no seu computador" entrando nas palavras. A agulha varre, a parte lida fica laranja, as palavras caem embaixo e cada uma ganha o seu tempo', 'Segue a agulha da esquerda para a direita', 'Um deslize baixo no começo da varredura', R),
+ (8, 9, 'Janela do Claude Code: "transcreva este vídeo palavra por palavra" é digitado', 'Aproxima na digitação', 'Três teclas no começo', R),
+ (10, 11, 'Analogia: a tira do filme inteiro em cima e a página da legenda embaixo. Uma seta leva da linha marcada ao quadro certo', 'Vai da legenda até o quadro do filme', S, R),
+ (12, 12, 'O vídeo em texto, com três marcações entrando nas falas: o erro riscado, o silêncio de 5 s, a frase forte em laranja', 'Desce pelo texto parando em cada marcação', 'Um som curto por marcação (3), diferentes entre si', R),
+ (13, 13, 'Dois cartões: auto-editor (tira o silêncio) e FFmpeg (corta e junta)', 'Chega e assenta', 'Um estalo de madeira para os dois', R),
+ (14, 16, 'auto-editor: a faixa de áudio com fala e silêncio. O medidor varre, cada silêncio fica vermelho com o nome dele (a pausa, a respiração, o tempo morto) e some. A fala se junta', 'Segue o medidor e recua quando a faixa encolhe', 'Um deslize baixo quando os silêncios somem', R),
+ (17, 20, 'FFmpeg: um terminal. Cada comando aparece na palavra: corta, junta, muda. Em "quem escreve sou eu" a marca do Claude aparece ao lado do cursor', 'Desce comando por comando', 'Uma tecla por comando (3)', R),
+ (21, 22, 'Janela do Claude Code: o pedido dos silêncios é digitado e fica parado para o print', 'Aproxima na digitação e recua para o pedido inteiro', 'Três teclas no começo', R),
+ (23, 24, 'A lista de cortes: cada linha entra na fala, com o tempo e o motivo. O cursor clica em APROVAR e as linhas ganham o visto', 'Desce pela lista e fecha no botão', 'Clique e sucesso no APROVAR', R),
+ (25, 25, 'Palavras em caixas, cada uma com o seu tempo. Elas se afastam e um risco de luz corta no vão. Um risco vermelho tenta cortar no meio de uma palavra e some', 'Aproxima no vão', 'Um som de corte no risco de luz', R),
+ (26, 27, 'Objeção: "Mas Claude, e se eu gosto de editar do meu jeito?". Resposta: "fica à vontade"', 'Vai da pergunta para a resposta', S, R),
+ (28, 28, 'A linha do tempo já cortada. Dela descem cinco etiquetas: Premiere, DaVinci Resolve, Final Cut, Shotcut, Kdenlive', 'Desce da linha do tempo para as etiquetas', 'Um estalo para a cascata', R),
+ (29, 29, 'Selo "META BATIDA" carimba em cima do cartão do nível 1, com 12:00 aceso', 'Soco de zoom no carimbo', 'Um sucesso baixo no carimbo', NV),
+ (30, 31, '"A parte mais chata": a barra de "você, ouvindo tudo de novo" enche devagar e é trocada pela do Claude, pronta. "Deixou de ser sua"', 'Aproximação lenta', S, R),
+ (32, 33, '"Limpo ainda não é bom". Embaixo: "bora para o nível 2"', 'Aproximação lenta', 'Subida de ar bem baixa, levando para a escada', R),
 ],
 4: [
- (0, 0, 'Dois cartões grandes: auto-editor (tira o silêncio) e FFmpeg (corta e junta)', 'Chega e assenta', 'Um estalo de madeira para os dois'),
- (1, 4, 'auto-editor: uma faixa de áudio com blocos de fala e de silêncio. O medidor de volume varre, e cada silêncio fica vermelho com o nome dele na palavra: a pausa, a respiração, o tempo morto. Em "some tudo" os silêncios somem e a fala se junta', 'Segue o medidor, depois recua quando a faixa encolhe', 'Um deslize baixo em "some tudo". O resto mudo'),
- (5, 8, 'FFmpeg: um terminal. Cada comando aparece na palavra: corta o vídeo, junta trechos, muda o formato. Em "quem escreve sou eu" a marca do Claude aparece ao lado do cursor', 'Desce comando por comando', 'Uma tecla no começo de cada comando (3)'),
- (9, 10, 'Janela do Claude Code: o pedido "Tire os silêncios e os erros deste vídeo, mas me mostre a lista de cortes antes de cortar" é digitado e fica parado para o print', 'Aproxima na digitação e recua para o pedido inteiro', 'Três teclas no começo'),
- (11, 13, 'A lista de cortes: cada linha entra na fala, com o tempo e o motivo. O cursor chega, clica em APROVAR, e todas as linhas ganham o visto', 'Desce pela lista e fecha no botão', 'Clique e sucesso no APROVAR'),
- (14, 14, 'Palavras em caixas, cada uma com o seu tempo. Elas se afastam e um risco de luz corta no vão. Depois um risco vermelho tenta cortar no meio de uma palavra e some: "não no meio"', 'Aproxima no vão entre as palavras', 'Um som de corte no risco de luz'),
- (15, 17, 'Contador gigante: 20:00 desce para 12:00 e acende em laranja. A barra embaixo encolhe junto. "Sem arrastar nada"', 'Soco de zoom quando o número vira', 'Batida suave quando vira 12:00'),
- (18, 19, 'A linha do tempo já cortada. Dela descem cinco etiquetas: Premiere, DaVinci Resolve, Final Cut, Shotcut, Kdenlive', 'Desce da linha do tempo para as etiquetas', 'Um estalo para a cascata das etiquetas'),
- (20, 22, 'Confissão: a miniatura real da primeira versão da abertura, com um risco vermelho. Ao lado, quatro cartões com interrogação e a etiqueta "passo 5"', 'Aproxima na miniatura, depois desliza para as interrogações', 'Um obturador baixo na miniatura'),
- (23, 23, 'Botão "INSCREVA-SE"', 'Chega com quique', S),
- (24, 26, '"Limpo não é o mesmo que bom de assistir". Embaixo: "falta o que você está vendo agora"', 'Aproximação lenta', 'Subida de ar bem baixa no fim, levando para a escada'),
+ (0, 3, 'Cartão grande "NÍVEL 2 · CORTES". Embaixo a meta: um vídeo comprido vira dez retângulos verticais pequenos, com "1 vídeo, 10 cortes"', 'Chega no cartão e desce para a meta', 'Batida suave em "dez"', NV),
+ (4, 4, 'Três cartões entram nas palavras: um podcast, uma aula, uma live', 'Passa pelos três', S, R),
+ (5, 6, 'Janela do Claude Code: o pedido dos dez cortes é digitado e fica parado para o print', 'Aproxima na digitação e recua', 'Três teclas no começo', R),
+ (6, 7, 'A partir de "eu leio": a onda do vídeo longo em cima, dez trechos acendem, e dez celulares descem em cascata, cada um com legenda passando dentro. "Dez cortes, uma frase"', 'Desce da onda para os celulares e corre pela fileira', 'Um som de corte no primeiro trecho. Um deslize para a cascata', R),
+ (8, 10, '"E a legenda, quem faz?" Um celular grande com a legenda apagada. Em "Remotion" o nome entra grande com o selo "grátis até 3 pessoas", e a legenda do celular acende palavra por palavra', 'Vai do celular para o nome e volta', 'Um som de revelação baixo no nome', NV),
+ (11, 12, 'Analogia: o cartão da receita ao lado do mesmo texto em código. As linhas acendem em par', 'Vai da receita para o código', S, R),
+ (13, 13, 'Uma linha de código "palavra.acende(tempo)" e, embaixo, uma legenda de verdade em que cada palavra acende no tempo marcado, com o relógio de cada uma', 'Aproxima na palavra que está acendendo', 'Um tique baixo na primeira palavra', NV),
+ (14, 15, 'Objeção: "Mas Claude, e se você escolher o trecho errado?". Resposta: "por isso a dica"', 'Vai da pergunta para a resposta', S, R),
+ (16, 17, 'Três celulares, cada um com um bilhete do motivo: começo forte, história completa, frase de efeito. Embaixo: "você aprova antes do arquivo final"', 'Aproxima num bilhete e recua', S, R),
+ (18, 19, 'Selo "META BATIDA" no cartão do nível 2. Atrás, o vídeo longo se parte em dez peças', 'Soco de zoom no carimbo', 'Um sucesso baixo no carimbo', NV),
+ (20, 21, '"Agora o nível 3". O quadro congela e as bordas de cada elemento da tela acendem: "foi o que eu fiz com este vídeo"', 'Recua para mostrar a tela inteira', 'Subida de ar bem baixa, levando para a escada', NV),
 ],
 5: [
- (0, 1, '"Tudo que se mexe é código". Em cada palavra seguinte, um elemento deste vídeo passa pela tela: o mascote, uma linha do tempo, um quadro inclinando', 'Deriva acompanhando os elementos', S),
- (2, 3, 'Analogia: um cartão de receita com três linhas ("1. entra o título", "2. cresce", "3. a câmera chega") e, ao lado, o mesmo texto em formato de código. As linhas acendem em par', 'Vai da receita para o código', S),
- (4, 5, '"Remotion" grande, e embaixo "transforma código em vídeo"', 'Soco de zoom no nome', 'Um som de revelação baixo'),
- (6, 7, 'Um mouse arrastando um título some. Entra a janela com três linhas escritas nas palavras: o título entra no segundo 3, o título cresce, a câmera se aproxima. Ao lado, um mini quadro faz o que cada linha diz', 'Desce linha por linha', 'Uma tecla por linha (3)'),
- (8, 8, 'Nove quadros numerados se preenchem um a um e viram uma barra completa: "código vira vídeo"', 'Corre pelos quadros', S),
- (9, 10, 'Janela do Claude Code: o pedido da legenda é digitado e fica parado para o print. Em "olha a prova" a janela desliza para o lado', 'Aproxima na digitação e recua', 'Três teclas no começo'),
- (11, 13, 'Código de um lado, o vídeo do outro. Em "mudo um número" o valor muda no código, a linha acende, e a marca do Claude desliza para o lugar novo', 'Vai do código para o vídeo junto com a mudança', 'Uma tecla no número. Um deslize baixo na marca'),
- (14, 17, 'Três cartões, um por fala: legendas palavra por palavra (com uma legenda de verdade passando dentro), textos e gráficos (um gráfico crescendo), mudanças em uma frase', 'Passa de cartão em cartão', 'Um estalo de madeira por cartão (3)'),
- (18, 20, 'Dois balões de pedido: "não gostei da cor", "quero a legenda maior". Em "refaço" a miniatura ao lado troca de cor e a legenda cresce', 'Vai dos balões para a miniatura', 'Um sucesso baixo quando a miniatura muda'),
- (21, 23, 'Objeção: "Mas Claude, eu não sei programar". Resposta: "não precisa: você descreve o que quer ver"', 'Soco de zoom na pergunta', S),
- (24, 24, 'Um pedido vago ao lado de um pedido claro. O claro acende e o resultado dele fica nítido, o do vago fica borrado', 'Desliza do vago para o claro', S),
- (25, 26, '"Da pasta para o mundo": a pasta se abre e o vídeo sai dela', 'Sobe junto com o vídeo', 'Subida de ar bem baixa, levando para a escada'),
+ (0, 3, 'Cartão grande "NÍVEL 3 · O VÍDEO INTEIRO". Embaixo a meta: uma seta leva de "bruto" a "pronto", passando por cortes e animação', 'Chega no cartão e segue a seta', 'Batida suave em "pronto"', NV),
+ (4, 4, 'Arquivos de gravação bagunçados caem na pasta, alguns com a marca "erro"', 'Deriva sobre os arquivos', S, R),
+ (5, 6, 'Janela do Claude Code: o pedido de juntar as gravações é digitado. Depois a linha "transformando tudo em texto"', 'Aproxima na digitação e recua', 'Três teclas no começo', R),
+ (7, 7, 'A mesma frase três vezes. Os dois primeiros takes são riscados e o terceiro acende', 'Desce pelos takes e fecha no escolhido', 'Um som de corte nos riscos. Um brilho baixo no escolhido', R),
+ (8, 8, 'A lista de cortes entra, com as três linhas', 'Desce pela lista', 'Um estalo de madeira', R),
+ (9, 11, '"Tudo que se mexe é código". Em cada palavra um elemento deste vídeo passa: o personagem, a linha do tempo, o quadro inclinando', 'Deriva acompanhando os elementos', S, R),
+ (12, 13, 'Janela do Claude Code: o pedido do título é digitado. Ao lado, um mini quadro faz o que o pedido diz: o título entra e a câmera aproxima', 'Vai da digitação para o mini quadro', 'Três teclas no começo', A),
+ (13, 15, 'A partir de "olha a prova": o código da abertura de um lado e ela rodando do outro. Em "mudo um número" o valor muda, a linha acende e a marca do Claude desliza para o lugar novo', 'Vai do código para o vídeo junto com a mudança', 'Uma tecla no número. Um deslize baixo na marca', R),
+ (16, 18, 'Janela: "exporte o vídeo final". Três camadas enchem nas palavras (cortes, animações, música), a barra vai a 100% e o arquivo aparece', 'Aproxima na digitação e segue a barra', 'Três teclas. Um sucesso baixo nos 100%', R),
+ (19, 19, 'Uma tira de quadros é varrida, um quadro preto fica vermelho, e as três coisas procuradas entram como etiquetas: tela preta, texto cortado, legenda fora do lugar', 'Corre pela tira', 'Um obturador baixo. Um som de desligar no quadro preto', A),
+ (20, 21, 'Objeção: "Mas Claude, e se a primeira versão sair ruim?". Resposta: "pode sair"', 'Vai da pergunta para a resposta', S, R),
+ (22, 25, 'As miniaturas reais das aberturas deste vídeo. A primeira entra grande e ganha o risco em "ficou ruim". Em "o Cristian" entra a etiqueta "assistiu e disse o que incomodava". Em "deitada" e em "colorida" cada uma ganha o rótulo. A atual acende no fim', 'Aproxima em cada miniatura quando ela é citada', 'Um obturador baixo na primeira', R),
+ (26, 26, 'Três cartões nas palavras: título, descrição, capítulos com o tempo certo', 'Passa pelos três', 'Um estalo de madeira para a cascata', R),
+ (27, 28, '**3D:** a escada de três degraus inteira acesa, com o mascote no topo. Em "três regras" entram três marcadores vazios embaixo', 'Recua mostrando a escada toda', 'Whoosh longo, baixo', A),
 ],
 6: [
- (0, 1, 'Janela do Claude Code: "exporte o vídeo final" é digitado', 'Aproxima na digitação', 'Três teclas'),
- (2, 2, 'Três camadas enchem nas palavras: cortes, animações, música. A barra de exportação vai a 100% e o arquivo final aparece', 'Segue a barra enchendo', 'Um sucesso baixo nos 100%'),
- (3, 5, 'Três cartões de conferência acendem na fala: tamanho da imagem, duração, volume. Depois uma tira de quadros é varrida, um quadro preto fica vermelho, e as três coisas procuradas entram como etiquetas', 'Passa pelos cartões, depois corre pela tira', 'Um tique por cartão (3). Um som de desligar no quadro preto'),
- (6, 8, '"Você assiste", com a etiqueta "a parte mais importante". Embaixo: "e me fala o que sentiu"', 'Soco de zoom em "assiste"', 'Batida suave em "assiste"'),
- (9, 9, 'Três balões entram nas falas: "o começo está lento", "esta parte ficou confusa", "a música está alta aqui". Em "corrijo" cada um ganha "corrigido"', 'Desce pelos balões', 'Um estalo baixo por balão (3)'),
- (10, 13, 'As miniaturas reais das aberturas deste vídeo. Entram em "a cada versão". Em "deitada" a primeira ganha o rótulo, em "colorida" a outra ganha o dela. A atual acende no fim', 'Aproxima em cada miniatura quando ela é citada', 'Um obturador baixo na primeira'),
- (14, 16, 'Objeção: "Mas Claude, por que você não acerta de primeira?". Resposta: "eu não adivinho. Eu aprendo."', 'Soco de zoom na pergunta', S),
- (17, 17, '"Quem decide é você"', 'Aproximação lenta', S),
- (18, 19, 'Três cartões: ideias de título, descrição, capítulos com o tempo certo', 'Passa pelos três', 'Um estalo de madeira para a cascata'),
- (20, 21, '**3D:** a escada inteira acesa, com o mascote no topo', 'Recua mostrando a escada toda', 'Whoosh longo, baixo'),
+ (0, 2, 'Cartão 1 com a palavra grande "APROVE". Embaixo, a lista de cortes pequena ganhando o visto. Depois "o vídeo é seu, não só meu"', 'Chega no número e desce para a palavra', 'Um estalo de madeira no cartão', NV),
+ (3, 6, 'Cartão 2: "PEÇA POR PARTES". Três blocos acendem em fila nas palavras: limpar, cortar, animar. Em "pedido vago" um bloco borrado aparece ao lado e apaga', 'Corre pela fila dos três blocos', 'Um estalo de madeira no cartão', NV),
+ (7, 9, 'Cartão 3: "ASSISTA". Dois balões entram nas falas: "o começo está lento", "a música está alta aqui". Em "corrijo" cada um ganha "corrigido"', 'Desce pelos balões', 'Um estalo de madeira no cartão. Um sucesso baixo em "corrijo"', NV),
+ (10, 11, 'Os três cartões juntos, pequenos. No centro: "o gosto continua sendo seu"', 'Recua para os três e aproxima na frase', S, NV),
+ (12, 13, '"Quanto custa tudo isso?" com a interrogação pulsando', 'Soco de zoom em "custa"', S, R),
 ],
 7: [
- (0, 2, '"Cortes", com a etiqueta "primeiro jeito". Embaixo entram na fala: podcast, aula, live', 'Chega e assenta', 'Batida suave em "cortes"'),
- (3, 4, 'Janela do Claude Code: o pedido dos dez cortes é digitado e fica parado para o print', 'Aproxima na digitação e recua para o pedido inteiro', 'Três teclas no começo'),
- (4, 6, 'A partir de "eu leio": a onda do vídeo longo em cima, dez trechos acendem em laranja, e dez celulares descem em cascata, cada um com legenda passando dentro', 'Desce da onda para os celulares e corre pela fileira', 'Um som de corte no primeiro trecho. Um deslize para a cascata'),
- (7, 9, '"Peça para eu explicar cada trecho", com a etiqueta "a dica". Ao lado de três celulares entram bilhetes com o motivo', 'Aproxima num bilhete', S),
- (10, 11, '"E se você só tem a gravação crua?" Os celulares saem e entram arquivos de gravação bagunçados', 'Desliza para os arquivos', S),
+ (0, 0, '"A gente faz a conta", com a etiqueta "eu prometi falar o valor"', 'Chega e assenta', S, R),
+ (1, 6, 'A conta se monta linha por linha: quatro ferramentas, cada uma com US$ 0. Entra a linha do Claude Pro com US$ 20 por mês, depois "ou US$ 17 no anual" e a nota do dólar', 'Desce pela conta e fecha no valor', 'Um tique no zero. Batida suave nos 20 dólares', R),
+ (7, 7, 'Cartão para print: as quatro ferramentas, cada uma com a função em duas palavras', 'Para de propósito, só com a deriva do fundo', 'Um obturador de câmera', R),
+ (8, 12, 'Três cartões, um por fala: a primeira versão quase nunca é a boa, o plano tem limite de uso, eu só trabalho com o que está na pasta', 'Passa de cartão em cartão', 'Um som de desligar por cartão (3), baixos', R),
+ (13, 14, '"A parte que importa" com uma caixa fechada pulsando. Embaixo: "eu falo qual no final"', 'Aproximação lenta na caixa', S, A),
 ],
 8: [
- (0, 2, '"Vídeo inteiro", com a etiqueta "segundo jeito". Embaixo: uma hora gravada, vários arquivos, errando e repetindo', 'Chega e assenta', 'Batida suave em "inteiro"'),
- (3, 4, 'Janela do Claude Code: o pedido de juntar as gravações é digitado. Depois a linha "transformando tudo em texto"', 'Aproxima na digitação e recua', 'Três teclas no começo'),
- (5, 5, 'A mesma frase três vezes. Os dois primeiros takes são riscados e o terceiro acende', 'Desce pelos takes e fecha no escolhido', 'Um som de corte nos riscos. Um brilho baixo no escolhido'),
- (6, 6, 'Os trechos escolhidos se encaixam em ordem numa linha do tempo, e ao lado entra a lista de cortes', 'Vai da linha do tempo para a lista', 'Um estalo de madeira para a lista'),
- (7, 9, '"A parte mais chata deixa de ser sua". Um fone de ouvido com uma barra de "ouvindo tudo de novo" enchendo devagar, que some', 'Aproximação lenta', S),
- (10, 10, '"Quanto custa isso tudo?"', 'Soco de zoom', S),
-],
-9: [
- (0, 1, '"A gente faz a conta", com a etiqueta "eu prometi falar o valor"', 'Chega e assenta', S),
- (2, 6, 'A conta se monta linha por linha: quatro ferramentas, cada uma com US$ 0. Entra a linha do Claude Pro com US$ 20 por mês, depois "ou US$ 17 no anual", e a nota do dólar', 'Desce pela conta e fecha no valor', 'Um tique no primeiro zero. Batida suave nos 20 dólares'),
- (7, 7, 'Cartão para print: as quatro ferramentas, cada uma com a função em duas palavras. A tela fica parada', 'Para de propósito, só com a deriva do fundo', 'Um obturador de câmera'),
- (8, 12, 'Três cartões, um por fala: a primeira versão quase nunca é a boa (com a miniatura real da primeira abertura), pedido vago, limite de uso', 'Passa de cartão em cartão', 'Um som de desligar por cartão (3), baixos'),
- (13, 15, '"A parte que importa: a ideia". Embaixo: "eu volto nisso no final"', 'Aproximação lenta', S),
-],
-10: [
- (0, 4, 'A linha do tempo deste vídeo, com as dez cenas. Os cinco passos acendem nas palavras. Em "nenhum programa" entra "0 programas"', 'Corre pela linha do tempo e recua', 'Um deslize baixo na entrada. Batida suave no zero'),
- (5, 5, '"Eu não substituo o seu olhar"', 'Aproximação lenta', S),
- (6, 8, 'Uma balança: de um lado a parte repetitiva, que vai para o Claude, do outro "a ideia", que fica com você. Fecha com "eu corto, você decide"', 'Vai de um lado ao outro e fecha na ideia', 'Um som de revelação baixo em "a ideia"'),
- (9, 10, '"Canal dark": uma silhueta sem rosto num cartão escuro. Embaixo: "assunto para outro vídeo"', 'Aproxima e recua', S),
- (11, 12, 'Três cartões acendem nas palavras: pega um vídeo, cria a pasta, escreve o primeiro pedido', 'Passa pelos três', 'Um estalo de madeira para a cascata'),
- (13, 15, 'Dois cartões grandes com os números 1 (cortes) e 2 (vídeo inteiro), cada um entrando na sua fala', 'Chega de longe e assenta', 'Batida suave em cada número'),
- (16, 16, 'Botão "INSCREVA-SE"', 'Chega com quique', S),
- (17, 19, 'A marca do Claude, "valeu, galera" e "até a próxima"', 'Recua devagar até o fim', S),
+ (0, 4, 'A linha do tempo deste vídeo, com as oito cenas. Os três níveis acendem nas palavras. Em "nenhum programa" entra "8 cenas, 0 programas"', 'Corre pela linha do tempo e recua', 'Um deslize baixo na entrada. Batida suave no zero', A),
+ (5, 5, '"Eu não substituo o seu olhar"', 'Aproximação lenta', S, R),
+ (6, 8, 'A balança: de um lado a parte repetitiva, que fica com o Claude, do outro "a ideia". Fecha com "eu corto, você decide"', 'Vai de um lado ao outro e fecha na frase', 'Um som de revelação baixo em "a ideia"', R),
+ (9, 10, '"Canal dark": a silhueta sem rosto num cartão escuro. Embaixo: "assunto para outro vídeo"', 'Vai da silhueta para o texto', S, R),
+ (11, 12, '"Não deixa para depois". O cartão do nível 1 volta, com "hoje, com um vídeo só"', 'Soco de zoom em "hoje"', 'Batida suave em "hoje"', NV),
+ (13, 14, 'Três cartões nas palavras: abre a aba Code, cria a pasta, escreve o primeiro pedido. Depois uma seta para baixo: "link na descrição"', 'Passa pelos três e desce para a seta', 'Um estalo de madeira para a cascata', R),
+ (15, 17, 'Três cartões grandes com os números 1, 2 e 3 e o nome de cada nível, cada um entrando na palavra', 'Chega de longe e passa pelos três', 'Batida suave em cada número (3)', A),
+ (18, 18, 'Botão "INSCREVA-SE" com um sininho balançando ao lado', 'Chega com quique', 'Um sino bem baixo', A),
+ (19, 21, 'A marca do Claude, "Valeu, galera!" e "até a próxima"', 'Recua devagar até o fim', S, R),
 ],
 }
 def mmss(s): return f'{int(s // 60)}:{int(s % 60):02d}'
-linhas = []
-acum = 0.0
-sons = 0
-for n in range(1, 11):
-    fr = T[str(n)]['frases']
+corpo, acum, sons, cont = [], 0.0, 0, {R: 0, A: 0, NV: 0}
+caps = []
+for n in range(1, N + 1):
+    fr = D[n]['frases']
     ab = 2.6 if n in ABERTURA else 0
-    dur = T[str(n)]['duracao'] + 0.5 + ab
-    linhas.append(f'\n## Cena {n}. {NOMES[n]}\n\nComeça em {mmss(acum)} e dura {mmss(dur)}.\n')
-    linhas.append('| Tempo | Fala | Animação | Câmera | Som |\n|---|---|---|---|---|')
+    dur = D[n]['duracao'] + 0.5 + ab + (0.9 if n == 1 else 0)
+    caps.append((mmss(acum), NOMES[n], mmss(dur)))
+    corpo.append(f'\n## Cena {n}. {NOMES[n]}\n\nComeça em {mmss(acum)} e dura {mmss(dur)}.\n')
+    corpo.append('| Tempo | Fala | Animação | Câmera | Som | Peça |\n|---|---|---|---|---|---|')
     if n in ABERTURA:
-        linhas.append(f'| {mmss(acum)} | (sem fala, 2,6 s) | **3D:** o mascote pula para o degrau {n - 1}, o degrau acende, e a câmera mergulha no número. Entra "{ABERTURA[n]}" | Mergulho | Um passo de madeira no pouso. Whoosh grave no mergulho |')
-        sons += 2
-    for a, b, anim, cam, som in P[n]:
-        t = acum + ab + fr[a][0] / 30
-        fala = FRASES[n][a].strip('"')
+        num, nome = ABERTURA[n]
+        corpo.append(f'| {mmss(acum)} | (sem fala, 2,6 s) | **3D:** o mascote pula para o degrau {num} da escada de três, o degrau acende e a câmera mergulha no número. Entra "{nome}" | Mergulho | Um passo de madeira no pouso. Whoosh grave no mergulho | {A} |')
+        sons += 2; cont[A] += 1
+    for a, b, anim, cam, som, est in P[n]:
+        fala = fr[a]['txt'].strip('"')
         fala = (fala[:46] + '...') if len(fala) > 49 else fala
-        linhas.append(f'| {mmss(t)} | {fala} | {anim} | {cam} | {som} |')
+        corpo.append(f'| {mmss(acum + ab + fr[a]["ini"])} | {fala} | {anim} | {cam} | {som} | {est} |')
+        cont[est] += 1
         if som != S:
-            import re
-            sons += sum(int(x) for x in re.findall(r'\((\d)\)', som)) or som.count('.') + 1 if '(' in som else som.rstrip('.').count('. ') + 1
+            nums = [int(x) for x in re.findall(r'\((\d)\)', som)]
+            sons += sum(nums) + max(0, len([p for p in som.rstrip('.').split('. ') if p]) - len(nums)) + (2 if 'Três teclas' in som else 0)
     acum += dur
-print('total', mmss(acum), 'planos', sum(len(v) for v in P.values()), 'sons aprox', sons)
-open('/tmp/_mapa_corpo.md', 'w').write('\n'.join(linhas) + '\n')
-print(round(sons / (acum / 10), 2), 'sons por 10 s')
+planos = sum(len(v) for v in P.values())
+cab = f'''# MAPA DO VÍDEO: plano de edição do roteiro versão 4
+
+Situação: aguardando aprovação do Cristian. Nenhuma cena foi mexida ainda. O plano da versão 3 ficou guardado em MAPA-VIDEO-v3.md.
+
+## Objetivo
+
+Refazer o vídeo com o roteiro novo (ROTEIRO.md, versão 4): três níveis com meta, três regras e a conta. Duração prevista: **{mmss(acum)}**, contra 9:50 da versão 3.
+
+## Quem usa
+
+- **Cristian:** aprova este mapa, assiste o vídeo e diz o que incomodou.
+- **Quem assiste no YouTube:** criadores de conteúdo, editores e iniciantes que querem editar com o Claude.
+
+## Fluxo de trabalho
+
+1. O Cristian aprova este mapa (ou pede mudanças).
+2. O Claude constrói as peças novas e adapta as marcadas.
+3. O Claude monta as oito cenas nas frases da voz nova e gera as folhas de cada cena.
+4. O Claude confere as folhas, corrige e só então exporta.
+5. O Claude monta com a música, mede o volume e envia o vídeo no chat.
+
+## Resumo em números
+
+- **{planos} planos** em {N} cenas, mais 3 aberturas de nível em 3D.
+- **Peças:** {cont[R]} prontas, {cont[A]} para adaptar, {cont[NV]} novas.
+- **Sons:** cerca de {sons} no vídeo inteiro, ou {sons / (acum / 10):.1f} a cada 10 segundos. Na versão 3 eram 131.
+- **Voz-guia:** já gerada para as oito cenas (audio/cenaNN_guia.wav). Os tempos abaixo vêm dela.
+
+## Capítulos
+
+| Começa | Cena | Dura |
+|---|---|---|
+''' + '\n'.join(f'| {a} | {b} | {c} |' for a, b, c in caps) + '''
+
+## Regras que valem para todos os planos
+
+**Movimento**
+- Nenhum plano fica parado: todos aproximam e derivam, e a câmera vai até o que está sendo dito.
+- A aproximação fica entre 1,0 e 1,3. Acima disso a câmera cortava texto na versão 3.
+- Toda frase que abre um plano já traz conteúdo na tela. Se a palavra-gatilho demora, entra um título ou uma primeira linha antes.
+- Cada coisa entra na palavra em que é falada.
+
+**Som**
+- Todo efeito fica de 13 a 19 dB abaixo da voz.
+- Um som por ideia, nunca um por objeto. No máximo três teclas por digitação.
+- Whoosh só nos momentos em 3D.
+- A música troca por bloco: gancho e ambiente, nível 1, nível 2, nível 3, regras e conta e fechamento.
+
+**Visual**
+- Fundo quase preto, cinzas, branco quente e um laranja só.
+- 2D é a base. O 3D fica na escada (agora de três degraus), no bloco do Claude e na volta da câmera do gancho.
+- Texto na tela só para ênfase, nunca legenda corrida.
+
+## O que muda em relação à versão 3
+
+- **Escada 3D:** de cinco degraus para três, com o nome de cada nível.
+- **Abertura de cada nível:** um cartão grande com o número e a meta animada.
+- **"Meta batida":** um carimbo no fim dos níveis 1 e 2.
+- **As três regras:** cena nova, com um cartão por regra.
+- **Reaproveitado:** editor do gancho, zero, cartões de voz, pasta, Whisper, legenda do filme, silêncio, FFmpeg, lista, dez cortes, receita, código da abertura, versões, conta, balança, canal dark.
+- **Saiu:** os planos de "passo" da versão 3, "quadro por quadro", "pedido vago contra claro", "da pasta para o mundo", "um arquivo vira cinquenta".
+
+## Peças novas a construir
+
+1. Cartão de nível com a meta animada (três variações: contador, dez retângulos, seta do bruto ao pronto).
+2. Os três cartões de nível em escada, para o gancho.
+3. Carimbo "META BATIDA".
+4. Os três cartões de regra (APROVE, PEÇA POR PARTES, ASSISTA) e o plano que junta os três.
+5. Remotion apresentado pela legenda: celular com a legenda acendendo e o selo "grátis até 3 pessoas".
+6. "A palavra acende na hora em que é falada": linha de código e legenda com o relógio de cada palavra.
+7. O quadro que congela com as bordas dos elementos acesas.
+8. "Ambiente montado" com o visto, e a passagem do gancho para o ambiente.
+9. "Hoje, com um vídeo só" no fechamento.
+
+## Contas e serviços externos
+
+Nenhum novo. A voz-guia continua sendo a sintética gratuita (Kokoro), a música é do Kevin MacLeod (crédito na descrição) e os efeitos são gerados por código.
+
+## Variáveis de ambiente
+
+Nenhuma.
+
+## Fases e o teste de cada uma
+
+| Fase | O que é feito | Teste que prova |
+|---|---|---|
+| 1 | Peças novas e adaptadas | O projeto compila sem erro, e uma folha mostra cada peça nova em três momentos |
+| 2 | Cenas 1 e 2 montadas | Conferência das palavras-gatilho com zero faltas, e a folha das duas cenas sem plano vazio nem texto cortado |
+| 3 | Cenas 3, 4 e 5 (os três níveis) | A mesma conferência e as folhas das três cenas |
+| 4 | Cenas 6, 7 e 8 | A mesma conferência e as folhas das três cenas |
+| 5 | Exportação e montagem com música | Duração medida, busca de tela preta com zero achados, volume final perto de -14 LUFS, e o vídeo enviado no chat |
+
+## Pendências do roteiro
+
+- "Foram [X horas] de conversa comigo" está fora da narração até o Cristian dar o número.
+- "O mais votado vira o próximo vídeo" está fora até o Cristian confirmar.
+- O título: o Claude recomenda o "3 níveis, sem programa de edição" como principal. A decisão é do Cristian.
+
+---
+
+# Plano por plano
+'''
+open('MAPA-VIDEO.md', 'w').write(cab + '\n'.join(corpo) + '\n')
+print('total', mmss(acum), 'planos', planos, 'sons', sons, cont)
