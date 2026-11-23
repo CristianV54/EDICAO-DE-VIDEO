@@ -2,9 +2,9 @@
   {
     "numero": 1,
     "nome": "Gancho",
-    "narracao": "Este vídeo foi editado por mim, o Claude. Guarda esse número: zero. É quantas pessoas abriram um programa de edição para fazer ele. Cada corte, cada animação, cada movimento de câmera: fui eu. E você pode fazer o mesmo. O seu trabalho é usar a sua voz, ou uma de IA, dizer o que quer e clicar em aprovar. O resto eu faço. Eu te mostro como fazer o mesmo com os seus vídeos. Cortes curtos, ou um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí. Fala, galera! Claude aqui. A regra do jogo é simples: cinco passos, quatro ferramentas e dois jeitos de usar. E antes do fim eu te falo quanto custa. Passo um.",
-    "palavras": 129,
-    "duracao_estimada_s": 52
+    "narracao": "Este vídeo foi editado por mim, o Claude. Guarda esse número: zero. É quantas pessoas abriram um programa de edição para fazer ele. Cada corte, cada animação, cada movimento de câmera: fui eu. E você pode fazer o mesmo. O seu trabalho é usar a sua voz, ou uma de IA, dizer o que quer e clicar em aprovar. O resto eu faço. Eu te mostro como fazer o mesmo com os seus vídeos. Cortes curtos, ou um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí. Fala, galera! Como é que tá? Claude aqui. A regra do jogo é simples: cinco passos, quatro ferramentas e dois jeitos de usar. E antes do fim eu te falo quanto custa. Passo um.",
+    "palavras": 133,
+    "duracao_estimada_s": 53
   },
   {
     "numero": 2,
@@ -23,16 +23,16 @@
   {
     "numero": 4,
     "nome": "Passo 3: Cortar",
-    "narracao": "Duas ferramentas fazem o corte. A primeira é o auto-editor. Ele mede o volume do áudio e remove sozinho os trechos de silêncio. A pausa para pensar, a respiração antes de começar, o tempo morto entre uma frase e outra. Some tudo. A segunda é o FFmpeg. Ele corta o vídeo, junta trechos e muda o formato do arquivo. Não tem botão nem tela, só comandos escritos. E quem escreve sou eu. Mas, antes de a gente cortar qualquer coisa, eu te mostro a lista, tá? \"Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete.\" Você lê, muda o que quiser e aprova. Só então eu corto. E como eu sei o tempo de cada palavra, eu corto entre uma palavra e outra, não no meio de uma. Resultado: uma gravação crua de vinte minutos pode virar doze, por exemplo. Sem você arrastar nada. Prefere dar o acabamento com as próprias mãos? O auto-editor entrega a linha do tempo já cortada, para abrir no seu programa de edição. Agora uma confissão: a abertura deste vídeo ficou ruim na primeira versão. No passo cinco eu te mostro o que aconteceu depois. Se está valendo a pena até aqui, se inscreve. O vídeo está limpo. Mas limpo não é o mesmo que bom de assistir. Falta o que você está vendo agora.",
-    "palavras": 224,
-    "duracao_estimada_s": 90
+    "narracao": "Duas ferramentas fazem o corte. A primeira é o auto-editor. Ele mede o volume do áudio e remove sozinho os trechos de silêncio. A pausa para pensar, a respiração antes de começar, o tempo morto entre uma frase e outra. Some tudo. A segunda é o FFmpeg. Ele corta o vídeo, junta trechos e muda o formato do arquivo. Não tem botão nem tela, só comandos escritos. E quem escreve sou eu. O seu pedido é este: \"Tire os silêncios e os erros deste vídeo, mas me mostre a lista de cortes antes de cortar.\" Aí, antes de a gente cortar qualquer coisa, eu te mostro a lista, tá? \"Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete.\" Você lê, muda o que quiser e aprova. Só então eu corto. E como eu sei o tempo de cada palavra, eu corto entre uma palavra e outra, não no meio de uma. Resultado: uma gravação crua de vinte minutos pode virar doze, por exemplo. Sem você arrastar nada. Prefere dar o acabamento com as próprias mãos? O auto-editor entrega a linha do tempo já cortada, para abrir no seu programa de edição. Agora uma confissão: a abertura deste vídeo ficou ruim na primeira versão. No passo cinco eu te mostro o que aconteceu depois. Se está valendo a pena até aqui, se inscreve. O vídeo está limpo. Mas limpo não é o mesmo que bom de assistir. Falta o que você está vendo agora.",
+    "palavras": 247,
+    "duracao_estimada_s": 99
   },
   {
     "numero": 5,
     "nome": "Passo 4: Animar",
-    "narracao": "Tudo que se mexe neste vídeo é código. Este personagem, esta linha do tempo, este movimento de câmera. Código é só texto com instruções, como uma receita: cada linha diz o que fazer e quando. A ferramenta se chama Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo. Olha a prova, cara. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali. Para você, isso vira três coisas. Legendas palavra por palavra, no tempo certo, porque eu já tenho o tempo de cada palavra desde o passo dois. Textos e gráficos que aparecem na hora em que você fala deles. E mudar qualquer coisa leva uma frase. Não gostou da cor? Quer a legenda maior? Você pede e eu refaço o vídeo inteiro. Mas Claude, eu não sei programar. Não precisa, ok? Você só precisa descrever o que quer ver. E quanto mais claro for o pedido, melhor sai a cena. Falta só uma coisa: tirar o vídeo da pasta e colocar no mundo.",
-    "palavras": 208,
-    "duracao_estimada_s": 83
+    "narracao": "Tudo que se mexe neste vídeo é código. Este personagem, esta linha do tempo, este movimento de câmera. Código é só texto com instruções, como uma receita: cada linha diz o que fazer e quando. A ferramenta se chama Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo. O seu pedido é este: \"Coloque legenda palavra por palavra neste vídeo, em branco e no centro, e faça o título da abertura entrar no segundo três.\" Olha a prova, cara. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali. Para você, isso vira três coisas. Legendas palavra por palavra, no tempo certo, porque eu já tenho o tempo de cada palavra desde o passo dois. Textos e gráficos que aparecem na hora em que você fala deles. E mudar qualquer coisa leva uma frase. Não gostou da cor? Quer a legenda maior? Você pede e eu refaço o vídeo inteiro. Mas Claude, eu não sei programar. Não precisa, ok? Você só precisa descrever o que quer ver. E quanto mais claro for o pedido, melhor sai a cena. Falta só uma coisa: tirar o vídeo da pasta e colocar no mundo.",
+    "palavras": 235,
+    "duracao_estimada_s": 94
   },
   {
     "numero": 6,

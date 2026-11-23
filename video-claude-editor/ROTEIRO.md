@@ -1,6 +1,6 @@
 # ROTEIRO: O Claude editou este vídeo sozinho (e pode editar os seus)
 
-Situação: versão 3, enviada pelo Cristian em 23/11/2026. Parte da versão 2. Mudou só a narração, reescrita por ele no estilo de fala descrito no manual de estilo dele. As 10 cenas, a ordem e as informações conferidas são as da versão 2. A versão 2 ficou guardada em ROTEIRO-v2.md.
+Situação: versão 3, segunda revisão, enviada pelo Cristian em 23/11/2026. Parte da versão 2. Mudou só a narração, reescrita por ele no estilo de fala descrito no manual de estilo dele. As 10 cenas, a ordem e as informações conferidas são as da versão 2. A versão 2 ficou guardada em ROTEIRO-v2.md.
 
 ## Regras deste roteiro
 
@@ -29,7 +29,7 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 >
 > Eu te mostro como fazer o mesmo com os seus vídeos. Cortes curtos, ou um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí.
 >
-> Fala, galera! Claude aqui.
+> Fala, galera! Como é que tá? Claude aqui.
 >
 > A regra do jogo é simples: cinco passos, quatro ferramentas e dois jeitos de usar. E antes do fim eu te falo quanto custa.
 >
@@ -89,7 +89,9 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 >
 > A segunda é o FFmpeg. Ele corta o vídeo, junta trechos e muda o formato do arquivo. Não tem botão nem tela, só comandos escritos. E quem escreve sou eu.
 >
-> Mas, antes de a gente cortar qualquer coisa, eu te mostro a lista, tá? "Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete." Você lê, muda o que quiser e aprova. Só então eu corto.
+> O seu pedido é este: "Tire os silêncios e os erros deste vídeo, mas me mostre a lista de cortes antes de cortar."
+>
+> Aí, antes de a gente cortar qualquer coisa, eu te mostro a lista, tá? "Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete." Você lê, muda o que quiser e aprova. Só então eu corto.
 >
 > E como eu sei o tempo de cada palavra, eu corto entre uma palavra e outra, não no meio de uma.
 >
@@ -112,6 +114,8 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 > Código é só texto com instruções, como uma receita: cada linha diz o que fazer e quando.
 >
 > A ferramenta se chama Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo.
+>
+> O seu pedido é este: "Coloque legenda palavra por palavra neste vídeo, em branco e no centro, e faça o título da abertura entrar no segundo três."
 >
 > Olha a prova, cara. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali.
 >
@@ -231,6 +235,8 @@ Valem as da versão 2. Na versão 3 saíram duas afirmações sobre o FFmpeg ("m
 
 Anotados pelo Cristian junto com o roteiro, e mantidos aqui:
 
+- **Tempo de produção.** A cena 10 tem a frase "Do primeiro pedido ao vídeo pronto, foram [X horas] de conversa comigo." Ela está fora da narração até o número real existir, o que só acontece quando o vídeo ficar pronto. Lugar dela: logo depois de "E nenhum programa de edição aberto."
+- **Pedidos das cenas 4 e 5.** São exemplos para o espectador copiar. Vale testar os dois antes de gravar.
 - **Próximo vídeo.** A frase "o que ganhar mais votos vira o próximo vídeo" ficou fora da narração, porque só pode ser dita se for verdade.
 - **Voz de IA.** A cena 1 cita "uma voz de IA". A ferramenta de voz não está entre as quatro e o preço dela não foi conferido. A cena 9 diz "o único custo desta lista é o Claude", que fala só da lista.
 - **Limite de uso.** "O plano tem um limite de uso" (cena 9) é verdade em geral, mas o limite do Pro não foi conferido na página oficial.
