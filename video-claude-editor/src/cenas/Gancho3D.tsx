@@ -18,7 +18,7 @@ import {cenaHistoria, cenaLegenda, cenaLinha, cenaPrograma} from '../papel';
 // Feita seguindo o MAPA-GANCHO.md: linha do tempo em pé, câmera que nunca para,
 // troca de trecho com speed ramp e texto só nas palavras de destaque.
 // Duração de cada trecho em quadros (30 por segundo), estimada pelo texto.
-export const TRECHOS = {
+export const TRECHOS_3D = {
   linhaDoTempo: 225, // "Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera."
   semPrograma: 70, // "Ninguém abriu um programa de edição."
   humano: 125, // "A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu."
@@ -27,7 +27,7 @@ export const TRECHOS = {
   ferramentas: 135, // "Com o nome de cada ferramenta e o pedido exato que você escreve."
   passoUm: 75, // "Passo um."
 };
-export const DURACAO_GANCHO = Object.values(TRECHOS).reduce((a, b) => a + b, 0);
+export const DURACAO_GANCHO_3D = Object.values(TRECHOS_3D).reduce((a, b) => a + b, 0);
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const lerp3 = (a: V3, b: V3, t: number): V3 => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
@@ -533,8 +533,8 @@ const PassoUm: React.FC = () => {
 };
 
 // ====================== Cena completa ======================
-export const Gancho: React.FC = () => {
-  const ordem: [keyof typeof TRECHOS, React.FC][] = [
+export const Gancho3D: React.FC = () => {
+  const ordem: [keyof typeof TRECHOS_3D, React.FC][] = [
     ['linhaDoTempo', LinhaDoTempo],
     ['semPrograma', SemPrograma],
     ['humano', Humano],
@@ -549,9 +549,9 @@ export const Gancho: React.FC = () => {
       <EsperaFonte>
         {ordem.map(([nome, Trecho]) => {
           const de = inicio;
-          inicio += TRECHOS[nome];
+          inicio += TRECHOS_3D[nome];
           return (
-            <Sequence key={nome} from={de} durationInFrames={TRECHOS[nome]} name={nome}>
+            <Sequence key={nome} from={de} durationInFrames={TRECHOS_3D[nome]} name={nome}>
               <Trecho />
             </Sequence>
           );

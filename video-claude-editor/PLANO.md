@@ -28,6 +28,7 @@ Já aprovado pelo Cristian:
 8. **Capas.** Em 23/11/2026 o Cristian decidiu montar as capas ele mesmo, com outra IA de imagem. As capas A, B e C feitas por código ficam em `capa/` como rascunho e referência de ideia. O Claude foca no vídeo.
 9. **Personagens no vídeo.** Proposta em uso, ainda sem resposta do Cristian: o mascote de blocos é quem age nas cenas, e o bloco laranja com a estrela aparece como a marca do Claude.
 10. **Regras de animação.** Em 23/11/2026 o Cristian criticou a primeira prova de estilo e indicou o fluxo de edição de Lucas Leite (github.com/LeiteZ/fluxo-de-edicao). Passam a valer para o vídeo inteiro: texto só nas palavras de destaque, linha do tempo em pé, câmera que nunca para e faz movimentos de verdade, fundo com profundidade, troca de trecho com speed ramp, e um mapa de animações por cena antes de animar (o da cena 1 está em MAPA-GANCHO.md).
+11. **2D como base, 3D só em momentos.** Em 23/11/2026 o Cristian achou o 3D em tudo pesado. O plano de onde o 3D entra está em PLANO-3D.md, aguardando a aprovação dele. O gancho todo em 3D ficou guardado em `src/cenas/Gancho3D.tsx`.
 
 ## 3. Quem usa
 
