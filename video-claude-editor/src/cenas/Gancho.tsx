@@ -1,9 +1,10 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
-import {aleatorio, expoOut, mola, power2Out, power4In, power4InOut, rampa, trilho1} from '../anim';
+import {expoOut, mola, power2Out, power4In, power4InOut, rampa, trilho1} from '../anim';
 import {C, Camera2D, Enfase, Etiqueta, Fundo2D, Janela, Marca, MONO, Quadro, SANS, Troca, brilho} from '../dois/base';
 import {cenaHistoria, cenaLegenda, cenaLinha, cenaPrograma} from '../papel';
 import {EsperaFonte} from '../tres/Rotulo';
+import {somFx} from '../motor/motor';
 import {Tela3D} from '../tres/Tela3D';
 import {Camera} from '../tres/Camera';
 import {Luzes} from '../tres/pecas';
@@ -15,7 +16,7 @@ import {CincoPassos, PassoUm} from './Gancho3D';
 export const TRECHOS = {
   editor: 193, // "Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera."
   semPrograma: 75, // "Ninguém abriu um programa de edição."
-  humano: 164, // "A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu."
+  humano: 164, // "Você só precisa usar a sua voz, ou uma de IA, e apertar em aprovar. O resto eu faço."
   cincoPassos: 124, // "Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos:"  (3D)
   doisUsos: 64, // "cortes curtos e vídeos longos."
   ferramentas: 122, // "Com o nome de cada ferramenta e o pedido exato que você escreve."
@@ -258,7 +259,7 @@ const SemPrograma: React.FC = () => {
 // ====================== Trecho 3: a voz e o botão de aprovar ======================
 const Humano: React.FC = () => {
   const f = useCurrentFrame();
-  const grava = rampa(f, 2, 70, (n) => n);
+  const grava = rampa(f, 2, 52, (n) => n);
   const encolhe = rampa(f, 74, 90, power4InOut);
   const botao = mola(f, 80, {damping: 12});
   const clique = 103;
@@ -274,10 +275,10 @@ const Humano: React.FC = () => {
     <AbsoluteFill>
       <Fundo2D f={f} x={24} y={72} />
       {/* cartão de gravação */}
-      <Janela titulo="gravação · voz" style={{left: lerp(310, 120, encolhe), top: lerp(330, 180 - sobe * 70, encolhe), width: 1300, height: 380, transform: `scale(${lerp(1, 0.5, encolhe)})`, transformOrigin: '0 0', opacity: 1 - sobe}}>
+      <Janela titulo="a sua voz" style={{left: lerp(110, 120, encolhe), top: lerp(330, 180 - sobe * 70, encolhe), width: 1300, height: 380, transform: `scale(${lerp(0.64, 0.5, encolhe)})`, transformOrigin: '0 0', opacity: 1 - sobe}}>
         <div style={{position: 'absolute', left: 36, top: 70, right: 36, display: 'flex', alignItems: 'center', fontFamily: MONO, fontSize: 24, color: C.mudo}}>
-          <span style={{width: 16, height: 16, borderRadius: 8, background: C.erro, boxShadow: `0 0 16px ${C.erro}`, opacity: f < 72 && Math.floor(f / 10) % 2 ? 0.3 : 1, marginRight: 14}} />
-          {f < 72 ? 'GRAVANDO' : 'GRAVADO'}
+          <span style={{width: 16, height: 16, borderRadius: 8, background: C.erro, boxShadow: `0 0 16px ${C.erro}`, opacity: f < 54 && Math.floor(f / 10) % 2 ? 0.3 : 1, marginRight: 14}} />
+          {f < 54 ? 'GRAVANDO' : 'GRAVADO'}
           <span style={{marginLeft: 'auto', color: C.texto}}>00:{String(Math.min(25, Math.floor(grava * 25))).padStart(2, '0')}</span>
         </div>
         <svg width={1228} height={200} style={{position: 'absolute', left: 36, top: 130}}>
@@ -289,6 +290,21 @@ const Humano: React.FC = () => {
           })}
         </svg>
       </Janela>
+      {/* a outra opção: uma voz de IA */}
+      <Janela titulo="voz de IA" style={{left: lerp(980, 800, encolhe), top: lerp(330, 180 - sobe * 70, encolhe), width: 1300, height: 380, transform: `scale(${lerp(0.64, 0.5, encolhe) * Math.max(0.001, mola(f, 56, {damping: 12}))})`, transformOrigin: '0 0', opacity: 1 - sobe}} luz={1.2}>
+        <div style={{position: 'absolute', left: 36, top: 70, right: 36, display: 'flex', alignItems: 'center', fontFamily: MONO, fontSize: 24, color: C.mudo}}>
+          <span style={{width: 16, height: 16, borderRadius: 8, background: C.acento, boxShadow: `0 0 16px ${C.acento}`, marginRight: 14}} />
+          GERADA POR CÓDIGO
+        </div>
+        <svg width={1228} height={200} style={{position: 'absolute', left: 36, top: 130}}>
+          {Array.from({length: n}).map((_, k) => {
+            const feito = k / n <= rampa(f, 58, 82, (v) => v);
+            const h = (10 + Math.abs(Math.sin(k * 0.9 + 2) * Math.cos(k * 0.23) * Math.sin(k * 0.07 + 1)) * 170) * (feito ? 1 : 0.06);
+            return <rect key={k} x={k * 10.2} y={100 - h / 2} width={5} height={h} rx={2.5} fill={feito ? C.texto : 'rgba(255,255,255,0.18)'} />;
+          })}
+        </svg>
+      </Janela>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 610, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 60, color: C.mudo, opacity: rampa(f, 50, 58) * (1 - encolhe)}}>ou</div>
       {/* botão de aprovar */}
       <div style={{position: 'absolute', left: 660, top: 500 - sobe * 120, transform: `scale(${Math.max(0.001, botao) * (1 - aperta * 0.06)})`, transformOrigin: '300px 80px', opacity: 1 - sobe}}>
         <div style={{width: 600, height: 160, borderRadius: 40, background: aprovado ? C.acento : C.texto, color: aprovado ? '#fff' : '#141413', fontFamily: SANS, fontWeight: 900, fontSize: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: aprovado ? `0 0 90px ${C.acento}aa, 0 18px 40px rgba(0,0,0,0.6)` : '0 18px 40px rgba(0,0,0,0.6)'}}>{aprovado ? 'APROVADO' : 'APROVAR'}</div>
@@ -306,7 +322,7 @@ const Humano: React.FC = () => {
         </div>
         <div style={{display: 'flex', gap: 12, marginTop: 26, fontFamily: MONO, fontSize: 32, color: C.mudo}}>
           <div style={{width: '12%', whiteSpace: 'nowrap'}}>
-            <span style={{color: C.texto}}>Cristian</span>
+            <span style={{color: C.texto}}>Você</span>
             <br />
             voz e aprovação
           </div>
@@ -317,8 +333,8 @@ const Humano: React.FC = () => {
           </div>
         </div>
       </div>
-      <Enfase f={f} palavras={[['a', 4], ['voz', 6], ['é', 14], ['do', 19], ['*Cristian', 22]]} ate={70} style={{top: 150}} tam={104} />
-      <Enfase f={f} palavras={[['o', 127], ['resto', 131], ['fui', 139], ['*eu', 150]]} ate={164} style={{top: 250}} tam={150} />
+      <Enfase f={f} palavras={[['a', 34], ['sua', 37], ['*voz', 42], ['ou', 52], ['uma', 60], ['de', 62], ['*IA', 64]]} ate={76} style={{top: 150}} tam={104} />
+      <Enfase f={f} palavras={[['o', 124], ['resto', 128], ['eu', 137], ['*faço', 143]]} ate={164} style={{top: 250}} tam={150} />
     </AbsoluteFill>
   );
 };
@@ -398,60 +414,49 @@ const Ferramentas: React.FC = () => {
 };
 
 // ====================== Som ======================
-// Cada efeito: [arquivo, quadro em que começa, volume]. O pico dos whooshes fica perto da troca.
-const SFX: [string, number, number][] = [
-  ['whoosh_grave', 52, 0.5], // bloco do Claude chegando
-  ['impacto', 69, 0.55], // palavra "Claude"
-  ['corte', 100, 0.6],
-  ['corte', 106, 0.6],
-  ['whoosh', 110, 0.35], // trecho cortado caindo
-  ['pop', 115, 0.3],
-  ['subida', 118, 0.3], // linha se desenhando
-  ['whoosh_grave', 146, 0.5], // câmera dá a volta
-  ['whoosh', 182, 0.5], // troca
-  ['pop', 193, 0.3],
-  ['apagar', 207, 0.45],
-  ['apagar', 217, 0.45],
-  ['apagar', 227, 0.5],
-  ['impacto', 228, 0.4], // o zero
-  ['whoosh', 258, 0.4],
-  ['pop', 348, 0.35], // botão aparece
-  ['clique', 371, 0.7],
-  ['ding', 372, 0.5],
-  ['whoosh', 388, 0.3],
-  ['whoosh_grave', 420, 0.5], // troca para a escada
-  ['degrau1', 456, 0.5],
-  ['degrau2', 473, 0.5],
-  ['degrau3', 490, 0.5],
-  ['degrau4', 507, 0.5],
-  ['degrau5', 524, 0.55],
-  ['whoosh', 546, 0.45],
-  ['pop', 556, 0.35],
-  ['pop', 584, 0.35],
-  ['whoosh', 610, 0.4],
-  ['pop', 626, 0.3],
-  ['pop', 631, 0.3],
-  ['pop', 636, 0.3],
-  ['pop', 641, 0.3],
-  ['whoosh', 668, 0.3],
-  ['whoosh_grave', 732, 0.5], // troca para o passo um
-  ['subida', 742, 0.35],
-  ['impacto', 775, 0.6],
+// [grupo da biblioteca, quadro em que o pico cai, ajuste em dB]. Poucos sons, e nunca o mesmo duas vezes seguidas.
+const SFX: [string, number, number?][] = [
+  ['whoosh_grave', 62], // bloco do Claude chegando
+  ['batida', 70], // palavra "Claude"
+  ['corte', 100],
+  ['corte', 106],
+  ['queda', 116, -4], // trecho cortado caindo
+  ['subida', 138, -3], // linha se desenhando e disparando
+  ['whoosh_longo', 166], // a janela inclina e a câmera dá a volta
+  ['desliga', 207],
+  ['desliga', 217],
+  ['desliga', 227],
+  ['impacto', 229], // o zero
+  ['estalo', 325], // cartão da voz de IA
+  ['estalo_madeira', 348], // botão aparece
+  ['clique', 371],
+  ['sucesso', 373],
+  ['passo', 456],
+  ['passo', 473],
+  ['passo', 490],
+  ['passo', 507],
+  ['passo', 524],
+  ['estalo', 558],
+  ['estalo', 586],
+  ['estalo_madeira', 628],
+  ['estalo_madeira', 633],
+  ['estalo_madeira', 638],
+  ['estalo_madeira', 643],
+  ['deslize', 672],
+  ['subida_forte', 772], // mergulho no degrau 1
+  ['batida', 778],
 ];
-const TECLAS = Array.from({length: 21}).map((_, i) => 681 + i * 2.6);
+const TECLAS = Array.from({length: 10}).map((_, i) => 684 + i * 5);
 
-export const SomGancho: React.FC<{voz?: boolean}> = ({voz = true}) => (
+// calculado uma vez só, para o mesmo som cair sempre no mesmo lugar
+const SONS_GANCHO = [...SFX, ...TECLAS.map((q) => ['tecla', q] as [string, number])].map(([grupo, q, db]) => somFx(grupo, q, db ?? 0));
+
+export const SomGancho: React.FC = () => (
   <>
-    {voz ? <Audio src={staticFile('som/cena01_guia.wav')} volume={1} /> : null}
-    <Audio src={staticFile('som/musica.wav')} volume={(q) => 0.16 * Math.min(1, q / 20) * Math.min(1, (DURACAO_GANCHO - q) / 24)} />
-    {SFX.map(([nome, de, vol], i) => (
-      <Sequence key={i} from={Math.max(0, de)} layout="none">
-        <Audio src={staticFile(`som/${nome}.wav`)} volume={vol * 0.55} />
-      </Sequence>
-    ))}
-    {TECLAS.map((de, i) => (
-      <Sequence key={`t${i}`} from={Math.round(de)} layout="none">
-        <Audio src={staticFile('som/tecla.wav')} volume={0.18 + aleatorio(i) * 0.1} />
+    <Audio src={staticFile('som/cena01_guia.wav')} />
+    {SONS_GANCHO.map((s2, i) => (
+      <Sequence key={i} from={s2.de} layout="none">
+        <Audio src={staticFile(`som/fx/${s2.arquivo}`)} volume={s2.vol} />
       </Sequence>
     ))}
   </>

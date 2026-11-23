@@ -16,14 +16,16 @@ texto = next(c['narracao'] for c in json.load(open('cenas.json')) if c['numero']
 frases = [f.strip() for f in re.split(r'(?<=[.!?:])\s+', texto) if f.strip()]
 
 k = Kokoro(f'{modelos}/kokoro.onnx', f'{modelos}/voices.bin')
-partes, sr = [], 24000
+partes, sr, tempos, pos = [], 24000, [], 0
 for f in frases:
     audio, sr = k.create(f.replace('"', ''), voice=voz, speed=1.08, lang='pt-br')
     # tira o silêncio das pontas e põe uma pausa curta entre as frases
     forte = np.where(np.abs(audio) > 0.01)[0]
     if len(forte):
         audio = audio[max(0, forte[0] - 600): forte[-1] + 1800]
+    tempos.append({'txt': f, 'ini': round(pos / sr, 2), 'fim': round((pos + len(audio)) / sr, 2)})
     partes += [audio, np.zeros(int(sr * 0.22), dtype=audio.dtype)]
+    pos += len(audio) + int(sr * 0.22)
 tudo = np.concatenate(partes)
 saida = f'audio/cena{cena:02d}_guia.wav'
 sf.write(saida, tudo, sr)
@@ -34,6 +36,6 @@ n16 = int(len(tudo) * 16000 / sr)
 em16 = np.interp(np.linspace(0, len(tudo) - 1, n16), np.arange(len(tudo)), tudo).astype(np.float32)
 segs, _ = w.transcribe(em16, language='pt', word_timestamps=True)
 palavras = [{'ini': round(p.start, 2), 'fim': round(p.end, 2), 'txt': p.word.strip()} for s in segs for p in s.words]
-json.dump({'voz': voz, 'duracao': round(len(tudo) / sr, 2), 'frases': frases, 'palavras': palavras}, open(f'audio/cena{cena:02d}_palavras.json', 'w'), ensure_ascii=False, indent=1)
+json.dump({'voz': voz, 'duracao': round(len(tudo) / sr, 2), 'frases': tempos, 'palavras': palavras}, open(f'audio/cena{cena:02d}_palavras.json', 'w'), ensure_ascii=False, indent=1)
 print('duração', round(len(tudo) / sr, 2), 's;', len(palavras), 'palavras ouvidas;', len(texto.split()), 'no roteiro')
 print(' '.join(p['txt'] for p in palavras))

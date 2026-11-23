@@ -5,10 +5,16 @@ import {CapaA, CapaB, CapaC} from './Capa';
 import {Vitrine} from './Vitrine';
 import {Gancho3D, DURACAO_GANCHO_3D} from './cenas/Gancho3D';
 import {Gancho, DURACAO_GANCHO} from './cenas/Gancho';
+import {CENAS, fazerCena} from './cenas/roteiro';
+import {duracaoCena} from './motor/motor';
 
 export const Root: React.FC = () => (
   <>
     <Composition id="Gancho" component={Gancho} durationInFrames={DURACAO_GANCHO} fps={30} width={1920} height={1080} />
+    {Object.keys(CENAS).map((k) => {
+      const n = Number(k);
+      return <Composition key={n} id={`Cena${String(n).padStart(2, '0')}`} component={fazerCena(n)} durationInFrames={duracaoCena(n, CENAS[n].abertura?.dur ?? 0)} fps={30} width={1920} height={1080} />;
+    })}
     <Composition id="Gancho3D" component={Gancho3D} durationInFrames={DURACAO_GANCHO_3D} fps={30} width={1920} height={1080} />
     <Composition id="Teste" component={Teste} durationInFrames={150} fps={30} width={1920} height={1080} />
     <Still id="CapaA" component={CapaA} width={1280} height={720} />

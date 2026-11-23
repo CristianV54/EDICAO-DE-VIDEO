@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aprovado pelo Cristian. Fases 0 e 2 concluídas. Fase 1 (capas) passou para o Cristian. Fase atual: 3 (prova de estilo, cena 1 em 3D).
+Situação: gancho aprovado pelo Cristian em 23/11/2026, que liberou a edição do vídeo inteiro. As dez cenas estão montadas e em exportação. Falta a revisão dele.
 
 ## 1. Objetivo
 
@@ -29,6 +29,10 @@ Já aprovado pelo Cristian:
 9. **Personagens no vídeo.** Proposta em uso, ainda sem resposta do Cristian: o mascote de blocos é quem age nas cenas, e o bloco laranja com a estrela aparece como a marca do Claude.
 10. **Regras de animação.** Em 23/11/2026 o Cristian criticou a primeira prova de estilo e indicou o fluxo de edição de Lucas Leite (github.com/LeiteZ/fluxo-de-edicao). Passam a valer para o vídeo inteiro: texto só nas palavras de destaque, linha do tempo em pé, câmera que nunca para e faz movimentos de verdade, fundo com profundidade, troca de trecho com speed ramp, e um mapa de animações por cena antes de animar (o da cena 1 está em MAPA-GANCHO.md).
 11. **2D como base, 3D só em momentos.** Em 23/11/2026 o Cristian achou o 3D em tudo pesado. O plano de onde o 3D entra está em PLANO-3D.md, aguardando a aprovação dele. O gancho todo em 3D ficou guardado em `src/cenas/Gancho3D.tsx`.
+12. **Gancho aprovado e vídeo liberado.** Em 23/11/2026 o Cristian aprovou o gancho híbrido e pediu o vídeo inteiro. Pediu também: mais efeitos sonoros e mais variados, com volume constante; trocar de música ao longo do vídeo; estudar o earshot; guardar os estudos no repositório.
+13. **Voz.** Voz-guia sintética gratuita (Kokoro), usada para medir o tempo de cada palavra. O gancho passou a dizer "Você só precisa usar a sua voz, ou uma de IA, e apertar em aprovar. O resto eu faço."
+14. **Som.** Efeitos gerados com o earshot (ESTUDO-EARSHOT.md), música de catálogo com crédito obrigatório (CREDITOS.md), volume final em -14 LUFS.
+15. **Como o vídeo é montado.** Cada cena é uma lista de planos em `src/cenas/roteiro.tsx`. Cada plano cobre algumas frases da narração e usa uma peça de animação de `src/motor/`. `ferramentas/exportar_tudo.sh` exporta as cenas e `ferramentas/montar.py` junta tudo com a música.
 
 ## 3. Quem usa
 
