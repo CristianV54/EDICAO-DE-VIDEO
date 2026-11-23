@@ -379,7 +379,7 @@ const Ferramentas: React.FC = () => {
           return (
             <div key={nome} style={{flex: 1, height: 270, borderRadius: 26, background: C.cartao, border: `1px solid ${C.borda}`, padding: '28px 30px', opacity: e, transform: `translateY(${(1 - e) * 60}px) scale(${0.9 + e * 0.1})`, filter: `blur(${(1 - e) * 8}px)`, boxShadow: '0 20px 50px rgba(0,0,0,0.5)'}}>
               <div style={{fontFamily: MONO, fontSize: 28, color: C.acento}}>0{i + 1}</div>
-              <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 58, color: C.texto, marginTop: 34, letterSpacing: -1}}>{nome}</div>
+              <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 50, color: C.texto, marginTop: 34, letterSpacing: -1.5, whiteSpace: 'nowrap'}}>{nome}</div>
               <div style={{fontFamily: MONO, fontSize: 28, color: C.mudo, marginTop: 14}}>{faz}</div>
             </div>
           );
