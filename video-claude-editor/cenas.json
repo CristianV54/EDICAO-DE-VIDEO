@@ -1,0 +1,79 @@
+[
+  {
+    "numero": 1,
+    "nome": "Gancho",
+    "narracao": "Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera. Ninguém abriu um programa de edição. As únicas coisas humanas aqui são a voz e o botão de aprovar. Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos: cortes curtos, vídeos longos e até um canal dark inteiro. Com o nome de cada ferramenta e o pedido exato que você escreve. Passo um.",
+    "palavras": 75,
+    "duracao_estimada_s": 30
+  },
+  {
+    "numero": 2,
+    "nome": "Passo 1: Preparar",
+    "narracao": "Primeiro, esquece o Claude do chat. No chat, você pergunta e eu respondo com texto. Para editar vídeo, você precisa do Claude Code. A diferença é simples: no Claude Code, eu trabalho dentro de uma pasta do seu computador. Eu abro arquivos, instalo programas e executo comandos. Você pede, eu faço. A preparação tem três movimentos. Um: instale o Claude Code. Ele faz parte dos planos pagos do Claude, e o link está na descrição. Dois: crie uma pasta e arraste os seus vídeos brutos para dentro dela. Três: abra o Claude Code nessa pasta e escreva: \"prepare esta pasta para edição de vídeo\". A partir daqui, eu assumo. Eu instalo as ferramentas, que você vai conhecer nos próximos passos, e organizo a pasta em três partes: bruto, trabalho e pronto. Um detalhe importante: os seus originais ficam guardados. Todo corte gera um arquivo novo. Se você não gostar, é só pedir de novo. Só que existe um problema. Eu ainda não sei o que tem dentro do seu vídeo. É isso que o passo dois resolve.",
+    "palavras": 177,
+    "duracao_estimada_s": 71
+  },
+  {
+    "numero": 3,
+    "nome": "Passo 2: Entender",
+    "narracao": "Aqui está o segredo de tudo: eu não assisto o seu vídeo como você assiste. Eu leio. A ferramenta se chama Whisper. É um programa gratuito, que funciona no seu computador. Ele ouve o áudio e devolve o texto de tudo que foi dito. E não é só o texto: cada palavra vem com o momento exato em que foi falada. Você escreve: \"transcreva este vídeo palavra por palavra\". E um vídeo de uma hora vira um texto que eu leio em segundos. Quando eu leio, eu enxergo o vídeo inteiro de uma vez. Onde você errou e repetiu a frase. Onde ficou cinco segundos em silêncio. Onde a explicação ficou boa. Onde tem uma frase forte, que daria um corte. E quando o que importa é a imagem, eu tiro fotos do vídeo nos momentos certos e olho para elas. No fim deste passo, você recebe um mapa: em vermelho, o que sai. Em verde, o que fica. E os melhores momentos, marcados. Funciona para um vídeo ou para cinquenta. O pedido é o mesmo. Com o mapa pronto, cortar vira a parte fácil.",
+    "palavras": 185,
+    "duracao_estimada_s": 74
+  },
+  {
+    "numero": 4,
+    "nome": "Passo 3: Cortar",
+    "narracao": "Duas ferramentas fazem o corte. A primeira é o auto-editor. Ela mede o volume do áudio e remove sozinha os trechos de silêncio. A pausa para pensar, a respiração antes de começar, o tempo morto entre uma frase e outra. Some tudo. A segunda é o FFmpeg. É o motor que está por trás de boa parte dos vídeos da internet. Ele corta no ponto exato, junta trechos, muda o formato, ajusta o som. Não tem botão nem tela, só comandos. E quem escreve os comandos sou eu. Mas antes de cortar qualquer coisa, eu te mostro a lista. \"Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete.\" Você lê, muda o que quiser e aprova. Só então eu corto. E como eu sei o tempo de cada palavra, o corte acontece entre uma palavra e outra. Nunca no meio. Resultado: um bruto de vinte minutos vira doze, sem você arrastar nada. E se você prefere dar o acabamento com as próprias mãos, o auto-editor entrega a linha do tempo já cortada para abrir no seu programa de edição. O vídeo está limpo. Mas limpo não é o mesmo que bom de assistir. Falta o que você está vendo agora.",
+    "palavras": 204,
+    "duracao_estimada_s": 82
+  },
+  {
+    "numero": 5,
+    "nome": "Passo 4: Animar",
+    "narracao": "Tudo que se mexe neste vídeo é código. Este personagem, esta linha do tempo, este movimento de câmera. A ferramenta é o Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo. Olha a prova. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali. Para você, isso significa três coisas. Legendas palavra por palavra, no tempo certo, porque eu já tenho o tempo de cada palavra desde o passo dois. Textos e gráficos que aparecem na hora exata em que você fala deles. E mudanças em uma frase. Não gostou da cor? Quer a legenda maior? Você pede e eu refaço o vídeo inteiro. Você não precisa entender o código. Precisa saber descrever o que quer ver. Quanto mais claro o pedido, melhor a cena. Um aviso honesto: o Remotion é gratuito para pessoas e empresas pequenas, e pago para empresas maiores. Confira a licença antes de usar no trabalho. Falta só uma coisa: tirar o vídeo da pasta e colocar no mundo.",
+    "palavras": 207,
+    "duracao_estimada_s": 83
+  },
+  {
+    "numero": 6,
+    "nome": "Passo 5: Finalizar",
+    "narracao": "Você escreve: \"exporte o vídeo final\". Eu junto os cortes, as animações e a música, e gero um arquivo pronto para o YouTube. Depois eu confiro. Resolução, duração, volume do áudio. E tiro fotos de vários pontos do vídeo para procurar tela preta, texto cortado ou legenda fora do lugar. Aí vem a parte mais importante do processo inteiro: você assiste. E me fala o que sentiu. \"O começo está lento.\" \"Esta parte ficou confusa.\" \"A música está alta aqui.\" Eu corrijo e exporto de novo. Eu sou rápido, mas o gosto é seu. Quem decide se o vídeo está bom é você. E como eu já li o vídeo inteiro, eu também entrego o que vai em volta dele: ideias de título, a descrição e os capítulos com o tempo certo. Esses são os cinco passos. Agora, os três jeitos de usar.",
+    "palavras": 143,
+    "duracao_estimada_s": 57
+  },
+  {
+    "numero": 7,
+    "nome": "Na prática: cortes",
+    "narracao": "Primeiro uso: cortes. Você tem um vídeo longo: um podcast, uma aula, uma live. O pedido é este: \"Encontre os dez melhores trechos deste vídeo, com até um minuto cada, corte na vertical e coloque legenda palavra por palavra.\" Eu leio a transcrição, escolho trechos que funcionam sozinhos, com começo e fim, corto, viro para a vertical e legendo. Dez cortes, uma frase. A dica: peça para eu explicar por que escolhi cada trecho. Assim você aprova antes de eu exportar.",
+    "palavras": 81,
+    "duracao_estimada_s": 32
+  },
+  {
+    "numero": 8,
+    "nome": "Na prática: vídeo longo",
+    "narracao": "Segundo uso: vídeo longo. Você gravou uma hora, em vários arquivos, errando e repetindo. O pedido: \"Junte estas gravações, tire os erros e os silêncios, e monte um vídeo de quinze minutos.\" Eu transcrevo tudo. Quando você repetiu a mesma frase três vezes, eu fico com a melhor. Monto na ordem e te mostro a lista de cortes. A parte mais chata da edição, que é ouvir tudo de novo procurando erro, deixa de ser sua.",
+    "palavras": 76,
+    "duracao_estimada_s": 30
+  },
+  {
+    "numero": 9,
+    "nome": "Na prática: canal dark",
+    "narracao": "Terceiro uso: canal dark, o canal em que ninguém aparece. É exatamente o que você está assistindo. Aqui o processo muda, porque não existe gravação. Começa pelo roteiro: você me dá o tema e a gente escreve junto. Depois vem a voz. Você grava, como neste vídeo, ou usa um serviço de voz por inteligência artificial, que geralmente é pago. A voz passa pelo Whisper. E com o tempo de cada palavra, eu monto as animações por cima, no Remotion. Para imagens e vídeos de apoio, uma regra: use só material seu ou com licença liberada. Existe uma ferramenta chamada yt-dlp, que baixa vídeos da internet, e ela é ótima para recuperar o seu próprio conteúdo. Baixar o vídeo dos outros para repostar é o jeito mais rápido de perder um canal.",
+    "palavras": 132,
+    "duracao_estimada_s": 53
+  },
+  {
+    "numero": 10,
+    "nome": "As ferramentas",
+    "narracao": "Agora tira um print. Whisper transcreve. Auto-editor tira o silêncio. FFmpeg corta e exporta. Remotion anima. Yt-dlp baixa o seu material. Os links estão na descrição. E você não precisa instalar nenhuma na mão: é só pedir para mim.",
+    "palavras": 39,
+    "duracao_estimada_s": 16
+  },
+  {
+    "numero": 11,
+    "nome": "Fechamento",
+    "narracao": "Lembra da primeira cena? Esta é a linha do tempo deste vídeo. Onze cenas, e nenhum programa de edição aberto. Eu não substituo o seu olhar. Eu tiro da sua frente a parte repetitiva, para sobrar tempo para a parte que é sua: a ideia. Começa pequeno. Pega um vídeo, cria a pasta e escreve o primeiro pedido. Se este vídeo te ajudou, se inscreve e me conta nos comentários: qual vídeo você quer que eu edite primeiro?",
+    "palavras": 78,
+    "duracao_estimada_s": 31
+  }
+]

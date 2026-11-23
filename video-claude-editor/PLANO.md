@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aprovado pelo Cristian. Fase atual: 0.
+Situação: aprovado pelo Cristian. Fase 0 concluída. Fase atual: 2 (roteiro), antecipada a pedido do Cristian. A capa (fase 1) vem em seguida.
 
 ## 1. Objetivo
 
@@ -54,6 +54,8 @@ Já aprovado pelo Cristian:
 5. **Finalizar.** A pessoa assiste e pede ajustes. O Claude exporta o vídeo e sugere título, capa e capítulos.
 
 ## 5. Cenas do vídeo
+
+Atenção: a lista que vale é a do ROTEIRO.md, que ficou com 11 cenas. A tabela abaixo é a versão inicial, com 13.
 
 Como este projeto é um vídeo, a "lista de telas" é a lista de cenas. Os tempos são estimativas e mudam quando a narração chegar.
 
@@ -115,7 +117,7 @@ Nenhuma. O projeto não usa chave nem senha.
 |---|---|---|
 | 0. Preparação | Projeto criado e um teste de 5 segundos com o personagem. Teste de envio de arquivo grande para o Drive. | O arquivo existe, tem 1920x1080 e 30 quadros por segundo, conferido com ffprobe. Mostro um quadro. O arquivo de teste aparece no seu Drive. |
 | 1. Capa | Capa A em PNG. | Arquivo com 1280x720 e menos de 2 MB. Mostro a imagem e simulo em tamanho pequeno, como aparece no celular. Você aprova. |
-| 2. Roteiro | ROTEIRO.md e cenas.json. | Contagem de palavras entre 1.700 e 2.000, que dá 12 a 14 minutos falando. Cada afirmação sobre ferramenta tem o link oficial conferido. Você aprova. |
+| 2. Roteiro | ROTEIRO.md e cenas.json. | Contagem de palavras entre 1.300 e 1.800, que dá de 10 a 12 minutos com as pausas de animação. O critério baixou porque a regra do Cristian é cortar tudo que não faz diferença, e não encher para bater tempo. Cada afirmação sobre ferramenta tem o link oficial conferido. Você aprova. |
 | 3. Prova de estilo | Cenas 1 e 2 animadas (primeiro minuto). | Vídeo exportado e conferido. Mostro quadros de cada cena. Você aprova o estilo antes de eu fazer o resto. |
 | 4. Passos | Cenas 3 a 8. | Cada cena exportada sem erro. Mostro quadros do início, meio e fim de cada uma. |
 | 5. Prática e fechamento | Cenas 9 a 13 e o vídeo inteiro montado, ainda sem voz. | Duração total conferida, nenhuma tela preta ou quadro vazio na varredura automática. |
