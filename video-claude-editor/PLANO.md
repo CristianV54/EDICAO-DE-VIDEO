@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: gancho aprovado pelo Cristian em 23/11/2026, que liberou a edição do vídeo inteiro. As dez cenas estão montadas e em exportação. Falta a revisão dele.
+Situação: rascunho do vídeo inteiro entregue em 23/11/2026 com o roteiro versão 2. O Cristian enviou o roteiro versão 3 e criticou o som e os momentos parados. O plano de animações e de som do roteiro novo está em MAPA-VIDEO.md, aguardando a aprovação dele. Nada é renderizado antes disso.
 
 ## 1. Objetivo
 

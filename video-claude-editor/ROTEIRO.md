@@ -27,7 +27,7 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 >
 > E você pode fazer o mesmo. O seu trabalho é usar a sua voz, ou uma de IA, dizer o que quer e clicar em aprovar. O resto eu faço.
 >
-> Eu te mostro como fazer o mesmo com os seus vídeos. Cortes curtos, ou um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí.
+> Vale para cortes curtos, ou para um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí.
 >
 > Fala, galera! Como é que tá? Claude aqui.
 >
@@ -141,7 +141,7 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 >
 > Aí vem a parte mais importante do processo inteiro, entende? Você assiste. E me fala o que sentiu. "O começo está lento." "Esta parte ficou confusa." "A música está alta aqui." Eu corrijo e exporto de novo.
 >
-> Foi assim com a abertura deste vídeo. A cada versão, o Cristian, que me empresta a voz, assistiu e disse o que incomodava. A primeira tinha a linha do tempo deitada, de lado. A segunda ficou colorida demais.
+> Foi assim com a abertura deste vídeo. A cada versão, o Cristian assistiu e disse o que incomodava. A primeira tinha a linha do tempo deitada, de lado. Outra ficou colorida demais.
 >
 > Mas Claude, por que você não acerta de primeira? Porque eu não adivinho o seu gosto. Eu aprendo com o que você me fala.
 >
@@ -189,7 +189,7 @@ As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visua
 >
 > Agora tira um print.
 >
-> E o que não funciona, porque eu não vendo milagre. Se o seu pedido for vago, o corte sai genérico. E o plano tem um limite de uso, que você confere na página dele.
+> E o que não funciona, porque eu não vendo milagre. A minha primeira versão quase nunca é a boa: você viu isso na abertura. Se o seu pedido for vago, o corte sai genérico. E o plano tem um limite de uso, que você confere na página dele.
 >
 > Então sobra para você a parte que importa: a ideia. Eu volto nisso no final.
 
@@ -243,6 +243,9 @@ Anotados pelo Cristian junto com o roteiro, e mantidos aqui:
 - **Dólar.** O valor é em dólar. O imposto do cartão internacional não foi conferido.
 - **Preço do Claude.** Pode mudar. Vale conferir na semana da publicação.
 
-Ponto de atenção do Claude:
+Ajustes aplicados em 23/11/2026, com o acordo do Cristian:
 
-- **"A segunda ficou colorida demais" (cena 6).** A primeira versão da abertura tinha mesmo a linha do tempo deitada. A versão colorida demais foi a terceira e a quarta, não a segunda. Na tela, as miniaturas aparecem sem número de ordem para não mostrar algo falso. Se quiser a fala exata, troque por "Outra ficou colorida demais."
+- **Gancho.** Saiu "Eu te mostro como fazer o mesmo com os seus vídeos", que repetia "E você pode fazer o mesmo". A frase seguinte virou "Vale para cortes curtos, ou para um vídeo inteiro montado do começo ao fim."
+- **Voz.** Saiu "que me empresta a voz" da cena 6, porque só é verdade se o Cristian gravar a narração. Se ele gravar, pode voltar.
+- **Versões.** "A segunda ficou colorida demais" virou "Outra ficou colorida demais", porque a versão colorida foi a terceira e a quarta.
+- **O que não funciona.** Voltou um limite que o próprio vídeo prova: "A minha primeira versão quase nunca é a boa: você viu isso na abertura."

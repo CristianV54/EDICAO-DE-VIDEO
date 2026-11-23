@@ -57,8 +57,8 @@ export const medirCena = (numero: number, planos: Plano[], desloc = 0, cauda = 0
 };
 export const duracaoCena = (numero: number, desloc = 0, cauda = 0) => Math.round(T[String(numero)].duracao * 30) + 14 + desloc + cauda;
 
-// alvo de volume por tipo de som, em LUFS, para todos ficarem na mesma régua
-const ALVO: Record<string, number> = {estalo: -30, estalo_madeira: -31, tique: -32, clique: -27, tecla: -34, corte: -27, deslize: -30, whoosh: -29, whoosh_longo: -30, whoosh_grave: -28, batida: -24, impacto: -25, queda: -30, subida: -29, subida_forte: -28, brilho: -31, sucesso: -26, revela: -27, desliga: -29, passo: -28, gaveta: -30, camera: -28};
+// A voz-guia está em -22,6 LUFS. Todo efeito fica de 13 a 19 dB abaixo dela, para nunca cobrir a fala.
+const ALVO: Record<string, number> = {estalo: -40, estalo_madeira: -40, tique: -42, clique: -38, tecla: -43, corte: -37, deslize: -40, whoosh: -39, whoosh_longo: -39, whoosh_grave: -38, batida: -36, impacto: -36, queda: -40, subida: -40, subida_forte: -39, brilho: -41, sucesso: -38, revela: -38, desliga: -40, passo: -38, gaveta: -40, camera: -39};
 const contagem: Record<string, number> = {};
 
 // Um som avulso da biblioteca, com o pico no quadro pedido (usado pelo gancho).
@@ -67,7 +67,7 @@ export const somFx = (grupo: string, quadro: number, db = 0): {arquivo: string; 
   const g = S[grupo];
   vez[grupo] = (vez[grupo] ?? -1) + 1;
   const take = g.takes[vez[grupo] % g.takes.length];
-  return {arquivo: take.arquivo, de: Math.max(0, Math.round(quadro - take.pico * 30)), vol: Math.min(1, Math.pow(10, ((ALVO[grupo] ?? -30) + db - take.lufs + 22.6) / 20))};
+  return {arquivo: take.arquivo, de: Math.max(0, Math.round(quadro - take.pico * 30)), vol: Math.min(1, Math.pow(10, ((ALVO[grupo] ?? -30) + db - take.lufs) / 20))};
 };
 
 // Todos os sons de uma cena, com o pico de cada um no quadro pedido e takes alternados.
@@ -90,7 +90,7 @@ export const sonsDaCena = (numero: number, planos: Plano[], abertura?: Abertura)
       }
       contagem[grupo] = (contagem[grupo] ?? -1) + 1;
       const take = g.takes[(contagem[grupo] + numero) % g.takes.length];
-      const ganho = Math.pow(10, ((ALVO[grupo] ?? -30) + db - take.lufs + 22.6) / 20); // 22.6: a voz-guia está em -22,6 LUFS
+      const ganho = Math.pow(10, ((ALVO[grupo] ?? -30) + db - take.lufs) / 20); // 22.6: a voz-guia está em -22,6 LUFS
       lista.push({arquivo: take.arquivo, de: Math.max(0, Math.round(q - take.pico * 30)), vol: Math.min(1, ganho)});
     });
   });
