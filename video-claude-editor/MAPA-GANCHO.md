@@ -1,4 +1,4 @@
-# Mapa de animações: cena 1, o gancho (versão 3)
+# Mapa de animações: cena 1, o gancho (versão 5)
 
 Feito depois da crítica do Cristian à versão 1, seguindo o fluxo de edição de Lucas Leite (github.com/LeiteZ/fluxo-de-edicao), que ele indicou. Este arquivo é o plano das animações do gancho. O código está em `src/cenas/Gancho.tsx`.
 
@@ -55,6 +55,24 @@ Crítica do Cristian à versão 2, em 23/11/2026: a curva com losangos não repr
 | Abertura | Os clipes já estão chegando no quadro zero, para a tela não abrir vazia |
 
 Regra nova para o resto do vídeo: toda tela que aparecer (celular, monitor, janela) mostra alguma coisa acontecendo dentro, e cada trecho tem o seu ambiente.
+
+## Mudanças das versões 4 e 5
+
+A versão 4 trocou a animação de papel por letras e elementos de edição, e os painéis do fundo por luzes desfocadas. O Cristian não aprovou a animação e disse que o que incomodava era poluição visual e excesso de cores. Ele mandou um trecho de referência: fundo quase preto, uma cor só de destaque, uma linha fina e brilhante se desenhando, e texto branco com uma palavra colorida.
+
+Versão 5, em 23/11/2026:
+
+| Item | O que mudou |
+|---|---|
+| Paleta | Quase preto, cinzas, branco quente e uma única cor de destaque, o laranja. Está em `src/tema.ts`, no objeto `N`. Os clipes da linha do tempo ficaram cinza. Só o trecho cortado fica vermelho |
+| Ambientes | A cor é a mesma em todos os trechos. O que muda é a posição do brilho e a estrutura: espuma acústica cinza, parede de furos cinza, sol laranja atrás da escada |
+| Monitor | Em cima da linha do tempo entra um monitor de programa, mostrando o que está sendo editado, com relógio correndo |
+| mo02b, "animação" | A câmera entra no monitor. Uma linha laranja se desenha a partir de uma base tracejada, com pontos-chave, e dispara para cima enquanto a câmera segue a ponta. O texto "cada animação, desenhada em código" entra dentro da cena |
+| Telas de papel | As animações dentro do celular e da tela larga perderam a maior parte da saturação |
+| Botão APROVAR | Deixou de ser verde. É claro, com clarão laranja no clique |
+| Caixas das ferramentas | Todas cinza-escuro, com um traço laranja |
+
+Regra nova para o resto do vídeo: uma cor de destaque só. Cor fora da paleta só entra quando tem significado, como o vermelho do trecho cortado e as cores dos ícones do Premiere e do DaVinci.
 
 ## O que ainda falta e depende de outras fases
 

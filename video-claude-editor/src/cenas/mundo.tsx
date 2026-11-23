@@ -76,13 +76,15 @@ const PAINEIS: {p: V3; l: number; r: number}[] = [
 
 // Cada trecho do vídeo tem o seu ambiente, para o fundo não ser sempre o mesmo.
 export type Tema = {grade: string; neblina: string; ceu: string; luzA: string; luzB: string; poeira: string; extra?: 'espuma' | 'furos' | 'sol'};
+const base = {grade: '#343c43', neblina: '#050607', luzA: '#ffe1cf', luzB: '#f2622e', poeira: '#cfd6dc'};
+const brilho = (x: number, y: number, forca: number) => `radial-gradient(ellipse at ${x}% ${y}%, rgba(242,98,46,${forca}) 0%, rgba(5,6,7,0) 46%), radial-gradient(ellipse at ${100 - x}% ${100 - y}%, rgba(255,255,255,0.045) 0%, rgba(5,6,7,0) 40%), #050607`;
 export const TEMAS: Record<string, Tema> = {
-  estudio: {grade: '#2dd4bf', neblina: '#04100f', ceu: 'radial-gradient(ellipse at 50% 38%, #0c3b37 0%, #051514 55%, #020807 100%)', luzA: '#2dd4bf', luzB: '#22d3ee', poeira: '#8ff5e6'},
-  cemiterio: {grade: '#a78bfa', neblina: '#090614', ceu: 'radial-gradient(ellipse at 50% 30%, #3b1d6e 0%, #140a2a 55%, #05030b 100%)', luzA: '#a78bfa', luzB: '#f472b6', poeira: '#d8c9ff'},
-  gravacao: {grade: '#fb923c', neblina: '#120904', ceu: 'radial-gradient(ellipse at 50% 35%, #6b2d0c 0%, #24100a 55%, #0a0403 100%)', luzA: '#fb923c', luzB: '#fde68a', poeira: '#ffd9a8', extra: 'espuma'},
-  aurora: {grade: '#38bdf8', neblina: '#050a1c', ceu: 'linear-gradient(180deg, #0b1140 0%, #1d2a78 45%, #b4532a 100%)', luzA: '#38bdf8', luzB: '#fb923c', poeira: '#c7e9ff', extra: 'sol'},
-  vitrine: {grade: '#f472b6', neblina: '#12050d', ceu: 'radial-gradient(ellipse at 50% 35%, #7a1f52 0%, #2a0c1f 55%, #0a0308 100%)', luzA: '#f472b6', luzB: '#60a5fa', poeira: '#ffc9e3'},
-  oficina: {grade: '#60a5fa', neblina: '#040a16', ceu: 'radial-gradient(ellipse at 50% 35%, #173a7a 0%, #0a1630 55%, #03060e 100%)', luzA: '#60a5fa', luzB: '#22d3ee', poeira: '#c9dcff', extra: 'furos'},
+  estudio: {...base, ceu: brilho(74, 78, 0.2)},
+  cemiterio: {...base, ceu: brilho(50, 12, 0.1)},
+  gravacao: {...base, ceu: brilho(22, 70, 0.2), extra: 'espuma'},
+  aurora: {...base, ceu: brilho(60, 92, 0.3), extra: 'sol'},
+  vitrine: {...base, ceu: brilho(82, 40, 0.18)},
+  oficina: {...base, ceu: brilho(20, 22, 0.16), extra: 'furos'},
 };
 
 const texturaEspuma = (): THREE.CanvasTexture => {
@@ -98,10 +100,10 @@ const texturaEspuma = (): THREE.CanvasTexture => {
     g.lineTo(pts[4], pts[5]);
     g.fill();
   };
-  tri([0, 0, 128, 0, 64, 64], '#5a2a14');
-  tri([128, 0, 128, 128, 64, 64], '#3d1b0c');
-  tri([0, 128, 128, 128, 64, 64], '#2a1208');
-  tri([0, 0, 0, 128, 64, 64], '#4a2210');
+  tri([0, 0, 128, 0, 64, 64], '#24282c');
+  tri([128, 0, 128, 128, 64, 64], '#191c1f');
+  tri([0, 128, 128, 128, 64, 64], '#101214');
+  tri([0, 0, 0, 128, 64, 64], '#1e2225');
   const t = new THREE.CanvasTexture(c);
   t.wrapS = THREE.RepeatWrapping;
   t.wrapT = THREE.RepeatWrapping;
@@ -115,9 +117,9 @@ const texturaFuros = (): THREE.CanvasTexture => {
   c.width = 64;
   c.height = 64;
   const g = c.getContext('2d')!;
-  g.fillStyle = '#0f2a55';
+  g.fillStyle = '#14171a';
   g.fillRect(0, 0, 64, 64);
-  g.fillStyle = '#050d1e';
+  g.fillStyle = '#060708';
   g.beginPath();
   g.arc(32, 32, 9, 0, Math.PI * 2);
   g.fill();
@@ -159,12 +161,12 @@ export const Mundo: React.FC<{f: number; escuro?: number; tema?: Tema}> = ({f, e
       <fog attach="fog" args={[tema.neblina, 11, 52]} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[280, 280]} />
-        <meshStandardMaterial color={tema.neblina} roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.3 * (1 - escuro * 0.7)} />
+        <meshStandardMaterial color={tema.neblina} roughness={0.28} metalness={0.75} emissive="#ffffff" emissiveMap={grade} emissiveIntensity={0.16 * (1 - escuro * 0.7)} />
       </mesh>
       {/* luzes desfocadas ao longe, no lugar de objetos nítidos que brigam com a frente */}
       {LUZES_LONGE.map((l, i) => (
         <sprite key={i} position={[l.p[0] + Math.sin(f / 120 + i) * 1.2, l.p[1] + Math.cos(f / 95 + i * 2) * 0.8, l.p[2]]} scale={[l.t, l.t, 1]}>
-          <spriteMaterial map={i % 3 === 0 ? bokehB : bokehA} transparent opacity={(0.2 + 0.14 * Math.sin(f / 40 + i * 1.7)) * (1 - escuro * 0.7) * (tema.extra === 'espuma' || tema.extra === 'furos' ? 0.5 : 1)} blending={THREE.AdditiveBlending} depthWrite={false} fog={false} />
+          <spriteMaterial map={i % 3 === 0 ? bokehB : bokehA} transparent opacity={(i % 3 === 0 ? 0.16 : 0.05) * (1 + 0.4 * Math.sin(f / 40 + i * 1.7)) * (1 - escuro * 0.7) * (tema.extra === 'espuma' || tema.extra === 'furos' ? 0.5 : 1)} blending={THREE.AdditiveBlending} depthWrite={false} fog={false} />
         </sprite>
       ))}
       {espuma ? (
@@ -192,7 +194,7 @@ export const Mundo: React.FC<{f: number; escuro?: number; tema?: Tema}> = ({f, e
         </group>
       ) : null}
       <points geometry={poeira} position={[Math.sin(f / 160) * 2, Math.sin(f / 90) * 0.6, f * 0.012]}>
-        <pointsMaterial color={tema.poeira} size={0.11} sizeAttenuation transparent opacity={0.75} depthWrite={false} />
+        <pointsMaterial color={tema.poeira} size={0.07} sizeAttenuation transparent opacity={0.45} depthWrite={false} />
       </points>
     </>
   );
@@ -214,7 +216,7 @@ export const Palco: React.FC<{
     <AbsoluteFill style={{filter: borrao > 0.4 ? `blur(${borrao.toFixed(1)}px)` : undefined, transform: borrao > 0.4 ? `scale(${1 + borrao * 0.004})` : undefined}}>
       <Tela3D>
         <Camera pos={pos} alvo={alvo} fov={fov} rolo={rolo} />
-        <Luzes corA={tema.luzA} corB={tema.luzB} forcaA={260 * (1 - escuro * 0.75)} forcaB={220 * (1 - escuro * 0.75)} />
+        <Luzes corA={tema.luzA} corB={tema.luzB} forcaA={110 * (1 - escuro * 0.75)} forcaB={90 * (1 - escuro * 0.75)} />
         <Mundo f={f} escuro={escuro} tema={tema} />
         {children}
       </Tela3D>

@@ -310,12 +310,221 @@ export const recorteFalando = (g: G, w: number, h: number, f: number) => {
     cabeca: Math.sin(f / 6) * 0.06,
     bracoD: 0.75 + Math.sin(f / 5) * 0.4,
     bracoE: 0.2 + Math.sin(f / 7 + 1) * 0.15,
-    roupa: '#2563eb',
+    roupa: '#e8e2d6',
   });
 };
 export const recorteComemora = (g: G, w: number, h: number, f: number) => {
   g.clearRect(0, 0, w, h);
   const t = (f % 16) / 16;
   const pulo = Math.sin(t * Math.PI);
-  boneco(g, w * 0.5, h * 0.97 - pulo * h * 0.14, h * 0.78, {bracoE: 2.6, bracoD: 2.6, boca: 1, achata: t < 0.15 || t > 0.85 ? 0.85 : 1.05, roupa: '#2563eb', pernaE: -pulo * 0.3, pernaD: pulo * 0.3});
+  boneco(g, w * 0.5, h * 0.97 - pulo * h * 0.14, h * 0.78, {bracoE: 2.6, bracoD: 2.6, boca: 1, achata: t < 0.15 || t > 0.85 ? 0.85 : 1.05, roupa: '#e8e2d6', pernaE: -pulo * 0.3, pernaD: pulo * 0.3});
+};
+
+// Tira a maior parte da saturação de uma cena de papel e puxa para o tom do vídeo.
+const acalmar = (g: G, w: number, h: number) => {
+  semSombra(g);
+  g.save();
+  g.globalCompositeOperation = 'saturation';
+  g.fillStyle = 'rgba(128,128,128,0.72)';
+  g.fillRect(0, 0, w, h);
+  g.globalCompositeOperation = 'soft-light';
+  g.fillStyle = 'rgba(242,98,46,0.22)';
+  g.fillRect(0, 0, w, h);
+  g.globalCompositeOperation = 'multiply';
+  g.fillStyle = 'rgba(40,44,50,0.28)';
+  g.fillRect(0, 0, w, h);
+  g.restore();
+};
+export const cenaCorteCalma = (g: G, w: number, h: number, f: number) => {
+  cenaCorte(g, w, h, f);
+  acalmar(g, w, h);
+};
+export const cenaLongoCalma = (g: G, w: number, h: number, f: number) => {
+  cenaLongo(g, w, h, f);
+  acalmar(g, w, h);
+};
+export const cenaDarkCalma = (g: G, w: number, h: number, f: number) => {
+  cenaDark(g, w, h, f);
+  // aqui só tira a saturação: a cena já é escura e não pode escurecer mais
+  semSombra(g);
+  g.save();
+  g.globalCompositeOperation = 'saturation';
+  g.fillStyle = 'rgba(128,128,128,0.6)';
+  g.fillRect(0, 0, w, h);
+  g.globalCompositeOperation = 'screen';
+  g.fillStyle = 'rgba(70,60,90,0.35)';
+  g.fillRect(0, 0, w, h);
+  g.restore();
+};
+
+const fundoMonitor = (g: G, w: number, h: number, forca = 0.2) => {
+  semSombra(g);
+  g.fillStyle = '#060708';
+  g.fillRect(0, 0, w, h);
+  const luz = g.createRadialGradient(w * 0.8, h * 0.82, 0, w * 0.8, h * 0.82, w * 0.5);
+  luz.addColorStop(0, `rgba(242,98,46,${forca})`);
+  luz.addColorStop(1, 'rgba(242,98,46,0)');
+  g.fillStyle = luz;
+  g.fillRect(0, 0, w, h);
+};
+
+// ---- Monitor de programa: mostra o que está sendo editado ----
+// f é o quadro da cena; "corte" é o quadro em que acontece o corte.
+export const cenaPrograma = (g: G, w: number, h: number, f: number) => {
+  const k = w / 1920;
+  fundoMonitor(g, w, h, 0.14);
+  // o "vídeo": um quadro com o símbolo no centro, aproximando devagar
+  const z = 1 + (f % 400) * 0.0006;
+  g.save();
+  g.translate(w / 2, h / 2);
+  g.scale(z, z);
+  g.fillStyle = '#111417';
+  g.beginPath();
+  g.roundRect(-w * 0.33, -h * 0.33, w * 0.66, h * 0.66, 22 * k);
+  g.fill();
+  g.strokeStyle = '#f5f2ec';
+  g.lineCap = 'round';
+  g.lineWidth = 15 * k;
+  [1, 0.74, 0.92, 0.7, 1, 0.76, 0.9, 0.72, 1, 0.74, 0.88, 0.72].forEach((r, i) => {
+    const a = (i / 12) * Math.PI * 2 + 0.1 + f * 0.004;
+    g.beginPath();
+    g.moveTo(Math.cos(a) * 26 * k, Math.sin(a) * 26 * k);
+    g.lineTo(Math.cos(a) * 150 * r * k, Math.sin(a) * 150 * r * k);
+    g.stroke();
+  });
+  g.restore();
+  // marcas de canto, nome e relógio
+  g.strokeStyle = '#59636b';
+  g.lineWidth = 3 * k;
+  [[70, 70, 1, 1], [1850, 70, -1, 1], [70, 1010, 1, -1], [1850, 1010, -1, -1]].forEach(([x, y, dx, dy]) => {
+    g.beginPath();
+    g.moveTo((x + 46 * dx) * k, y * k);
+    g.lineTo(x * k, y * k);
+    g.lineTo(x * k, (y + 46 * dy) * k);
+    g.stroke();
+  });
+  g.fillStyle = '#8a949c';
+  g.font = `600 ${30 * k}px monospace`;
+  g.textAlign = 'left';
+  g.textBaseline = 'middle';
+  g.fillText('PROGRAMA', 110 * k, 110 * k);
+  g.fillStyle = '#f5f2ec';
+  g.font = `600 ${44 * k}px monospace`;
+  const seg = Math.floor(f / 30);
+  g.fillText(`00:00:${String(seg).padStart(2, '0')}:${String(f % 30).padStart(2, '0')}`, 110 * k, 970 * k);
+  if (f >= 119 && f <= 123) {
+    g.fillStyle = `rgba(255,255,255,${0.8 - (f - 119) * 0.18})`;
+    g.fillRect(0, 0, w, h);
+  }
+};
+
+// ---- Monitor na palavra "animação": uma linha se desenha e a câmera segue a ponta ----
+const caminhoLinha = (u: number): [number, number] => {
+  const x = 330 + u * 1750;
+  const onda = Math.sin(u * 8.5) * 46 * (1 - Math.min(1, u * 1.5)) + u * 30;
+  const sobe = u > 0.5 ? Math.pow((u - 0.5) / 0.5, 2.3) * 1150 : 0;
+  return [x, 640 - onda - sobe];
+};
+export const cenaLinha = (g: G, w: number, h: number, t: number) => {
+  const k = w / 1920;
+  const v = Math.max(0, Math.min(1, t / 33));
+  const p = v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2;
+  const [hx, hy] = caminhoLinha(p);
+  fundoMonitor(g, w, h, 0.16 + p * 0.3);
+  const camX = Math.max(0, hx - 1180);
+  const camY = Math.min(0, hy - 430);
+  g.save();
+  g.scale(k, k);
+  g.translate(-camX, -camY);
+  // pontinhos de fundo
+  g.fillStyle = 'rgba(255,255,255,0.16)';
+  for (let i = 0; i < 90; i++) {
+    const x = ((i * 263.7) % 2800) - 200;
+    const y = ((i * 149.3) % 2300) - 1300;
+    g.fillRect(x, y, 4, 4);
+  }
+  // linha de base tracejada: o vídeo parado
+  g.strokeStyle = 'rgba(245,242,236,0.5)';
+  g.lineWidth = 4;
+  g.setLineDash([26, 20]);
+  g.beginPath();
+  g.moveTo(-200, 640);
+  g.lineTo(3200, 640);
+  g.stroke();
+  g.setLineDash([]);
+  g.fillStyle = 'rgba(245,242,236,0.55)';
+  g.font = '500 34px monospace';
+  g.textAlign = 'left';
+  g.textBaseline = 'alphabetic';
+  g.fillText('parado', 250, 610);
+  // a linha
+  const n = Math.max(2, Math.round(p * 160));
+  const tracar = () => {
+    g.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const [x, y] = caminhoLinha((i / n) * p);
+      if (i === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+  };
+  g.lineCap = 'round';
+  g.lineJoin = 'round';
+  g.shadowColor = '#f2622e';
+  g.shadowBlur = 38;
+  g.strokeStyle = '#f2622e';
+  g.lineWidth = 11;
+  tracar();
+  g.stroke();
+  g.shadowBlur = 0;
+  g.strokeStyle = '#ffc9a3';
+  g.lineWidth = 4;
+  tracar();
+  g.stroke();
+  // pontos-chave
+  [0, 0.14, 0.3, 0.46, 0.66, 0.84].forEach((u) => {
+    if (p < u) return;
+    const [x, y] = caminhoLinha(u);
+    const cresce = Math.min(1, (p - u) * 14);
+    g.fillStyle = '#f5f2ec';
+    g.beginPath();
+    g.arc(x, y, 11 * cresce, 0, Math.PI * 2);
+    g.fill();
+  });
+  // a ponta
+  g.fillStyle = 'rgba(242,98,46,0.35)';
+  g.beginPath();
+  g.arc(hx, hy, 40, 0, Math.PI * 2);
+  g.fill();
+  g.shadowColor = '#f2622e';
+  g.shadowBlur = 30;
+  g.fillStyle = '#ffffff';
+  g.beginPath();
+  g.arc(hx, hy, 15, 0, Math.PI * 2);
+  g.fill();
+  g.shadowBlur = 0;
+  g.restore();
+  // o texto fica preso na tela, não na linha
+  const palavra = (txt: string, x: number, y: number, cor: string, de: number, tam: number, peso = 900) => {
+    const a = Math.max(0, Math.min(1, (t - de) / 6));
+    if (a <= 0) return 0;
+    g.save();
+    g.globalAlpha = a;
+    g.font = `${peso} ${tam * k}px Montserrat`;
+    g.textAlign = 'left';
+    g.textBaseline = 'alphabetic';
+    if (cor !== '#f5f2ec') {
+      g.shadowColor = cor;
+      g.shadowBlur = 34 * k;
+    }
+    g.fillStyle = cor;
+    g.fillText(txt, x * k, (y + (1 - a) * 26) * k);
+    const larg = g.measureText(txt).width / k;
+    g.restore();
+    return larg;
+  };
+  palavra('cada', 210, 300, '#f5f2ec', 5, 150);
+  g.font = `900 ${150 * k}px Montserrat`;
+  const largCada = g.measureText('cada ').width / k;
+  palavra('animação', 210 + largCada, 300, '#f2622e', 11, 150);
+  palavra('desenhada em código', 216, 380, '#f5f2ec', 19, 60, 600);
 };

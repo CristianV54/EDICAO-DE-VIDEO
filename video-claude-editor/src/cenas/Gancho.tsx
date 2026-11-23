@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, Easing, Sequence, useCurrentFrame} from 'remotion';
 import * as THREE from 'three';
-import {cores, vivas} from '../tema';
+import {cores, N} from '../tema';
 import {aleatorio, chegadaRampa, expoOut, mola, power2Out, power4In, power4InOut, rampa, saidaRampa, somar, trilho, trilho1, V3} from '../anim';
 import {Bloco} from '../tres/pecas';
 import {Icone3D} from '../tres/Icone3D';
@@ -12,7 +12,7 @@ import {EsperaFonte, Rotulo3D, Texto3D} from '../tres/Rotulo';
 import {Halo} from '../tres/Halo';
 import {Destaque, Palco, TEMAS} from './mundo';
 import {TelaPapel} from '../tres/Papel';
-import {cenaCorte, cenaDark, cenaLongo, recorteComemora, recorteFalando} from '../papel';
+import {cenaCorteCalma, cenaDarkCalma, cenaLinha, cenaLongoCalma, cenaPrograma, recorteComemora, recorteFalando} from '../papel';
 
 // Cena 1 do roteiro: o gancho, versão 2.
 // Feita seguindo o MAPA-GANCHO.md: linha do tempo em pé, câmera que nunca para,
@@ -36,26 +36,26 @@ const clarear = (cor: string, k: number) => new THREE.Color(cor).lerp(new THREE.
 // ====================== Trecho 1: a linha do tempo em pé ======================
 type Clipe = {x: number; l: number; y: number; cor: string; audio?: boolean; corte?: boolean; depois?: boolean};
 const CLIPES: Clipe[] = [
-  {x: -6.5, l: 3.0, y: 5.25, cor: '#ec4899'},
-  {x: -1.9, l: 2.8, y: 5.25, cor: '#8b5cf6'},
-  {x: 4.7, l: 4.4, y: 5.25, cor: '#ec4899'},
-  {x: -6.3, l: 3.8, y: 4.25, cor: vivas.azul},
-  {x: -2.5, l: 3.4, y: 4.25, cor: vivas.verde},
-  {x: 0.15, l: 1.7, y: 4.25, cor: vivas.azul, corte: true},
-  {x: 2.7, l: 3.2, y: 4.25, cor: vivas.verde, depois: true},
-  {x: 6.2, l: 3.6, y: 4.25, cor: vivas.azul, depois: true},
-  {x: -3.6, l: 9.4, y: 3.1, cor: '#0d9488', audio: true},
-  {x: 5.0, l: 6.6, y: 3.1, cor: '#0d9488', audio: true},
-  {x: 0, l: 16.4, y: 2.05, cor: '#0284c7', audio: true},
+  {x: -6.5, l: 3.0, y: 5.25, cor: N.clipe},
+  {x: -1.9, l: 2.8, y: 5.25, cor: N.clipe},
+  {x: 4.7, l: 4.4, y: 5.25, cor: N.clipe},
+  {x: -6.3, l: 3.8, y: 4.25, cor: N.clipeClaro},
+  {x: -2.5, l: 3.4, y: 4.25, cor: N.clipeClaro},
+  {x: 0.15, l: 1.7, y: 4.25, cor: N.clipeClaro, corte: true},
+  {x: 2.7, l: 3.2, y: 4.25, cor: N.clipeClaro, depois: true},
+  {x: 6.2, l: 3.6, y: 4.25, cor: N.clipeClaro, depois: true},
+  {x: -3.6, l: 9.4, y: 3.1, cor: '#15191c', audio: true},
+  {x: 5.0, l: 6.6, y: 3.1, cor: '#15191c', audio: true},
+  {x: 0, l: 16.4, y: 2.05, cor: '#15191c', audio: true},
 ];
 
 const PecaClipe: React.FC<{c: Clipe; cor: string; i: number}> = ({c, cor, i}) => {
-  const claro = useMemo(() => clarear(cor, 0.28), [cor]);
-  const escuro = useMemo(() => new THREE.Color(cor).multiplyScalar(0.45).getStyle(), [cor]);
+  const claro = useMemo(() => clarear(cor, 0.1), [cor]);
+  const escuro = N.linha;
   const n = c.audio ? Math.floor((c.l - 0.3) / 0.24) : Math.max(1, Math.floor(c.l / 1.15));
   return (
     <>
-      <Bloco tam={[c.l, 0.82, 0.3]} cor={cor} raio={0.1} rugosidade={0.36} emissivo={cor} intensidade={0.12} />
+      <Bloco tam={[c.l, 0.82, 0.3]} cor={cor} raio={0.1} rugosidade={0.42} />
       {c.audio
         ? Array.from({length: n}).map((_, k) => {
             const h = 0.1 + Math.abs(Math.sin(k * 1.7 + i * 2.3) * Math.cos(k * 0.45 + i)) * 0.56;
@@ -66,143 +66,40 @@ const PecaClipe: React.FC<{c: Clipe; cor: string; i: number}> = ({c, cor, i}) =>
   );
 };
 
-// As animações de edição que nascem na palavra "animação".
-const formaCoracao = (): THREE.Shape => {
-  const s = new THREE.Shape();
-  s.moveTo(0, -0.55);
-  s.bezierCurveTo(-1.1, 0.15, -0.6, 0.95, 0, 0.45);
-  s.bezierCurveTo(0.6, 0.95, 1.1, 0.15, 0, -0.55);
-  return s;
-};
-const LETRAS = ['A', 'N', 'I', 'M', 'A', 'Ç', 'Ã', 'O'];
-
-const Animacoes: React.FC<{f: number; fim: number}> = ({f, fim}) => {
-  const coracao = useMemo(() => new THREE.ExtrudeGeometry(formaCoracao(), {depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 5, curveSegments: 24}), []);
-  const anel = rampa(f, 155, 172, power2Out);
-  const arcoAnel = useMemo(() => new THREE.TorusGeometry(0.62, 0.13, 14, 60, Math.max(0.02, anel * Math.PI * 2)), [Math.round(anel * 60)]);
-  const seta = rampa(f, 157, 170, power2Out);
-  const curvaSeta = useMemo(() => new THREE.QuadraticBezierCurve3(new THREE.Vector3(-1.7, -1.75, 0.2), new THREE.Vector3(0.6, -2.5, 0.6), new THREE.Vector3(2.0, -1.5, 0.2)), []);
-  const tuboSeta = useMemo(() => {
-    if (seta < 0.03) return null;
-    const pts = Array.from({length: 25}).map((_, k) => curvaSeta.getPoint((k / 24) * seta));
-    return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.07, 8, false);
-  }, [Math.round(seta * 40)]);
-  const pontaSeta = curvaSeta.getPoint(seta);
-  const dirSeta = curvaSeta.getTangent(seta);
-  const grafico = [0.7, 1.15, 0.9, 1.7];
-  const mCoracao = mola(f, 151, {damping: 8});
-  const mBotao = mola(f, 153, {damping: 9});
-  return (
-    <group position={[-2.2, 6.15, 1.7]} scale={fim}>
-      {/* a palavra, letra por letra, com quique */}
-      {LETRAS.map((letra, i) => {
-        const m = mola(f, 142 + i * 2, {damping: 11, stiffness: 170});
-        const y = 1.75 + (1 - m) * 3.2 + Math.sin(f / 5 + i * 0.8) * 0.06;
-        const x = (i - 3.5) * 0.74;
-        return (
-          <group key={i} position={[x, y, 0.3]} rotation={[0, 0, (1 - m) * (i % 2 ? 0.9 : -0.9)]} scale={Math.max(0.001, m)}>
-            <Rotulo3D texto={letra} larg={5.2} cor="#3b1206" posicao={[0.05, -0.06, -0.05]} />
-            <Rotulo3D texto={letra} larg={5.2} cor={i >= 5 ? '#ffb27a' : '#ffffff'} />
-          </group>
-        );
-      })}
-      {/* gráfico de barras crescendo */}
-      <group position={[2.5, -0.95, 0]}>
-        {grafico.map((h, k) => {
-          const m = mola(f, 148 + k * 3, {damping: 10});
-          const cor = ['#22d3ee', '#a78bfa', '#f472b6', '#f2622e'][k];
-          return <Bloco key={k} tam={[0.42, Math.max(0.02, h * m), 0.42]} cor={cor} raio={0.08} posicao={[k * 0.56, (h * m) / 2, 0]} emissivo={cor} intensidade={0.5} />;
-        })}
-        <Bloco tam={[2.5, 0.08, 0.6]} cor="#ffffff" raio={0.03} posicao={[0.84, -0.04, 0]} />
-      </group>
-      {/* curtida: coração pulsando e corações subindo */}
-      <group position={[-3.2, 0.2, 0.3]} scale={Math.max(0.001, mCoracao) * (0.82 + Math.abs(Math.sin(f / 4)) * 0.16)} rotation={[0, 0.25, -0.12]}>
-        <mesh geometry={coracao} castShadow>
-          <meshStandardMaterial color="#f43f5e" roughness={0.3} emissive="#f43f5e" emissiveIntensity={0.55} />
-        </mesh>
-      </group>
-      {[0, 1, 2].map((k) => {
-        const t = ((f - 154 + k * 7) % 21) / 21;
-        if (f < 154) return null;
-        return (
-          <mesh key={k} geometry={coracao} position={[-3.2 + (k - 1) * 0.5 + Math.sin(t * 6 + k) * 0.15, 0.9 + t * 1.8, 0.4]} scale={0.26 * (1 - t)}>
-            <meshStandardMaterial color="#fb7185" emissive="#fb7185" emissiveIntensity={0.8} />
-          </mesh>
-        );
-      })}
-      {/* botão de inscrição com o sino balançando */}
-      <group position={[-0.5, -0.75, 0.4]} scale={[Math.max(0.001, mBotao), Math.max(0.001, mBotao) * (1 + (1 - mBotao) * 0.4), Math.max(0.001, mBotao)]}>
-        <Bloco tam={[3.0, 0.86, 0.34]} cor="#dc2626" raio={0.3} emissivo="#dc2626" intensidade={0.4} rugosidade={0.3} />
-        <Rotulo3D texto="INSCREVA-SE" larg={2.5} posicao={[-0.1, 0, 0.18]} />
-        <group position={[1.95, 0.25, 0.1]} rotation={[0, 0, Math.sin(f / 2.2) * 0.45 * (1 - rampa(f, 153, 176) * 0.5)]}>
-          <mesh position={[0, -0.28, 0]} castShadow>
-            <coneGeometry args={[0.36, 0.55, 24, 1, true]} />
-            <meshStandardMaterial color="#facc15" roughness={0.3} emissive="#facc15" emissiveIntensity={0.5} side={THREE.DoubleSide} />
-          </mesh>
-          <mesh position={[0, -0.6, 0]}>
-            <sphereGeometry args={[0.11, 16, 12]} />
-            <meshStandardMaterial color="#facc15" emissive="#facc15" emissiveIntensity={0.5} />
-          </mesh>
-        </group>
-      </group>
-      {/* anel de progresso enchendo */}
-      <group position={[3.25, 1.5, 0.2]} rotation={[0, -0.25, Math.PI / 2]}>
-        <mesh>
-          <torusGeometry args={[0.62, 0.11, 12, 60]} />
-          <meshStandardMaterial color="#1c2b2e" roughness={0.6} />
-        </mesh>
-        <mesh geometry={arcoAnel} scale={[1, -1, 1]}>
-          <meshStandardMaterial color="#2dd4bf" emissive="#2dd4bf" emissiveIntensity={1.3} />
-        </mesh>
-      </group>
-      {/* seta se desenhando até o gráfico */}
-      {tuboSeta ? (
-        <>
-          <mesh geometry={tuboSeta}>
-            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.1} />
-          </mesh>
-          <mesh position={[pontaSeta.x, pontaSeta.y, pontaSeta.z]} rotation={[0, 0, Math.atan2(dirSeta.y, dirSeta.x) - Math.PI / 2]}>
-            <coneGeometry args={[0.2, 0.42, 16]} />
-            <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.1} />
-          </mesh>
-        </>
-      ) : null}
-    </group>
-  );
-};
+const MONITOR_Y = 10.0;
 
 const LinhaDoTempo: React.FC = () => {
   const f = useCurrentFrame();
   // câmera: um caminho só, sem parar em nenhum ponto
-  const q = [0, 35, 70, 105, 119, 138, 153, 175, 187, 199, 209, 217, 225];
+  const q = [0, 35, 70, 105, 119, 138, 151, 175, 187, 199, 209, 217, 225];
   const pos = trilho(f, q, [
     [0.6, 4.3, 8],
-    [0.2, 4.1, 11.8],
-    [0, 4, 13.6],
-    [0, 4, 14.4],
+    [0.2, 5.2, 14.5],
+    [0, 6.4, 19.5],
+    [0, 6.4, 20.3],
     [1.9, 4.4, 7.4],
-    [2.2, 4.4, 7.0],
-    [-2.2, 6.1, 9.2],
-    [-2.2, 6.2, 8.4],
-    [-13, 4.2, 6],
-    [-13, 10, -7],
-    [0, 13, -14],
-    [11, 6, -10],
-    [5, 3.4, -4],
+    [2.2, 4.5, 7.0],
+    [0, MONITOR_Y, 6.3],
+    [0, MONITOR_Y, 5.7],
+    [-15, 5, 7],
+    [-15, 12, -8],
+    [0, 15, -16],
+    [12, 7, -11],
+    [5, 3.6, -4],
   ]);
   const alvo = trilho(f, q, [
     [0.6, 4.3, 0],
-    [0.2, 4.1, 0],
-    [0, 4, 0],
-    [0, 4, 0],
+    [0.2, 5.2, 0],
+    [0, 6.4, 0],
+    [0, 6.4, 0],
     [0.3, 4.25, 0],
-    [0.4, 4.25, 0],
-    [-2.2, 6.2, 0],
-    [-2.2, 6.2, 0],
-    [0, 4, 0],
-    [0, 4.2, 0],
-    [0, 4, 0],
-    [0, 3.5, -1],
+    [0.4, 4.3, 0],
+    [0, MONITOR_Y, 0],
+    [0, MONITOR_Y, 0],
+    [0, 6, 0],
+    [0, 6, 0],
+    [0, 6, 0],
+    [0, 4, -1],
     [0, 3, -2],
   ]);
   // na palavra "câmera": volta quase completa em torno da parede, com inclinação e troca de lente
@@ -214,8 +111,8 @@ const LinhaDoTempo: React.FC = () => {
   const vira = rampa(f, 92, 106, power4InOut);
   const xAgulha = f < 140 ? trilho1(f, [106, 119], [-3.2, 0.15]) : 0.15 + (f - 140) * 0.06;
   const batida = f >= 118 && f < 126 ? Math.sin(((f - 118) / 8) * Math.PI) : 0;
-  const posHeroi = lerp3(lerp3([7, 8, 26], [0, 3.9, 5.2], chega), [xAgulha, 7.05 - batida * 0.45, 0.5], vira);
-  const escHeroi = lerp(1.45, 0.42, vira);
+  const posHeroi = lerp3(lerp3([7, 9, 30], [0, 6.2, 8], chega), [xAgulha, 6.95 - batida * 0.45, 0.5], vira);
+  const escHeroi = lerp(1.9, 0.36, vira);
   const linhaAgulha = rampa(f, 100, 110, power2Out);
 
   // corte: o trecho fica vermelho, a agulha bate, o pedaço voa para a câmera
@@ -224,31 +121,32 @@ const LinhaDoTempo: React.FC = () => {
   const fecha = mola(f, 126, {damping: 14});
   const clarao = f >= 119 ? 1 - rampa(f, 119, 128) : 0;
 
-  // animação: a própria palavra entra letra por letra, e em volta dela nascem
-  // as coisas que um editor anima: gráfico, botão com sino, curtida, anel de progresso e seta
-  const fimAnim = 1 - rampa(f, 173, 181, power4In);
+  // monitor de programa em cima da linha do tempo: mostra o que está sendo editado.
+  // Na palavra "animação" a câmera entra nele e uma linha se desenha.
+  const chegaMonitor = mola(f + 22, 8, {damping: 14, stiffness: 110});
+  const naLinha = f >= 141 && f < 184;
 
   return (
     <AbsoluteFill>
       <Palco f={f} pos={pos} alvo={alvo} rolo={rolo} fov={fov} borrao={saidaRampa(f, 225, 9) * 16}>
         {/* a parede */}
-        <Bloco tam={[17.8, 5.3, 0.3]} cor="#0b1719" posicao={[0, 3.65, -0.2]} raio={0.14} rugosidade={0.6} />
-        <Bloco tam={[17.8, 0.36, 0.36]} cor="#12292b" posicao={[0, 6.48, -0.17]} raio={0.1} />
+        <Bloco tam={[17.8, 5.3, 0.3]} cor={N.painel} posicao={[0, 3.65, -0.2]} raio={0.14} rugosidade={0.6} />
+        <Bloco tam={[17.8, 0.36, 0.36]} cor="#14181b" posicao={[0, 6.48, -0.17]} raio={0.1} />
         {Array.from({length: 17}).map((_, k) => (
-          <Bloco key={k} tam={[0.05, k % 4 === 0 ? 0.26 : 0.14, 0.05]} cor="#5eead4" posicao={[-8 + k, 6.48, 0.03]} raio={0.01} emissivo="#5eead4" intensidade={0.8} sombra={false} />
+          <Bloco key={k} tam={[0.05, k % 4 === 0 ? 0.26 : 0.14, 0.05]} cor={N.linha} posicao={[-8 + k, 6.48, 0.03]} raio={0.01} sombra={false} />
         ))}
         {[-7.4, 7.4].map((x) => (
-          <Bloco key={x} tam={[0.34, 1.1, 0.9]} cor="#0b1719" posicao={[x, 0.55, -0.2]} raio={0.08} />
+          <Bloco key={x} tam={[0.34, 1.1, 0.9]} cor={N.painel} posicao={[x, 0.55, -0.2]} raio={0.08} />
         ))}
         {['V2', 'V1', 'A1', 'A2'].map((nome, k) => (
-          <Texto3D key={nome} texto={nome} tam={0.3} cor="#5eead4" posicao={[-9.45, [5.25, 4.25, 3.1, 2.05][k], 0]} emissao={0.7} prof={0.05} />
+          <Texto3D key={nome} texto={nome} tam={0.3} cor={N.linha} posicao={[-9.45, [5.25, 4.25, 3.1, 2.05][k], 0]} emissao={0.2} prof={0.05} />
         ))}
         {/* os clipes voam para o lugar */}
         {CLIPES.map((c, i) => {
           const m = mola(f + 22, 1 + i * 2.5, {damping: 14, stiffness: 110});
           const fora: V3 = [c.x * 0.7 + (aleatorio(i) - 0.5) * 8, (aleatorio(i + 20) - 0.5) * 7, 17 + aleatorio(i + 40) * 9];
           if (c.corte) {
-            const cor = new THREE.Color(c.cor).lerp(new THREE.Color(vivas.vermelho), marca).getStyle();
+            const cor = new THREE.Color(c.cor).lerp(new THREE.Color(N.erro), marca).getStyle();
             return (
               <group key={i} position={[c.x + fora[0] * (1 - m) - voa * 2.7, c.y + fora[1] * (1 - m) - voa * 0.5, fora[2] * (1 - m) + voa * 14]} rotation={[(1 - m) * 1.1 + voa * 2.6, (1 - m) * 0.8 + voa * 1.7, voa * 3.4]}>
                 <PecaClipe c={c} cor={cor} i={i} />
@@ -271,9 +169,13 @@ const LinhaDoTempo: React.FC = () => {
         ) : null}
         {/* o verso da parede, visto quando a câmera dá a volta */}
         {CLIPES.map((c, i) => (
-          <Bloco key={`v${i}`} tam={[c.l, 0.82, 0.12]} cor={c.cor} raio={0.05} posicao={[c.x, c.y, -0.42]} emissivo={c.cor} intensidade={0.25} sombra={false} />
+          <Bloco key={`v${i}`} tam={[c.l, 0.82, 0.12]} cor={c.cor} raio={0.05} posicao={[c.x, c.y, -0.42]} sombra={false} />
         ))}
-        {f >= 141 && fimAnim > 0.01 ? <Animacoes f={f} fim={fimAnim} /> : null}
+        <group position={[0, MONITOR_Y + (1 - chegaMonitor) * 9, 0]}>
+          <Bloco tam={[0.6, 1.2, 0.3]} cor={N.painel} posicao={[0, -2.95, -0.2]} raio={0.08} />
+          <Bloco tam={[8.95, 5.15, 0.3]} cor={N.painel} raio={0.14} rugosidade={0.5} />
+          <TelaPapel desenhar={naLinha ? cenaLinha : cenaPrograma} f={naLinha ? f - 141 : f} larg={8.6} alt={4.8375} px={1920} posicao={[0, 0, 0.16]} />
+        </group>
       </Palco>
       <Destaque texto="100% *CLAUDE" de={70} ate={100} />
       <Destaque texto="*CORTE" de={119} ate={138} tam={170} />
@@ -407,10 +309,10 @@ const Humano: React.FC = () => {
         <TelaPapel recorte desenhar={recorteFalando} f={f} larg={3.1} alt={4.4} px={420} posicao={[-2.2, 2.2, 0.2]} rotacao={[0, 0.2, 0]} />
         <Microfone posicao={[0.5, 1.02, 0]} escala={1.28} f={f} />
         <group position={[12, 2.7, 0]} rotation={[-0.08, -0.12, 0]} scale={Math.max(0.001, botao)}>
-          <Halo cor="#22c55e" tam={12} z={-0.8} forca={clique * 0.9} />
+          <Halo cor="#ff7a3d" tam={12} z={-0.8} forca={clique * 0.9} />
           <Bloco tam={[5.6, 2.3, 0.6]} cor="#10191c" raio={0.34} posicao={[0, 0, -0.4]} />
-          <Bloco tam={[5.0, 1.75, 0.7]} cor="#22c55e" raio={0.32} posicao={[0, 0, 0.1 - aperta * 0.3]} emissivo="#16a34a" intensidade={0.4 + clique * 1.4} rugosidade={0.28} />
-          <Rotulo3D texto="APROVAR" larg={4.3} posicao={[0, 0, 0.47 - aperta * 0.3]} />
+          <Bloco tam={[5.0, 1.75, 0.7]} cor={N.texto} raio={0.32} posicao={[0, 0, 0.1 - aperta * 0.3]} emissivo={N.acento} intensidade={clique * 0.9} rugosidade={0.3} />
+          <Rotulo3D texto="APROVAR" larg={4.3} cor="#141413" posicao={[0, 0, 0.47 - aperta * 0.3]} />
         </group>
         {f >= 74 ? <Cursor posicao={cursor} aperta={aperta} /> : null}
         {festa > 0.01 ? <TelaPapel recorte desenhar={recorteComemora} f={f} larg={2.9} alt={4.1} px={400} posicao={[16.7, 2.05, 0.3]} rotacao={[0, -0.25, 0]} escala={festa} /> : null}
@@ -428,7 +330,7 @@ const Escada: React.FC<{f: number; sobe?: boolean; acesos: number[]}> = ({f, sob
     {DEGRAUS.map((d, i) => {
       const m = sobe ? mola(f, 2 + i * 3, {damping: 13}) : 1;
       const a = acesos[i];
-      const cor = new THREE.Color('#16272a').lerp(new THREE.Color('#ea7648'), a).getStyle();
+      const cor = new THREE.Color('#15191c').lerp(new THREE.Color('#ea7648'), a).getStyle();
       return (
         <group key={i} position={[d.x, 0, 0]} scale={[1, Math.max(0.001, m), 1]}>
           <Bloco tam={[2.92, d.h, 3.2]} cor={cor} raio={0.12} posicao={[0, d.h / 2, 0]} emissivo="#d2470f" intensidade={a * 0.45} rugosidade={0.4} />
@@ -483,28 +385,26 @@ const TresUsos: React.FC = () => {
       <Palco f={f} pos={pos} alvo={alvo} escuro={escuro} tema={TEMAS.vitrine} borrao={c * c * 18 + s * 16}>
         {/* cortes: celular na vertical, com um vídeo de papel cheio de cortes secos e legenda */}
         <group position={[0, 3.15, 0]} rotation={[0, Math.sin(f / 26) * 0.16 + 0.12, -0.04]}>
-          <Halo cor="#f472b6" tam={10} z={-0.6} forca={0.5} />
           <Bloco tam={[2.6, 4.75, 0.26]} cor="#0d1416" raio={0.28} />
-          <TelaPapel desenhar={cenaCorte} f={f} larg={2.3} alt={4.4} px={380} posicao={[0, 0, 0.14]} />
+          <TelaPapel desenhar={cenaCorteCalma} f={f} larg={2.3} alt={4.4} px={380} posicao={[0, 0, 0.14]} />
         </group>
         <Rotulo3D texto="CORTES" larg={3.6} posicao={[0, 0.42, 1.2]} />
         {/* vídeos longos: tela larga com a história passando, o relógio correndo e a linha do tempo embaixo */}
         <group position={[10, 3.35, 0]} rotation={[0, Math.sin(f / 26 + 1) * 0.14, 0]}>
-          <Halo cor="#60a5fa" tam={12} z={-0.6} forca={0.5} />
           <Bloco tam={[6.5, 4.9, 0.26]} cor="#0d1416" raio={0.18} />
-          <TelaPapel desenhar={cenaLongo} f={f} larg={6.0} alt={3.375} posicao={[0, 0.56, 0.14]} />
+          <TelaPapel desenhar={cenaLongoCalma} f={f} larg={6.0} alt={3.375} posicao={[0, 0.56, 0.14]} />
           {Array.from({length: 9}).map((_, k) => (
-            <Bloco key={k} tam={[0.6, 0.34, 0.06]} cor={['#2f7fdc', '#3fb862', '#ec4899'][k % 3]} raio={0.05} posicao={[-2.68 + k * 0.67, -1.48, 0.17]} emissivo={['#2f7fdc', '#3fb862', '#ec4899'][k % 3]} intensidade={0.4} sombra={false} />
+            <Bloco key={k} tam={[0.6, 0.34, 0.06]} cor={k === 4 ? N.acento : N.clipeClaro} raio={0.05} posicao={[-2.68 + k * 0.67, -1.48, 0.17]} sombra={false} />
           ))}
-          <Bloco tam={[5.96, 0.3, 0.06]} cor="#0d9488" raio={0.05} posicao={[0, -1.96, 0.17]} emissivo="#0d9488" intensidade={0.4} sombra={false} />
+          <Bloco tam={[5.96, 0.3, 0.06]} cor={N.clipe} raio={0.05} posicao={[0, -1.96, 0.17]} sombra={false} />
           <Bloco tam={[0.05, 1.0, 0.05]} cor="#ffffff" raio={0.02} posicao={[-2.9 + rampa(f, 40, 125, (n) => n) * 5.8, -1.72, 0.24]} emissivo="#ffffff" intensidade={2} sombra={false} />
         </group>
         <Rotulo3D texto="VÍDEOS LONGOS" larg={5.2} posicao={[10, 0.42, 1.2]} />
         {/* canal dark: a luz apaga, cidade à noite, narrador sem rosto e a voz em barras */}
         <group position={[20, 3.15, 0]} rotation={[0, Math.sin(f / 26 + 2) * 0.14, 0]}>
-          <Halo cor="#a855f7" tam={11} z={-0.6} forca={0.75 * escuro} />
+          <Halo cor="#ff7a3d" tam={11} z={-0.6} forca={0.45 * escuro} />
           <Bloco tam={[6.5, 3.95, 0.3]} cor="#07090b" raio={0.2} />
-          <TelaPapel desenhar={cenaDark} f={f} larg={6.0} alt={3.375} posicao={[0, 0, 0.16]} />
+          <TelaPapel desenhar={cenaDarkCalma} f={f} larg={6.0} alt={3.375} posicao={[0, 0, 0.16]} />
         </group>
         <Rotulo3D texto="CANAL DARK" larg={4.4} posicao={[20, 0.42, 1.2]} />
       </Palco>
@@ -513,13 +413,7 @@ const TresUsos: React.FC = () => {
 };
 
 // ====================== Trecho 6: as ferramentas e o pedido ======================
-const FERRAMENTAS: [string, string][] = [
-  ['Whisper', '#10a37f'],
-  ['auto-editor', '#3b82f6'],
-  ['FFmpeg', '#22a34a'],
-  ['Remotion', '#2563eb'],
-  ['yt-dlp', '#dc2626'],
-];
+const FERRAMENTAS: [string, string][] = ['Whisper', 'auto-editor', 'FFmpeg', 'Remotion', 'yt-dlp'].map((n) => [n, '#171b1e'] as [string, string]);
 const PEDIDO = 'transcreva este vídeo palavra por palavra';
 
 const Ferramentas: React.FC = () => {
@@ -534,9 +428,9 @@ const Ferramentas: React.FC = () => {
   return (
     <AbsoluteFill>
       <Palco f={f} pos={pos} alvo={alvo} tema={TEMAS.oficina} borrao={c * c * 18 + s * 16}>
-        <Bloco tam={[17.6, 0.3, 2.3]} cor="#0f2224" posicao={[0, 1.9, 0]} raio={0.1} />
+        <Bloco tam={[17.6, 0.3, 2.3]} cor="#101316" posicao={[0, 1.9, 0]} raio={0.1} />
         {[-7.5, 7.5].map((x) => (
-          <Bloco key={x} tam={[0.3, 1.8, 1.6]} cor="#0f2224" posicao={[x, 0.9, 0]} raio={0.08} />
+          <Bloco key={x} tam={[0.3, 1.8, 1.6]} cor="#101316" posicao={[x, 0.9, 0]} raio={0.08} />
         ))}
         {FERRAMENTAS.map(([nome, cor], i) => {
           const ini = 1 + i * 3;
@@ -545,7 +439,8 @@ const Ferramentas: React.FC = () => {
           if (f < ini) return null;
           return (
             <group key={nome} position={[(i - 2) * 3.35, 2.05 + (1 - cai) * 11, 0]} scale={[1 + amassa * 0.5, 1 - amassa, 1]} rotation={[0, Math.sin(f / 24 + i) * 0.1, (1 - cai) * (i % 2 ? 0.5 : -0.5)]}>
-              <Bloco tam={[3.0, 1.7, 1.4]} cor={cor} raio={0.24} posicao={[0, 0.85, 0]} rugosidade={0.36} emissivo={cor} intensidade={0.22} />
+              <Bloco tam={[3.0, 1.7, 1.4]} cor={cor} raio={0.24} posicao={[0, 0.85, 0]} rugosidade={0.4} />
+              <Bloco tam={[2.2, 0.07, 0.05]} cor={N.acento} raio={0.02} posicao={[0, 0.3, 0.72]} emissivo={N.acento} intensidade={1.2} sombra={false} />
               <Rotulo3D texto={nome} larg={2.7} posicao={[0, 0.85, 0.72]} />
             </group>
           );
@@ -560,8 +455,8 @@ const Ferramentas: React.FC = () => {
           height: 132,
           borderRadius: 38,
           background: 'rgba(8,16,18,0.96)',
-          border: '3px solid rgba(94,234,212,0.6)',
-          boxShadow: '0 0 70px rgba(45,212,191,0.5), 0 24px 50px rgba(0,0,0,0.7)',
+          border: '2px solid rgba(245,242,236,0.28)',
+          boxShadow: '0 0 70px rgba(242,98,46,0.28), 0 24px 50px rgba(0,0,0,0.7)',
           display: 'flex',
           alignItems: 'center',
           padding: '0 26px 0 46px',

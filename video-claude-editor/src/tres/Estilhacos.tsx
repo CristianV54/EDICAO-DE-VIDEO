@@ -17,7 +17,7 @@ export const Estilhacos: React.FC<{centro: [number, number, number]; quantos?: n
     return new THREE.ExtrudeGeometry(f, {depth: 0.03, bevelEnabled: false});
   }, []);
   const mat = useMemo(
-    () => new THREE.MeshPhysicalMaterial({color: '#c9f3ff', roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.62, emissive: '#5eead4', emissiveIntensity: 0.35, side: THREE.DoubleSide, envMapIntensity: 2.5}),
+    () => new THREE.MeshPhysicalMaterial({color: '#eef1f3', roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.62, emissive: '#ffffff', emissiveIntensity: 0.12, side: THREE.DoubleSide, envMapIntensity: 2.5}),
     []
   );
   return (
