@@ -115,7 +115,7 @@ const C5: Plano[] = [
   {frases: [19, 19], C: X(PConfere), props: {itens: 0, fotos: 0}, troca: 'sobe', cam: [[0, 960, 500, 1.04], ['preta', 820, 560, 1.08], ['legenda', 1100, 580, 1.08]], sons: [['camera', 'p:fotos'], ['desliga', 'p:preta']]},
   {frases: [20, 21], C: X(PObjecao), props: {pergunta: 'e se a primeira versão sair ruim?', resposta: 'pode sair', respostaEm: 1}, troca: 'zoom', brilho: [30, 70], cam: OBJ},
   {frases: [22, 25], C: X(PVersoes), props: {quando: [0, 0, 0, 0, 0], imagens: [1, 3, 2, 4, 5], rotulos: ['linha do tempo deitada', 'colorida demais', 'câmera parada', '3D em tudo', 'a atual'], chavesRotulo: ['deitada', 'colorida'], etiqueta: 'A ABERTURA DESTE VÍDEO · O CRISTIAN ASSISTIU CADA VERSÃO'}, troca: 'zoom', cam: [[0, 520, 440, 1.3], [1, 960, 460, 1.0], ['deitada', 520, 440, 1.3], ['colorida', 800, 440, 1.3], ['demais', 1300, 440, 1.2]], sons: [['camera', 14]]},
-  {frases: [26, 26], C: K, props: {etiqueta: 'COMO EU JÁ LI O VÍDEO INTEIRO, AINDA ENTREGO', cartoes: [{titulo: 'Título'}, {titulo: 'Descrição'}, {titulo: 'Capítulos', sub: 'com o tempo certo'}], quando: ['título', 'descrição', 'capítulos']}, troca: 'desliza', cam: [[0, 800, 520, 1.06], ['capítulos', 1120, 550, 1.08]], sons: [['estalo_madeira', 'p:título']]},
+  {frases: [26, 26], C: K, props: {titulo: 'ainda entrego', etiqueta: 'COMO EU JÁ LI O VÍDEO INTEIRO', cartoes: [{titulo: 'Título'}, {titulo: 'Descrição'}, {titulo: 'Capítulos', sub: 'com o tempo certo'}], quando: ['título', 'descrição', 'capítulos']}, troca: 'desliza', cam: [[0, 800, 520, 1.06], ['capítulos', 1120, 550, 1.08]], sons: [['estalo_madeira', 'p:título']]},
   {frases: [27, 28], C: X(PEscadaFinal), troca: 'corte', fundo: false, sons: [['whoosh_longo', 'f0+4']]},
 ];
 
@@ -125,7 +125,7 @@ const C6: Plano[] = [
   {frases: [3, 6], C: X(PRegra1), props: {n: 2, palavra: 'PEÇA POR PARTES', tipo: 'partes'}, troca: 'desliza', cam: [[0, 700, 420, 1.1], [1, 1000, 440, 1.08], [2, 1060, 600, 1.1], [3, 1000, 720, 1.1]], sons: [['estalo_madeira', 'f1+2']]},
   {frases: [7, 9], C: X(PRegra1), props: {n: 3, palavra: 'ASSISTA', tipo: 'assista'}, troca: 'desliza', cam: [[0, 700, 420, 1.1], [1, 1000, 440, 1.1], [2, 1060, 640, 1.1]], sons: [['estalo_madeira', 'f1+2'], ['sucesso', 'p:corrijo']]},
   {frases: [10, 11], C: X(PRegrasJuntas), troca: 'zoom', cam: [[0, 960, 380, 1.04], [1, 960, 640, 1.12]]},
-  {frases: [12, 13], C: F, props: {texto: 'quanto *custa | tudo isso?', etiqueta: 'O QUE EU PROMETI LÁ NO COMEÇO', tam: 170}, troca: 'zoom', cam: [[0, 960, 500, 1.0], ['custa', 960, 540, 1.26]]},
+  {frases: [12, 13], C: F, props: {texto: 'o que eu prometi: | quanto *custa?', tam: 160}, troca: 'zoom', cam: [[0, 960, 500, 1.0], ['custa', 960, 540, 1.26]]},
 ];
 
 // ---------------- Cena 7 · A conta ----------------
@@ -152,6 +152,12 @@ const C8: Plano[] = [
 ];
 
 const CAUDA: Record<number, number> = {1: 20};
+// planos de frase central: a câmera pode dar o soco de zoom
+const CENTRAIS = [F, X(PZero), X(PSaudacao), X(PAmbiente), X(PMontado), X(PCaixa), X(PMovimentos)];
+[C1, C2, C3, C4, C5, C6, C7, C8].forEach((lista) => lista.forEach((pl) => {
+  if (CENTRAIS.includes(pl.C)) pl.soco = true;
+}));
+
 export const CENAS: Record<number, {planos: Plano[]; abertura?: Abertura}> = {
   1: {planos: C1},
   2: {planos: C2},

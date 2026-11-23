@@ -274,7 +274,7 @@ export const PCrua: P<{titulo?: [string, string]}> = ({c, titulo}) => (
 // ---------- A parte chata: ouvir tudo de novo ----------
 export const PFone: P = ({c}) => {
   const tO = q(c, 'ouvir', c.t(1));
-  const tS = c.p('deixa') || c.t(2);
+  const tS = Math.max(tO + 12, c.p('deixou') || c.p('deixa') || c.t(2));
   const lento = rampa(c.f, tO, tS, (n) => n) * 0.34;
   const troca = rampa(c.f, tS + 4, tS + 22, power4InOut);
   return (

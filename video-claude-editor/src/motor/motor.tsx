@@ -32,6 +32,7 @@ export type Plano = {
   // câmera 2D do plano: lista de [quando, x, y, zoom]. "quando" é o índice de uma frase do plano ou uma palavra.
   // x e y são o ponto da tela (1920x1080) que vai para o centro. Sem isso, o plano só aproxima e deriva devagar.
   cam?: [number | string, number, number, number][];
+  soco?: boolean; // plano de frase central: a câmera pode aproximar mais
   inicio?: [string, number?]; // começa numa palavra da cena (n-ésima ocorrência), em vez de no começo da frase
 };
 export type Abertura = {C: Plano['C']; props?: Record<string, unknown>; dur: number; sons?: Som[]};
@@ -148,11 +149,18 @@ const camera = (plano: Plano, c: Ctx, indice: number): string => {
     fy = trilho1(c.f, q2, f2(ys));
   }
   // a câmera nunca sai da área da tela: assim nenhum texto perto da borda é cortado
-  if (z > 1) {
-    const mx = 30 + 960 / z;
-    const my = 10 + 540 / z;
-    fx = mx <= 1920 - mx ? Math.min(1920 - mx, Math.max(mx, fx)) : 960;
-    fy = my <= 1080 - my ? Math.min(1080 - my, Math.max(my, fy)) : 540;
+  // Regra: a área útil da tela (de 90 a 1830 px na largura) fica sempre inteira no quadro, para nenhum texto
+  // ser cortado. Só os planos de frase central (soco: true) podem aproximar mais que isso.
+  if (!plano.soco) {
+    z = Math.min(z, 1.1);
+    const folga = Math.max(0, 960 / z - 870);
+    fx = Math.min(960 + folga, Math.max(960 - folga, fx));
+    const folgaY = Math.max(0, 540 / z - 470);
+    fy = Math.min(540 + folgaY, Math.max(540 - folgaY, fy));
+  } else {
+    z = Math.min(z, 1.3);
+    fx = Math.min(1000, Math.max(920, fx));
+    fy = Math.min(600, Math.max(480, fy));
   }
   return `translate(${(960 - fx * z).toFixed(2)}px, ${(540 - fy * z).toFixed(2)}px) scale(${z.toFixed(4)})`;
 };

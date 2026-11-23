@@ -286,8 +286,8 @@ export const PComandosReal: P<{euEm: number}> = ({c, euEm}) => {
 export const PEntreReal: P = ({c}) => {
   // janela da gravação de teste em volta do segundo silêncio
   const si = R.silencios[1];
-  const a = si.ini - 2.3;
-  const b = si.fim + 2.3;
+  const a = si.ini - 1.25;
+  const b = si.fim + 1.25;
   const X = (s: number) => ((s - a) / (b - a)) * L;
   const pal = R.palavras.filter((w) => w.ini >= a && w.fim <= b);
   const n = R.onda.length;
@@ -299,7 +299,7 @@ export const PEntreReal: P = ({c}) => {
   const xCerto = X((si.ini + si.fim) / 2);
   return (
     <AbsoluteFill>
-      <Etiqueta style={{position: 'absolute', left: 180, top: 190, opacity: ap(c.f, 0)}}>ONDE O CORTE ACONTECE · TEMPOS MEDIDOS PELO WHISPER</Etiqueta>
+      <Etiqueta style={{position: 'absolute', left: 180, top: 130, opacity: ap(c.f, 0)}}>ONDE O CORTE ACONTECE · TEMPOS MEDIDOS PELO WHISPER</Etiqueta>
       <div style={{position: 'absolute', left: 180, top: 270, width: L, height: 260, borderRadius: 18, background: '#0d0f11', border: `1px solid ${C.borda}`, overflow: 'hidden', ...surge(ap(c.f, 2), 40)}}>
         {R.onda.map((v, i) => {
           const s = (i / n) * R.duracao;
@@ -312,16 +312,16 @@ export const PEntreReal: P = ({c}) => {
       {pal.map((w, i) => {
         const e = ap(c.f, 8 + i * 3);
         return (
-          <div key={i} style={{position: 'absolute', left: 180 + X(w.ini), top: 560 + (i % 2) * 96, ...surge(e, 20)}}>
-            <div style={{fontFamily: MONO, fontSize: 20, color: C.acento}}>{w.ini.toFixed(2).replace('.', ',')}</div>
-            <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 38, color: C.texto, background: C.cartao, border: `1px solid ${C.borda}`, borderRadius: 10, padding: '4px 12px', whiteSpace: 'nowrap'}}>{w.txt}</div>
+          <div key={i} style={{position: 'absolute', left: 180 + X(w.ini), top: 550 + (i % 3) * 78, ...surge(e, 20)}}>
+            <div style={{fontFamily: MONO, fontSize: 17, color: C.acento}}>{w.ini.toFixed(2).replace('.', ',')}</div>
+            <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 32, color: C.texto, background: C.cartao, border: `1px solid ${C.borda}`, borderRadius: 10, padding: '2px 10px', whiteSpace: 'nowrap'}}>{w.txt}</div>
           </div>
         );
       })}
       {c.f >= tC ? <div style={{position: 'absolute', left: 180 + xCerto - 3, top: 250 - 20 * (1 - corta), width: 6, height: 300, background: '#fff', boxShadow: `0 0 26px #fff, 0 0 60px ${C.acento}`, transform: `scaleY(${corta})`, transformOrigin: 'top'}} /> : null}
-      {c.f >= tC + 6 ? <div style={{position: 'absolute', left: 180 + xCerto - 130, top: 196, width: 260, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 40, color: C.acento, ...surge(ap(c.f, tC + 6), 14)}}>o corte cai aqui</div> : null}
+      {c.f >= tC + 6 ? <div style={{position: 'absolute', left: 180 + xCerto - 130, top: 200, width: 260, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 34, color: C.acento, whiteSpace: 'nowrap', ...surge(ap(c.f, tC + 6), 14)}}>o corte cai aqui</div> : null}
       {c.f >= tM && c.f < tM + 34 ? <div style={{position: 'absolute', left: 180 + xErr - 3, top: 270, width: 6, height: 260, background: C.erro, boxShadow: `0 0 20px ${C.erro}`, opacity: Math.sin(((c.f - tM) / 34) * Math.PI)}} /> : null}
-      <div style={{position: 'absolute', left: 0, right: 0, top: 800, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 80, letterSpacing: -2, color: C.texto, ...surge(ap(c.f, tM + 6), 30)}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 830, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 80, letterSpacing: -2, color: C.texto, ...surge(ap(c.f, tM + 6), 30)}}>
         não no <span style={{color: C.erro}}>meio</span> de uma palavra
       </div>
     </AbsoluteFill>
@@ -351,7 +351,7 @@ export const PRemotionLegenda: P = ({c}) => {
       <div style={{position: 'absolute', left: 780, top: 220, fontFamily: SANS, fontWeight: 900, fontSize: 84, letterSpacing: -2, color: C.texto, ...surge(ap(c.f, 4), 30)}}>
         e a legenda, <span style={{color: C.acento}}>quem faz?</span>
       </div>
-      <div style={{position: 'absolute', left: 774, top: 380, fontFamily: SANS, fontWeight: 900, fontSize: 210, letterSpacing: -6, lineHeight: 1, color: C.acento, textShadow: brilho(C.acento, 1.1), transform: `scale(${Math.max(0.001, mola(c.f, tR - 3, {damping: 11}))})`, transformOrigin: 'left center'}}>Remotion</div>
+      <div style={{position: 'absolute', left: 774, top: 380, fontFamily: SANS, fontWeight: 900, fontSize: 176, letterSpacing: -5, lineHeight: 1, color: C.acento, textShadow: brilho(C.acento, 1.1), transform: `scale(${Math.max(0.001, mola(c.f, tR - 3, {damping: 11}))})`, transformOrigin: 'left center'}}>Remotion</div>
       <div style={{position: 'absolute', left: 780, top: 630, fontFamily: MONO, fontSize: 34, color: '#141413', background: C.acento, borderRadius: 14, padding: '10px 24px', ...surge(ap(c.f, tG - 2), 20)}}>grátis até 3 pessoas</div>
       <div style={{position: 'absolute', left: 780, top: 740, fontFamily: SANS, fontWeight: 900, fontSize: 70, letterSpacing: -1.5, color: C.texto, ...surge(ap(c.f, tT), 30)}}>
         transforma <span style={{color: C.acento}}>código</span> em vídeo
@@ -384,19 +384,19 @@ export const PPalavraAcende: P = ({c}) => {
           palavra.<span style={{color: C.acento}}>acende</span>(quando: palavra.<span style={{color: C.acento}}>tempo</span>)
         </div>
       </Janela>
-      <div style={{position: 'absolute', left: 120, right: 120, top: 520, display: 'flex', justifyContent: 'center', gap: 26, flexWrap: 'wrap'}}>
+      <div style={{position: 'absolute', left: 150, right: 150, top: 470, display: 'flex', justifyContent: 'center', columnGap: 26, rowGap: 24, flexWrap: 'wrap'}}>
         {frase.map(([p, t], i) => {
           const aceso = i <= atual;
           const pulso = i === atual ? 1 + Math.sin(((c.f - t0 - i * passo) / passo) * Math.PI) * 0.16 : 1;
           return (
             <div key={i} style={{textAlign: 'center', ...surge(ap(c.f, 4 + i * 2), 20)}}>
-              <div style={{fontFamily: MONO, fontSize: 26, color: aceso ? C.acento : C.mudo, marginBottom: 8}}>{t} s</div>
-              <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 96, letterSpacing: -2, color: aceso ? C.acento : 'rgba(255,255,255,0.22)', textShadow: aceso ? brilho(C.acento, 0.8) : 'none', transform: `scale(${pulso})`}}>{p}</div>
+              <div style={{fontFamily: MONO, fontSize: 24, color: aceso ? C.acento : C.mudo, marginBottom: 2}}>{t} s</div>
+              <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 84, lineHeight: 1.1, letterSpacing: -2, color: aceso ? C.acento : 'rgba(255,255,255,0.22)', textShadow: aceso ? brilho(C.acento, 0.8) : 'none', transform: `scale(${pulso})`}}>{p}</div>
             </div>
           );
         })}
       </div>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 830, textAlign: 'center', fontFamily: MONO, fontSize: 38, color: C.mudo, ...surge(ap(c.f, q(c, 'sei', c.dur - 80)), 20)}}>o tempo de cada palavra já veio do Whisper</div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 900, textAlign: 'center', fontFamily: MONO, fontSize: 38, color: C.mudo, ...surge(ap(c.f, q(c, 'sei', c.dur - 80)), 20)}}>o tempo de cada palavra já veio do Whisper</div>
     </AbsoluteFill>
   );
 };
@@ -622,7 +622,7 @@ export const PSininho: P = ({c}) => {
   const bal = c.f >= tS ? Math.sin((c.f - tS) / 2.2) * 22 * Math.max(0, 1 - (c.f - tS) / 40) : 0;
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 50}}>
-      <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 100, color: '#fff', background: C.acento, borderRadius: 44, padding: '38px 96px', boxShadow: brilho(C.acento, 1.3), transform: `scale(${Math.max(0.001, mola(c.f, q(c, 'inscreve', 30) - 4, {damping: 10}))})`}}>INSCREVA-SE</div>
+      <div style={{fontFamily: SANS, fontWeight: 900, fontSize: 100, color: '#fff', background: C.acento, borderRadius: 44, padding: '38px 96px', boxShadow: brilho(C.acento, 1.3), transform: `scale(${Math.max(0.001, mola(c.f, 3, {damping: 10}))})`}}>INSCREVA-SE</div>
       <svg width={170} height={170} viewBox="0 0 100 100" style={{transform: `scale(${Math.max(0.001, mola(c.f, tS - 4, {damping: 9}))}) rotate(${bal}deg)`, transformOrigin: '50% 10%'}}>
         <path d="M50 12 C30 12 24 30 24 46 L24 62 L14 74 L86 74 L76 62 L76 46 C76 30 70 12 50 12 Z" fill={C.texto} />
         <circle cx={50} cy={84} r={9} fill={C.acento} />
