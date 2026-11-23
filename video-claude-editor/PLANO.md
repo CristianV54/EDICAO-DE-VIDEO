@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aprovado pelo Cristian. Fase 0 concluída. Roteiro (fase 2) aprovado. Capa (fase 1) entregue, aguardando aprovação.
+Situação: aprovado pelo Cristian. Fase 0 concluída. Roteiro (fase 2) aprovado. Capas A, B e C em 3D entregues, aguardando aprovação.
 
 ## 1. Objetivo
 
@@ -23,6 +23,8 @@ Já aprovado pelo Cristian:
 3. **Canal.** Canal novo do Cristian, com o nome provisório "Cristian Moraes". Como o nome pode mudar, a tela final não mostra o nome do canal escrito, só a chamada para se inscrever.
 4. **Entrega.** Vídeo final enviado para o Google Drive do Cristian.
 5. **Retenção.** O vídeo precisa prender a atenção do começo ao fim. O Cristian vai enviar dicas de retenção, que entram como regras do roteiro na fase 2.
+6. **Visual em 3D.** Capas e vídeo usam objetos em 3D, com volume, luz e sombra, e não só desenho plano. Textos continuam nítidos por cima da cena. O teste de 5 segundos da fase 0 era plano e não vale mais como referência de estilo.
+7. **Teste A/B/C.** Três capas e três títulos, registrados em publicacao.md.
 
 ## 3. Quem usa
 
@@ -116,7 +118,7 @@ Nenhuma. O projeto não usa chave nem senha.
 | Fase | Entrega | Teste que prova |
 |---|---|---|
 | 0. Preparação | Projeto criado e um teste de 5 segundos com o personagem. Teste de envio de arquivo grande para o Drive. | O arquivo existe, tem 1920x1080 e 30 quadros por segundo, conferido com ffprobe. Mostro um quadro. O arquivo de teste aparece no seu Drive. |
-| 1. Capa | Capa A em PNG. | Arquivo com 1280x720 e menos de 2 MB. Mostro a imagem e simulo em tamanho pequeno, como aparece no celular. Você aprova. |
+| 1. Capa | Capas A, B e C em PNG, em 3D. | Cada arquivo com 1280x720 e menos de 2 MB. Mostro a imagem e simulo em tamanho pequeno, como aparece no celular. Você aprova. |
 | 2. Roteiro | ROTEIRO.md e cenas.json. | Contagem de palavras entre 1.300 e 1.800, que dá de 10 a 12 minutos com as pausas de animação. O critério baixou porque a regra do Cristian é cortar tudo que não faz diferença, e não encher para bater tempo. Cada afirmação sobre ferramenta tem o link oficial conferido. Você aprova. |
 | 3. Prova de estilo | Cenas 1 e 2 animadas (primeiro minuto). | Vídeo exportado e conferido. Mostro quadros de cada cena. Você aprova o estilo antes de eu fazer o resto. |
 | 4. Passos | Cenas 3 a 8. | Cada cena exportada sem erro. Mostro quadros do início, meio e fim de cada uma. |

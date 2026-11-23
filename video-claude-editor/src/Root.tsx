@@ -1,11 +1,13 @@
 import React from 'react';
 import {Composition, Still} from 'remotion';
 import {Teste} from './Teste';
-import {Capa} from './Capa';
+import {CapaA, CapaB, CapaC} from './Capa';
 
 export const Root: React.FC = () => (
   <>
     <Composition id="Teste" component={Teste} durationInFrames={150} fps={30} width={1920} height={1080} />
-    <Still id="Capa" component={Capa} width={1280} height={720} />
+    <Still id="CapaA" component={CapaA} width={1280} height={720} />
+    <Still id="CapaB" component={CapaB} width={1280} height={720} />
+    <Still id="CapaC" component={CapaC} width={1280} height={720} />
   </>
 );

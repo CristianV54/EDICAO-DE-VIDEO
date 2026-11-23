@@ -11,3 +11,6 @@ export const cores = {
 };
 export const fonte = 'Poppins, "DejaVu Sans", Arial, sans-serif';
 export const fonteTitulo = 'Anton, Impact, sans-serif';
+
+// Versões mais vivas, para objetos 3D (a luz da cena clareia as cores).
+export const vivas = {azul: '#2f7fdc', verde: '#3fb862', vermelho: '#e8443c', cinza: '#6d6a66'};
