@@ -412,9 +412,11 @@ export const cenaPrograma = (g: G, w: number, h: number, f: number) => {
   g.font = `600 ${44 * k}px monospace`;
   const seg = Math.floor(f / 30);
   g.fillText(`00:00:${String(seg).padStart(2, '0')}:${String(f % 30).padStart(2, '0')}`, 110 * k, 970 * k);
-  if (f >= 119 && f <= 123) {
-    g.fillStyle = `rgba(255,255,255,${0.8 - (f - 119) * 0.18})`;
-    g.fillRect(0, 0, w, h);
+  for (const tc of [115, 122]) {
+    if (f >= tc && f <= tc + 3) {
+      g.fillStyle = `rgba(255,255,255,${0.75 - (f - tc) * 0.2})`;
+      g.fillRect(0, 0, w, h);
+    }
   }
 };
 
@@ -527,4 +529,249 @@ export const cenaLinha = (g: G, w: number, h: number, t: number) => {
   const largCada = g.measureText('cada ').width / k;
   palavra('animação', 210 + largCada, 300, '#f2622e', 11, 150);
   palavra('desenhada em código', 216, 380, '#f5f2ec', 19, 60, 600);
+};
+
+// ================= Telas sem boneco: edição de verdade =================
+
+// Pessoa em silhueta, sem rosto, com luz de contorno. Serve de "filmagem" atrás da legenda.
+const silhueta = (g: G, cx: number, base: number, alt: number) => {
+  const r = alt * 0.2;
+  g.save();
+  g.shadowColor = 'rgba(242,98,46,0.55)';
+  g.shadowBlur = alt * 0.06;
+  g.shadowOffsetX = -alt * 0.02;
+  g.shadowOffsetY = 0;
+  g.fillStyle = '#4a423c';
+  g.beginPath();
+  g.arc(cx, base - alt * 0.68, r, 0, Math.PI * 2);
+  g.fill();
+  g.beginPath();
+  g.ellipse(cx, base, alt * 0.42, alt * 0.44, 0, Math.PI, 0);
+  g.fill();
+  g.restore();
+};
+
+// ---- Celular: um corte vertical ganhando legenda palavra por palavra ----
+const FRASE = ['ISSO', 'MUDA', 'TUDO', 'NA', 'SUA', 'EDIÇÃO'];
+export const cenaLegenda = (g: G, w: number, h: number, f: number) => {
+  const k = Math.floor(f / 18);
+  const zoom = [1, 1.28, 1.12][k % 3];
+  const lado = [0, 0.05, -0.04][k % 3];
+  semSombra(g);
+  const fundo = g.createLinearGradient(0, 0, 0, h);
+  fundo.addColorStop(0, '#2b2420');
+  fundo.addColorStop(1, '#100e0c');
+  g.fillStyle = fundo;
+  g.fillRect(0, 0, w, h);
+  // luzes desfocadas do cenário
+  [[0.2, 0.22, 0.16], [0.82, 0.3, 0.12], [0.7, 0.12, 0.08]].forEach(([x, y, r], i) => {
+    const luz = g.createRadialGradient(w * x, h * y, 0, w * x, h * y, w * r * zoom);
+    luz.addColorStop(0, i === 0 ? 'rgba(242,98,46,0.45)' : 'rgba(255,225,200,0.22)');
+    luz.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = luz;
+    g.fillRect(0, 0, w, h);
+  });
+  silhueta(g, w * (0.5 + lado), h * (0.74 + (zoom - 1) * 0.5), h * 0.5 * zoom);
+  // barrinhas de progresso
+  for (let i = 0; i < 3; i++) {
+    g.fillStyle = 'rgba(255,255,255,0.3)';
+    g.beginPath();
+    g.roundRect(w * 0.06 + i * w * 0.3, h * 0.03, w * 0.27, 7, 4);
+    g.fill();
+    if (i <= k % 3) {
+      g.fillStyle = '#fff';
+      g.beginPath();
+      g.roundRect(w * 0.06 + i * w * 0.3, h * 0.03, w * 0.27 * (i < k % 3 ? 1 : (f % 18) / 18), 7, 4);
+      g.fill();
+    }
+  }
+  // legenda: duas linhas de três palavras, a palavra falada acende e cresce
+  const atual = Math.floor(f / 6) % FRASE.length;
+  const linha = Math.floor(atual / 2);
+  const palavras = FRASE.slice(linha * 2, linha * 2 + 2);
+  const tam = h * 0.075;
+  g.textBaseline = 'middle';
+  g.textAlign = 'left';
+  g.font = `900 ${tam}px Montserrat`;
+  const espaco = tam * 0.3;
+  const larguras = palavras.map((p) => g.measureText(p).width);
+  let x = (w - larguras.reduce((a, b) => a + b, 0) - espaco * (palavras.length - 1)) / 2;
+  palavras.forEach((p, i) => {
+    const ativa = linha * 2 + i === atual;
+    const dentro = (f % 6) / 6;
+    const escala = ativa ? 1.16 - dentro * 0.12 : 1;
+    g.save();
+    g.translate(x + larguras[i] / 2, h * 0.73);
+    g.scale(escala, escala);
+    g.font = `900 ${tam}px Montserrat`;
+    g.textAlign = 'center';
+    g.lineJoin = 'round';
+    g.strokeStyle = '#000';
+    g.lineWidth = tam * 0.16;
+    g.strokeText(p, 0, 0);
+    g.fillStyle = ativa ? '#f2622e' : '#ffffff';
+    g.fillText(p, 0, 0);
+    g.restore();
+    x += larguras[i] + espaco;
+  });
+  // onda do áudio embaixo
+  for (let i = 0; i < 22; i++) {
+    const a = Math.abs(Math.sin(f / 2.7 + i * 1.3) * Math.cos(f / 6 + i * 0.5)) * h * 0.04 + 4;
+    g.fillStyle = 'rgba(255,255,255,0.55)';
+    g.beginPath();
+    g.roundRect(w * 0.14 + i * w * 0.034, h * 0.9 - a / 2, w * 0.016, a, 3);
+    g.fill();
+  }
+  if (f % 18 === 0 && f > 0) {
+    g.fillStyle = 'rgba(255,255,255,0.7)';
+    g.fillRect(0, 0, w, h);
+  }
+};
+
+// ---- Tela larga: um vídeo de história sendo montado com fotos ----
+const foto = (g: G, tipo: number, w: number, h: number) => {
+  const ceu = g.createLinearGradient(0, 0, 0, h);
+  const pares = [
+    ['#f2a05e', '#3a2a24'],
+    ['#2a2f45', '#0d0f18'],
+    ['#e9c9a0', '#5a4a40'],
+    ['#f2622e', '#2a1a14'],
+  ];
+  ceu.addColorStop(0, pares[tipo][0]);
+  ceu.addColorStop(1, pares[tipo][1]);
+  g.fillStyle = ceu;
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = '#17120f';
+  if (tipo === 0) {
+    // montanhas e sol
+    g.fillStyle = '#ffe6c2';
+    g.beginPath();
+    g.arc(w * 0.68, h * 0.42, h * 0.14, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = '#3a2620';
+    g.beginPath();
+    g.moveTo(0, h);
+    g.lineTo(w * 0.22, h * 0.42);
+    g.lineTo(w * 0.46, h * 0.78);
+    g.lineTo(w * 0.7, h * 0.34);
+    g.lineTo(w, h * 0.8);
+    g.lineTo(w, h);
+    g.fill();
+    g.fillStyle = '#17120f';
+    g.beginPath();
+    g.moveTo(0, h);
+    g.lineTo(w * 0.4, h * 0.66);
+    g.lineTo(w, h * 0.92);
+    g.lineTo(w, h);
+    g.fill();
+  } else if (tipo === 1) {
+    // cidade à noite
+    g.fillStyle = '#f5f2ec';
+    g.beginPath();
+    g.arc(w * 0.8, h * 0.22, h * 0.07, 0, Math.PI * 2);
+    g.fill();
+    for (let i = 0; i < 9; i++) {
+      const alt = h * (0.3 + ((i * 37) % 5) * 0.09);
+      g.fillStyle = '#12141f';
+      g.fillRect(i * w * 0.115, h - alt, w * 0.1, alt);
+      g.fillStyle = '#f2a05e';
+      for (let j = 0; j < 4; j++) if ((i + j) % 2) g.fillRect(i * w * 0.115 + w * 0.02 + (j % 2) * w * 0.04, h - alt + h * 0.05 + Math.floor(j / 2) * h * 0.1, w * 0.022, h * 0.045);
+    }
+  } else if (tipo === 2) {
+    // estrada até o horizonte
+    g.fillStyle = '#3a302a';
+    g.fillRect(0, h * 0.55, w, h * 0.45);
+    g.fillStyle = '#1c1714';
+    g.beginPath();
+    g.moveTo(w * 0.5, h * 0.55);
+    g.lineTo(w * 0.86, h);
+    g.lineTo(w * 0.14, h);
+    g.fill();
+    g.fillStyle = '#f5f2ec';
+    for (let i = 0; i < 5; i++) {
+      const t = i / 5;
+      g.fillRect(w * 0.5 - (2 + t * 8), h * (0.58 + t * 0.4), 4 + t * 16, h * (0.02 + t * 0.04));
+    }
+  } else {
+    // pessoa no alto de um morro
+    g.fillStyle = '#1c120e';
+    g.beginPath();
+    g.ellipse(w * 0.4, h * 1.15, w * 0.6, h * 0.55, 0, Math.PI, 0);
+    g.fill();
+    g.beginPath();
+    g.arc(w * 0.4, h * 0.44, h * 0.045, 0, Math.PI * 2);
+    g.fill();
+    g.fillRect(w * 0.4 - h * 0.03, h * 0.48, h * 0.06, h * 0.14);
+  }
+};
+const TITULOS = ['CAPÍTULO 1', 'A CIDADE', 'A VIAGEM', 'O FINAL'];
+export const cenaHistoria = (g: G, w: number, h: number, f: number) => {
+  semSombra(g);
+  g.fillStyle = '#0a0b0d';
+  g.fillRect(0, 0, w, h);
+  const passo = 24;
+  const i = Math.floor(f / passo);
+  const t = (f % passo) / passo;
+  const desenhar = (qual: number, desloca: number, alfa: number, zoom: number, giro: number) => {
+    const fw = w * 0.56;
+    const fh = h * 0.62;
+    g.save();
+    g.globalAlpha = alfa;
+    g.translate(w * 0.42 + desloca, h * 0.46);
+    g.rotate(giro);
+    g.shadowColor = 'rgba(0,0,0,0.6)';
+    g.shadowBlur = 30;
+    g.shadowOffsetY = 14;
+    g.fillStyle = '#f5f2ec';
+    g.fillRect(-fw / 2 - 12, -fh / 2 - 12, fw + 24, fh + 24);
+    g.shadowColor = 'transparent';
+    g.beginPath();
+    g.rect(-fw / 2, -fh / 2, fw, fh);
+    g.clip();
+    g.scale(zoom, zoom);
+    g.translate(-fw / 2, -fh / 2);
+    foto(g, qual % 4, fw, fh);
+    g.restore();
+  };
+  // a foto anterior sai para a esquerda, a nova entra da direita e segue aproximando devagar
+  const entra = 1 - Math.pow(1 - Math.min(1, t / 0.4), 3);
+  if (i > 0) desenhar(i - 1, -entra * w * 0.75, 1 - entra, 1.12, -0.03);
+  desenhar(i, (1 - entra) * w * 0.8, 1, 1 + t * 0.1, 0.02 - entra * 0.04 + 0.02);
+  // tarja com o título do trecho
+  const tarja = Math.max(0, Math.min(1, (t - 0.25) / 0.2));
+  g.save();
+  g.globalAlpha = tarja;
+  g.fillStyle = '#f2622e';
+  g.fillRect(w * 0.08, h * 0.83, 10, h * 0.09);
+  g.fillStyle = '#f5f2ec';
+  g.font = `900 ${h * 0.075}px Montserrat`;
+  g.textAlign = 'left';
+  g.textBaseline = 'middle';
+  g.fillText(TITULOS[i % 4], w * 0.1 + (1 - tarja) * 30, h * 0.875);
+  g.restore();
+  // pilha das próximas fotos, à direita
+  for (let k = 1; k <= 3; k++) {
+    g.save();
+    g.translate(w * 0.87, h * (0.2 + k * 0.17));
+    g.rotate((k % 2 ? 1 : -1) * 0.05);
+    g.fillStyle = '#f5f2ec';
+    g.fillRect(-w * 0.07, -h * 0.07, w * 0.14, h * 0.14);
+    g.beginPath();
+    g.rect(-w * 0.07 + 5, -h * 0.07 + 5, w * 0.14 - 10, h * 0.14 - 10);
+    g.clip();
+    g.translate(-w * 0.07 + 5, -h * 0.07 + 5);
+    foto(g, (i + k) % 4, w * 0.14 - 10, h * 0.14 - 10);
+    g.restore();
+  }
+  // relógio do vídeo longo
+  const seg = Math.floor(f * 21.5);
+  g.fillStyle = 'rgba(0,0,0,0.6)';
+  g.beginPath();
+  g.roundRect(w * 0.05, h * 0.05, w * 0.2, h * 0.11, 10);
+  g.fill();
+  g.fillStyle = '#fff';
+  g.font = `900 ${h * 0.075}px Montserrat`;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(`${String(Math.floor(seg / 60)).padStart(2, '0')}:${String(seg % 60).padStart(2, '0')}`, w * 0.15, h * 0.11);
 };

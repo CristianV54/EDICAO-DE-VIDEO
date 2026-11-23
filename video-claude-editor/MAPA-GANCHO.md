@@ -1,4 +1,4 @@
-# Mapa de animações: cena 1, o gancho (versão 5)
+# Mapa de animações: cena 1, o gancho (versão 7)
 
 Feito depois da crítica do Cristian à versão 1, seguindo o fluxo de edição de Lucas Leite (github.com/LeiteZ/fluxo-de-edicao), que ele indicou. Este arquivo é o plano das animações do gancho. O código está em `src/cenas/Gancho.tsx`.
 
@@ -73,6 +73,23 @@ Versão 5, em 23/11/2026:
 | Caixas das ferramentas | Todas cinza-escuro, com um traço laranja |
 
 Regra nova para o resto do vídeo: uma cor de destaque só. Cor fora da paleta só entra quando tem significado, como o vermelho do trecho cortado e as cores dos ícones do Premiere e do DaVinci.
+
+## Mudanças das versões 6 e 7
+
+Versão 6: o roteiro ganhou a versão 2 e o canal dark saiu. O gancho ficou com celular e tela larga, quatro ferramentas, e a voz logo depois de "o Claude".
+
+Versão 7, depois da crítica do Cristian em 23/11/2026:
+
+| Item | O que mudou |
+|---|---|
+| Ordem | Voltou a ser: Claude, corte, animação, câmera, nenhum programa, e só então a voz e o botão de aprovar. Escolha do Cristian |
+| Corte | Um clipe comprido recebe dois cortes, cada um com risco de luz, faíscas e tremor de câmera. O trecho do meio fica vermelho, salta para fora da parede, voa para a câmera, e o resto fecha o buraco com quique. O monitor pisca junto |
+| Bonecos de papel | Saíram todos. O Cristian achou ruins |
+| Voz | Sem boneco. Microfone, onda da voz, uma faixa de áudio com a luz de gravando e relógio, e o destaque "VOZ DO CRISTIAN" |
+| Celular, "cortes" | Um corte vertical ganhando legenda palavra por palavra, com a palavra falada em laranja, pessoa em silhueta e corte seco |
+| Tela larga, "vídeos longos" | Um vídeo de história sendo montado com fotos: cada foto entra, aproxima devagar, ganha uma tarja de título, e a linha do tempo embaixo avança um clipe por foto |
+
+Regra nova para o resto do vídeo: nada de boneco. Quando precisar de pessoa, é silhueta sem rosto. As telas mostram edição de verdade: legenda, fotos, linha do tempo.
 
 ## O que ainda falta e depende de outras fases
 

@@ -15,7 +15,7 @@ Quem fala é o Claude, em primeira pessoa, na voz do Cristian. As linhas que com
 
 ## O que mudou da versão 1 para a versão 2
 
-- **Voz:** o gancho diz logo na segunda frase que a voz é do Cristian.
+- **Voz:** o gancho diz que a voz é do Cristian, logo depois de mostrar corte, animação e câmera. A ordem foi escolha do Cristian.
 - **Canal dark:** saiu da promessa e do vídeo. Virou uma frase no fechamento, como assunto de outro vídeo.
 - **yt-dlp:** saiu do vídeo. Ele só era citado na cena do canal dark, e sem ela não tinha mais onde ser explicado. Ficaram quatro ferramentas.
 - **Dois ganchos no meio:** um no fim do passo 1, sobre o custo, e um no fim do passo 3, sobre as cinco versões da abertura.
@@ -29,9 +29,9 @@ O vídeo ficou com 10 cenas.
 
 ## Cena 1. Gancho
 
-**Na tela:** começa já em movimento, sem vinheta. Uma linha do tempo em pé se monta sozinha, com um monitor em cima, e o bloco do Claude chega girando. Corta para um boneco de papel falando num microfone e depois para o botão APROVAR sendo clicado. Volta para a linha do tempo: a agulha corta um trecho, a câmera entra no monitor e uma linha se desenha, e depois a câmera dá a volta na parede. Os ícones dos programas de edição apagam e caem. Uma escada de cinco degraus acende. Um celular e uma tela larga mostram vídeos passando. Quatro caixas com os nomes das ferramentas caem numa prateleira e um pedido é digitado.
+**Na tela:** começa já em movimento, sem vinheta. Uma linha do tempo em pé se monta sozinha, com um monitor em cima, e o bloco do Claude chega girando. A agulha faz dois cortes num clipe, o trecho ruim fica vermelho e voa para fora. A câmera entra no monitor e uma linha se desenha. Depois a câmera dá a volta na parede. Os ícones dos programas de edição apagam e caem. Um microfone grava a voz do Cristian numa faixa de áudio, e o botão APROVAR é clicado. Uma escada de cinco degraus acende. Um celular mostra um corte vertical ganhando legenda, e uma tela larga mostra um vídeo de história sendo montado com fotos. Quatro caixas com os nomes das ferramentas caem numa prateleira e um pedido é digitado.
 
-> Este vídeo foi editado inteiro por mim, o Claude. A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu. Cada corte, cada animação, cada movimento de câmera. Ninguém abriu um programa de edição.
+> Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera. Ninguém abriu um programa de edição. A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu.
 >
 > Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos: cortes curtos e vídeos longos. Com o nome de cada ferramenta e o pedido exato que você escreve.
 >

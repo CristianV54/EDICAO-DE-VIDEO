@@ -12,17 +12,16 @@ import {EsperaFonte, Rotulo3D, Texto3D} from '../tres/Rotulo';
 import {Halo} from '../tres/Halo';
 import {Destaque, Palco, TEMAS} from './mundo';
 import {TelaPapel} from '../tres/Papel';
-import {cenaCorteCalma, cenaLinha, cenaLongoCalma, cenaPrograma, recorteComemora, recorteFalando} from '../papel';
+import {cenaHistoria, cenaLegenda, cenaLinha, cenaPrograma} from '../papel';
 
 // Cena 1 do roteiro: o gancho, versão 2.
 // Feita seguindo o MAPA-GANCHO.md: linha do tempo em pé, câmera que nunca para,
 // troca de trecho com speed ramp e texto só nas palavras de destaque.
 // Duração de cada trecho em quadros (30 por segundo), estimada pelo texto.
 export const TRECHOS = {
-  abertura: 105, // "Este vídeo foi editado inteiro por mim, o Claude."
-  humano: 125, // "A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu."
-  edicao: 120, // "Cada corte, cada animação, cada movimento de câmera."
+  linhaDoTempo: 225, // "Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera."
   semPrograma: 70, // "Ninguém abriu um programa de edição."
+  humano: 125, // "A voz é do Cristian. Ele gravou e apertou o botão de aprovar: o resto fui eu."
   cincoPassos: 135, // "Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos:"
   doisUsos: 100, // "cortes curtos e vídeos longos."
   ferramentas: 135, // "Com o nome de cada ferramenta e o pedido exato que você escreve."
@@ -35,15 +34,17 @@ const lerp3 = (a: V3, b: V3, t: number): V3 => [lerp(a[0], b[0], t), lerp(a[1], 
 const clarear = (cor: string, k: number) => new THREE.Color(cor).lerp(new THREE.Color('#ffffff'), k).getStyle();
 
 // ====================== Trecho 1: a linha do tempo em pé ======================
-type Clipe = {x: number; l: number; y: number; cor: string; audio?: boolean; corte?: boolean; depois?: boolean};
+type Clipe = {x: number; l: number; y: number; cor: string; audio?: boolean; pedaco?: 'E' | 'M' | 'D'; depois?: boolean};
 const CLIPES: Clipe[] = [
   {x: -6.5, l: 3.0, y: 5.25, cor: N.clipe},
   {x: -1.9, l: 2.8, y: 5.25, cor: N.clipe},
   {x: 4.7, l: 4.4, y: 5.25, cor: N.clipe},
   {x: -6.3, l: 3.8, y: 4.25, cor: N.clipeClaro},
   {x: -2.5, l: 3.4, y: 4.25, cor: N.clipeClaro},
-  {x: 0.15, l: 1.7, y: 4.25, cor: N.clipeClaro, corte: true},
-  {x: 2.7, l: 3.2, y: 4.25, cor: N.clipeClaro, depois: true},
+  // estes três começam colados, como um clipe só, e são separados por dois cortes
+  {x: -0.05, l: 1.3, y: 4.25, cor: N.clipeClaro, pedaco: 'E'},
+  {x: 1.3, l: 1.4, y: 4.25, cor: N.clipeClaro, pedaco: 'M'},
+  {x: 3.15, l: 2.3, y: 4.25, cor: N.clipeClaro, pedaco: 'D'},
   {x: 6.2, l: 3.6, y: 4.25, cor: N.clipeClaro, depois: true},
   {x: -3.6, l: 9.4, y: 3.1, cor: '#15191c', audio: true},
   {x: 5.0, l: 6.6, y: 3.1, cor: '#15191c', audio: true},
@@ -56,7 +57,7 @@ const PecaClipe: React.FC<{c: Clipe; cor: string; i: number}> = ({c, cor, i}) =>
   const n = c.audio ? Math.floor((c.l - 0.3) / 0.24) : Math.max(1, Math.floor(c.l / 1.15));
   return (
     <>
-      <Bloco tam={[c.l, 0.82, 0.3]} cor={cor} raio={0.1} rugosidade={0.42} />
+      <Bloco tam={[c.l, 0.82, 0.3]} cor={cor} raio={c.pedaco ? 0.025 : 0.1} rugosidade={0.42} />
       {c.audio
         ? Array.from({length: n}).map((_, k) => {
             const h = 0.1 + Math.abs(Math.sin(k * 1.7 + i * 2.3) * Math.cos(k * 0.45 + i)) * 0.56;
@@ -74,17 +75,17 @@ const MONITOR_Y = 10.0;
 const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
   const local = useCurrentFrame();
   const f = local + inicio;
-  const sA = inicio === 0 ? saidaRampa(f, 105, 11) : 0;
+  const sA = 0; // a cena voltou a ser uma parte só: não há saída no meio
   const cB = inicio > 0 ? chegadaRampa(local, 26) : 0;
   // câmera: um caminho só, sem parar em nenhum ponto
-  const q = [0, 35, 70, 105, 119, 138, 151, 175, 187, 199, 209, 217, 225];
+  const q = [0, 35, 70, 105, 116, 138, 151, 175, 187, 199, 209, 217, 225];
   const posBase = trilho(f, q, [
     [0.6, 4.3, 8],
     [0.2, 5.2, 14.5],
     [0, 6.4, 19.5],
     [0, 6.4, 20.3],
-    [1.9, 4.4, 7.4],
-    [2.2, 4.5, 7.0],
+    [1.5, 4.5, 6.0],
+    [1.3, 4.5, 5.7],
     [0, MONITOR_Y, 6.3],
     [0, MONITOR_Y, 5.7],
     [-15, 5, 7],
@@ -98,8 +99,8 @@ const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
     [0.2, 5.2, 0],
     [0, 6.4, 0],
     [0, 6.4, 0],
-    [0.3, 4.25, 0],
-    [0.4, 4.3, 0],
+    [1.3, 4.25, 0],
+    [1.2, 4.25, 0],
     [0, MONITOR_Y, 0],
     [0, MONITOR_Y, 0],
     [0, 6, 0],
@@ -108,7 +109,8 @@ const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
     [0, 4, -1],
     [0, 3, -2],
   ]);
-  const pos = somar(somar(posBase, [10, 0, 0], sA), [0, -8, 0], cB);
+  const tremorCam = [115, 122].reduce((t, tc) => t + (f >= tc ? 1 - rampa(f, tc, tc + 9) : 0), 0);
+  const pos = somar(somar(somar(posBase, [10, 0, 0], sA), [0, -8, 0], cB), [Math.sin(f * 2.9) * 0.07, Math.cos(f * 3.7) * 0.05, 0], tremorCam);
   const alvo = somar(somar(alvoBase, [10, 0, 0], sA), [0, -8, 0], cB);
   // na palavra "câmera": volta quase completa em torno da parede, com inclinação e troca de lente
   const rolo = trilho1(f, [175, 190, 203, 215, 225], [0, -0.3, 0.34, -0.2, 0]);
@@ -117,17 +119,26 @@ const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
   // bloco do Claude: chega de trás da câmera, vira o herói, depois vira a cabeça da agulha
   const chega = rampa(f, 50, 76, expoOut);
   const vira = rampa(f, 92, 106, power4InOut);
-  const xAgulha = f < 140 ? trilho1(f, [106, 119], [-3.2, 0.15]) : 0.15 + (f - 140) * 0.06;
-  const batida = f >= 118 && f < 126 ? Math.sin(((f - 118) / 8) * Math.PI) : 0;
+  // a agulha faz dois cortes: um em cada ponta do trecho ruim
+  const CORTES: [number, number][] = [
+    [115, 0.6],
+    [122, 2.0],
+  ];
+  const xAgulha = f < 140 ? trilho1(f, [106, 115, 119, 122], [-3.2, 0.6, 0.6, 2.0]) : 2.0 + (f - 140) * 0.05;
+  const batida = CORTES.reduce((a, [tc]) => a + (f >= tc && f < tc + 6 ? Math.sin(((f - tc) / 6) * Math.PI) : 0), 0);
+  const tremor = CORTES.reduce((a, [tc]) => a + (f >= tc ? 1 - rampa(f, tc, tc + 9) : 0), 0);
   const posHeroi = lerp3(lerp3([7, 9, 30], [0, 6.2, 8], chega), [xAgulha, 6.95 - batida * 0.45, 0.5], vira);
   const escHeroi = lerp(1.9, 0.36, vira);
   const linhaAgulha = rampa(f, 100, 110, power2Out);
 
   // corte: o trecho fica vermelho, a agulha bate, o pedaço voa para a câmera
-  const marca = rampa(f, 109, 117);
-  const voa = rampa(f, 121, 142, Easing.in(Easing.quad));
-  const fecha = mola(f, 126, {damping: 14});
-  const clarao = f >= 119 ? 1 - rampa(f, 119, 128) : 0;
+  const sep1 = mola(f, 115, {damping: 10});
+  const sep2 = mola(f, 122, {damping: 10});
+  const marca = rampa(f, 122, 127);
+  const levanta = rampa(f, 124, 131, power2Out);
+  const voa = rampa(f, 131, 147, Easing.in(Easing.quad));
+  const fecha = mola(f, 134, {damping: 11, stiffness: 150});
+  const clarao = Math.min(1, tremor);
 
   // monitor de programa em cima da linha do tempo: mostra o que está sendo editado.
   // Na palavra "animação" a câmera entra nele e uma linha se desenha.
@@ -153,28 +164,44 @@ const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
         {CLIPES.map((c, i) => {
           const m = mola(f + 22, 1 + i * 2.5, {damping: 14, stiffness: 110});
           const fora: V3 = [c.x * 0.7 + (aleatorio(i) - 0.5) * 8, (aleatorio(i + 20) - 0.5) * 7, 17 + aleatorio(i + 40) * 9];
-          if (c.corte) {
+          const chega: V3 = [fora[0] * (1 - m), fora[1] * (1 - m), fora[2] * (1 - m)];
+          const giro: V3 = [(1 - m) * 1.1, (1 - m) * 0.8, 0];
+          if (c.pedaco === 'M') {
+            // o trecho ruim: fica vermelho, salta para fora da parede e voa na direção da câmera
             const cor = new THREE.Color(c.cor).lerp(new THREE.Color(N.erro), marca).getStyle();
             return (
-              <group key={i} position={[c.x + fora[0] * (1 - m) - voa * 2.7, c.y + fora[1] * (1 - m) - voa * 0.5, fora[2] * (1 - m) + voa * 14]} rotation={[(1 - m) * 1.1 + voa * 2.6, (1 - m) * 0.8 + voa * 1.7, voa * 3.4]}>
+              <group key={i} position={[c.x + chega[0] - voa * 2.2, c.y + chega[1] - voa * 1.2, chega[2] + levanta * 1.3 + voa * 13]} rotation={[giro[0] + levanta * 0.25 + voa * 2.6, giro[1] + voa * 1.7, voa * 3.4]}>
                 <PecaClipe c={c} cor={cor} i={i} />
               </group>
             );
           }
+          const dx = c.pedaco === 'E' ? -0.07 * sep1 * (1 - fecha) : c.pedaco === 'D' ? 0.07 * sep2 * (1 - fecha) - 1.4 * fecha : c.depois ? -1.4 * fecha : 0;
           return (
-            <group key={i} position={[c.x + fora[0] * (1 - m) - (c.depois ? fecha * 1.8 : 0), c.y + fora[1] * (1 - m), fora[2] * (1 - m)]} rotation={[(1 - m) * 1.1, (1 - m) * 0.8, 0]}>
+            <group key={i} position={[c.x + chega[0] + dx, c.y + chega[1], chega[2]]} rotation={giro}>
               <PecaClipe c={c} cor={c.cor} i={i} />
+            </group>
+          );
+        })}
+        {/* a lâmina de cada corte: um risco de luz e faíscas */}
+        {CORTES.map(([tc, xc]) => {
+          if (f < tc || f > tc + 12) return null;
+          const t = (f - tc) / 12;
+          const luz = 1 - rampa(f, tc, tc + 8);
+          return (
+            <group key={tc} position={[xc, 4.25, 0.5]}>
+              <Halo cor="#ffffff" tam={1.8 + luz * 2.2} z={0.1} forca={luz * 0.55} />
+              <Bloco tam={[0.05, 0.3 + luz * 2.2, 0.3]} cor="#ffffff" raio={0.02} emissivo="#ffffff" intensidade={3} sombra={false} />
+              {Array.from({length: 10}).map((_, k) => {
+                const a = (k / 10) * Math.PI * 2 + tc;
+                const d = t * (1.2 + aleatorio(k + tc) * 1.6);
+                return <Bloco key={k} tam={[0.07, 0.07, 0.07]} cor={N.acento} raio={0.02} posicao={[Math.cos(a) * d * 0.5, Math.sin(a) * d - t * t * 0.8, 0.2 + d * 0.5]} emissivo={N.acento} intensidade={2 * (1 - t)} sombra={false} />;
+              })}
             </group>
           );
         })}
         {/* agulha e bloco do Claude */}
         {linhaAgulha > 0 ? <Bloco tam={[0.07, 5.5 * linhaAgulha, 0.07]} cor="#ffffff" posicao={[xAgulha, 6.9 - (5.5 * linhaAgulha) / 2 - batida * 0.45, 0.5]} raio={0.03} emissivo="#ffffff" intensidade={2.6} sombra={false} /> : null}
         {f >= 48 ? <Icone3D posicao={posHeroi} rotacao={[0, (1 - chega) * -6.5 + Math.sin(f / 22) * 0.16 * (1 - vira), (1 - chega) * 0.6]} escala={escHeroi} brilho={0.35 + clarao * 0.5} halo={6} /> : null}
-        {clarao > 0 ? (
-          <group position={[0.15, 4.25, 0.9]}>
-            <Halo cor="#ffffff" tam={5 + clarao * 4} z={0} forca={clarao} />
-          </group>
-        ) : null}
         {/* o verso da parede, visto quando a câmera dá a volta */}
         {CLIPES.map((c, i) => (
           <Bloco key={`v${i}`} tam={[c.l, 0.82, 0.12]} cor={c.cor} raio={0.05} posicao={[c.x, c.y, -0.42]} sombra={false} />
@@ -186,7 +213,7 @@ const LinhaDoTempo: React.FC<{inicio?: number}> = ({inicio = 0}) => {
         </group>
       </Palco>
       <Destaque texto="100% *CLAUDE" de={66} ate={96} quadro={f} />
-      <Destaque texto="*CORTE" de={119} ate={138} tam={170} quadro={f} />
+      <Destaque texto="*CORTE" de={116} ate={138} tam={170} quadro={f} />
       <Destaque texto="*CÂMERA" de={182} ate={218} tam={170} quadro={f} />
     </AbsoluteFill>
   );
@@ -222,7 +249,7 @@ const SemPrograma: React.FC = () => {
   };
   const a = estado(20);
   const b = estado(27);
-  const entra = mola(f, 0, {damping: 12});
+  const entra = 1;
   return (
     <AbsoluteFill>
       <Palco f={f} pos={pos} alvo={alvo} tema={TEMAS.cemiterio} borrao={c * c * 18 + s * 16}>
@@ -298,34 +325,43 @@ const Humano: React.FC = () => {
   const s = saidaRampa(f, 125, 12);
   const passo = rampa(f, 64, 79, power4InOut);
   const pico = rampa(f, 14, 20, expoOut) * (1 - rampa(f, 20, 40, power2Out));
-  const pos = somar(somar([-1 + f * 0.022 + passo * 12.6, 3.3, 10.4 - f * 0.012], [-10, 0, 0], c), [0, 9, 0], s);
-  const alvo = somar(somar([0.2 + passo * 12, 2.95 - passo * 0.3, 0], [-10, 0, 0], c), [0, 9, 0], s);
+  const pos = somar(somar([1.8 + f * 0.022 + passo * 12.8, 3.3, 11 - f * 0.012], [-10, 0, 0], c), [0, 9, 0], s);
+  const alvo = somar(somar([3.2 + passo * 11.8, 3.05 - passo * 0.35, 0], [-10, 0, 0], c), [0, 9, 0], s);
   const botao = mola(f, 67, {damping: 12});
   const aperta = f >= 92 && f < 102 ? Math.sin(((f - 92) / 10) * Math.PI) : 0;
   const clique = f >= 92 ? 1 - rampa(f, 92, 122) * 0.7 : 0;
   const cursor = trilho(f, [74, 84, 92, 125], [
-    [17.5, -1.5, 2.6],
-    [15.6, 2.4, 2.4],
-    [13.4, 2.75, 1.5],
-    [13.6, 2.6, 1.6],
+    [20.5, -1.5, 2.6],
+    [18.6, 2.4, 2.4],
+    [16.4, 2.75, 1.5],
+    [16.6, 2.6, 1.6],
   ]);
-  const festa = mola(f, 96, {damping: 9});
+  const faixa = rampa(f, 2, 22, power2Out);
+  const seg = Math.floor(f / 30);
   return (
     <AbsoluteFill>
       <Palco f={f} pos={pos} alvo={alvo} fov={40 - pico * 5} tema={TEMAS.gravacao} borrao={c * c * 18 + s * 16}>
-        {/* o humano, em papel recortado, falando no microfone */}
-        <TelaPapel recorte desenhar={recorteFalando} f={f} larg={3.1} alt={4.4} px={420} posicao={[-2.2, 2.2, 0.2]} rotacao={[0, 0.2, 0]} />
+        {/* a voz do Cristian sendo gravada: microfone, onda e a faixa de áudio crescendo */}
         <Microfone posicao={[0.5, 1.02, 0]} escala={1.28} f={f} />
-        <group position={[12, 2.7, 0]} rotation={[-0.08, -0.12, 0]} scale={Math.max(0.001, botao)}>
+        <group position={[5.4, 3.0, -0.3]} scale={[Math.max(0.001, faixa), 1, 1]}>
+          <Bloco tam={[7.9, 3.7, 0.16]} cor="#0c0e10" raio={0.2} rugosidade={0.6} />
+        </group>
+        <mesh position={[1.75, 5.25, 0]}>
+          <sphereGeometry args={[0.13, 20, 14]} />
+          <meshStandardMaterial color={N.erro} emissive="#ff3b30" emissiveIntensity={Math.floor(f / 10) % 2 ? 2.2 : 0.3} />
+        </mesh>
+        <Rotulo3D texto="GRAVANDO" larg={2.0} cor="#cfd6dc" posicao={[3.0, 5.25, 0]} />
+        <Rotulo3D texto={`00:0${Math.min(9, seg)}`} larg={1.6} cor="#cfd6dc" posicao={[8.45, 5.25, 0]} />
+        {/* o botão de aprovar */}
+        <group position={[15, 2.7, 0]} rotation={[-0.08, -0.12, 0]} scale={Math.max(0.001, botao)}>
           <Halo cor="#ff7a3d" tam={12} z={-0.8} forca={clique * 0.9} />
           <Bloco tam={[5.6, 2.3, 0.6]} cor="#10191c" raio={0.34} posicao={[0, 0, -0.4]} />
           <Bloco tam={[5.0, 1.75, 0.7]} cor={N.texto} raio={0.32} posicao={[0, 0, 0.1 - aperta * 0.3]} emissivo={N.acento} intensidade={clique * 0.9} rugosidade={0.3} />
           <Rotulo3D texto="APROVAR" larg={4.3} cor="#141413" posicao={[0, 0, 0.47 - aperta * 0.3]} />
         </group>
         {f >= 74 ? <Cursor posicao={cursor} aperta={aperta} /> : null}
-        {festa > 0.01 ? <TelaPapel recorte desenhar={recorteComemora} f={f} larg={2.9} alt={4.1} px={400} posicao={[16.7, 2.05, 0.3]} rotacao={[0, -0.25, 0]} escala={festa} /> : null}
       </Palco>
-      <Destaque texto="A *VOZ" de={14} ate={44} tam={170} />
+      <Destaque texto="VOZ DO *CRISTIAN" de={14} ate={48} tam={130} />
     </AbsoluteFill>
   );
 };
@@ -393,18 +429,18 @@ const DoisUsos: React.FC = () => {
         {/* cortes: celular na vertical, com um vídeo de papel cheio de cortes secos e legenda */}
         <group position={[0, 3.15, 0]} rotation={[0, Math.sin(f / 26) * 0.16 + 0.12, -0.04]}>
           <Bloco tam={[2.6, 4.75, 0.26]} cor="#0d1416" raio={0.28} />
-          <TelaPapel desenhar={cenaCorteCalma} f={f} larg={2.3} alt={4.4} px={380} posicao={[0, 0, 0.14]} />
+          <TelaPapel desenhar={cenaLegenda} f={f} larg={2.3} alt={4.4} px={560} posicao={[0, 0, 0.14]} />
         </group>
         <Rotulo3D texto="CORTES" larg={3.6} posicao={[0, 0.42, 1.2]} />
         {/* vídeos longos: tela larga com a história passando, o relógio correndo e a linha do tempo embaixo */}
         <group position={[10, 3.35, 0]} rotation={[0, Math.sin(f / 26 + 1) * 0.14, 0]}>
           <Bloco tam={[6.5, 4.9, 0.26]} cor="#0d1416" raio={0.18} />
-          <TelaPapel desenhar={cenaLongoCalma} f={f} larg={6.0} alt={3.375} posicao={[0, 0.56, 0.14]} />
+          <TelaPapel desenhar={cenaHistoria} f={f} larg={6.0} alt={3.375} px={1280} posicao={[0, 0.56, 0.14]} />
           {Array.from({length: 9}).map((_, k) => (
-            <Bloco key={k} tam={[0.6, 0.34, 0.06]} cor={k === 4 ? N.acento : N.clipeClaro} raio={0.05} posicao={[-2.68 + k * 0.67, -1.48, 0.17]} sombra={false} />
+            <Bloco key={k} tam={[0.6, 0.34, 0.06]} cor={k === Math.min(8, Math.floor(f / 24) + 2) ? N.acento : k < Math.floor(f / 24) + 2 ? N.clipeClaro : '#14181b'} raio={0.05} posicao={[-2.68 + k * 0.67, -1.48, 0.17]} sombra={false} />
           ))}
           <Bloco tam={[5.96, 0.3, 0.06]} cor={N.clipe} raio={0.05} posicao={[0, -1.96, 0.17]} sombra={false} />
-          <Bloco tam={[0.05, 1.0, 0.05]} cor="#ffffff" raio={0.02} posicao={[-2.9 + rampa(f, 40, 100, (n) => n) * 5.8, -1.72, 0.24]} emissivo="#ffffff" intensidade={2} sombra={false} />
+          <Bloco tam={[0.05, 1.0, 0.05]} cor="#ffffff" raio={0.02} posicao={[-2.68 + Math.min(8, f / 24 + 2) * 0.67, -1.72, 0.24]} emissivo="#ffffff" intensidade={2} sombra={false} />
         </group>
         <Rotulo3D texto="VÍDEOS LONGOS" larg={5.2} posicao={[10, 0.42, 1.2]} />
       </Palco>
@@ -433,7 +469,7 @@ const Ferramentas: React.FC = () => {
           <Bloco key={x} tam={[0.3, 1.8, 1.6]} cor="#101316" posicao={[x, 0.9, 0]} raio={0.08} />
         ))}
         {FERRAMENTAS.map(([nome, cor], i) => {
-          const ini = 1 + i * 3;
+          const ini = -7 + i * 3;
           const cai = rampa(f, ini, ini + 11, Easing.in(Easing.quad));
           const amassa = Math.max(0, 1 - Math.abs(f - (ini + 12)) / 4) * 0.22;
           if (f < ini) return null;
@@ -497,14 +533,11 @@ const PassoUm: React.FC = () => {
 };
 
 // ====================== Cena completa ======================
-const Edicao: React.FC = () => <LinhaDoTempo inicio={105} />;
-
 export const Gancho: React.FC = () => {
   const ordem: [keyof typeof TRECHOS, React.FC][] = [
-    ['abertura', LinhaDoTempo],
-    ['humano', Humano],
-    ['edicao', Edicao],
+    ['linhaDoTempo', LinhaDoTempo],
     ['semPrograma', SemPrograma],
+    ['humano', Humano],
     ['cincoPassos', CincoPassos],
     ['doisUsos', DoisUsos],
     ['ferramentas', Ferramentas],
