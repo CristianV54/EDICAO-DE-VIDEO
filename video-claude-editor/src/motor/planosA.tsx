@@ -184,7 +184,7 @@ const Pasta: React.FC<{nome: string; aceso?: number; trava?: number; tam?: numbe
   </div>
 );
 
-export const PPasta: P<{criar?: number; arrastar?: number}> = ({c, criar = 0, arrastar = 0}) => {
+export const PPasta: P<{criar?: number; arrastar?: number; legenda?: string; legendaEm?: number}> = ({c, criar = 0, arrastar = 0, legenda, legendaEm = 2}) => {
   const pasta = mola(c.f, c.t(criar) + 4, {damping: 11});
   const ini = c.p('arraste') || c.t(arrastar) + 30;
   return (
@@ -204,6 +204,7 @@ export const PPasta: P<{criar?: number; arrastar?: number}> = ({c, criar = 0, ar
             </div>
           );
         })}
+        {legenda ? <div style={{position: 'absolute', left: 0, right: 0, bottom: 54, textAlign: 'center', fontFamily: MONO, fontSize: 32, color: C.texto, ...surge(ap(c.f, c.t(legendaEm)), 20)}}>{legenda}</div> : null}
         {c.f >= ini - 4 && c.f < ini + 46 ? (
           <svg width={48} height={64} viewBox="0 0 64 84" style={{position: 'absolute', left: 160 + (840 - 160) * rampa(c.f, ini, ini + 36, power4InOut), top: 420 + (460 - 420) * rampa(c.f, ini, ini + 36)}}>
             <path d="M4 2 L4 62 L20 48 L31 74 L42 69 L31 44 L52 44 Z" fill="#fff" stroke="#141413" strokeWidth={3} strokeLinejoin="round" />

@@ -193,7 +193,7 @@ export const PEntrePalavras: P<{cortar: number; meio: number}> = ({c, cortar, me
   const palavras = ['cada', 'palavra', 'tem', 'o', 'seu', 'tempo'];
   const tC = c.p('entre') || c.t(cortar) + 60;
   const abre = rampa(c.f, tC, tC + 14, power2Out);
-  const tM = c.t(meio);
+  const tM = (c.p('meio') || c.t(meio) + 10) - 8;
   const erra = rampa(c.f, tM, tM + 8) * (1 - rampa(c.f, tM + 20, tM + 28));
   return (
     <AbsoluteFill>
@@ -215,7 +215,7 @@ export const PEntrePalavras: P<{cortar: number; meio: number}> = ({c, cortar, me
       </div>
       <div style={{position: 'absolute', left: 960 - 3, top: 340, width: 6, height: 260 * abre, background: '#fff', boxShadow: `0 0 26px #fff, 0 0 60px ${C.acento}`, opacity: abre}} />
       <div style={{position: 'absolute', left: 0, right: 0, top: 700, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 80, color: C.texto, ...surge(ap(c.f, tM - 2), 20)}}>
-        nunca no <span style={{color: C.erro}}>meio</span>
+        não no <span style={{color: C.erro}}>meio</span>
       </div>
     </AbsoluteFill>
   );
@@ -272,13 +272,13 @@ export const PEditores: P<{entrega: number}> = ({c, entrega}) => {
 
 // ---------- Um motor: comandos passando, sem botão nem tela ----------
 export const PComandos: P<{rotulo?: string}> = ({c, rotulo = 'FFMPEG'}) => {
-  const linhas = ['ffmpeg -i bruto.mp4 -ss 00:02:14 -to 00:02:31 corte_01.mp4', 'ffmpeg -f concat -i lista.txt -c copy video.mp4', 'ffmpeg -i video.mp4 -vf scale=1080:1920 vertical.mp4', 'ffmpeg -i video.mp4 -af loudnorm=I=-14 final.mp4'];
-  const faz = ['corta no ponto exato', 'junta trechos', 'muda o formato', 'ajusta o som'];
-  const chaves = ['corta', 'junta', 'muda', 'ajusta'];
+  const linhas = ['ffmpeg -i bruto.mp4 -ss 00:02:14 -to 00:02:31 corte_01.mp4', 'ffmpeg -f concat -i lista.txt -c copy video.mp4', 'ffmpeg -i video.mp4 -vf scale=1080:1920 vertical.mp4'];
+  const faz = ['corta o vídeo', 'junta trechos', 'muda o formato'];
+  const chaves = ['corta', 'junta', 'muda'];
   return (
     <AbsoluteFill>
       <Etiqueta style={{position: 'absolute', left: 180, top: 170, opacity: ap(c.f, 0)}}>{rotulo}</Etiqueta>
-      <Janela titulo="terminal" style={{left: 180, top: 230, width: 1560, height: 620}} luz={0.9}>
+      <Janela titulo="terminal" style={{left: 180, top: 230, width: 1560, height: 520}} luz={0.9}>
         <div style={{padding: '40px 46px'}}>
           {linhas.map((l, i) => {
             const de = c.p(chaves[i]) || 20 + i * 30;

@@ -229,9 +229,9 @@ export const PExportar: P<{juntar: number}> = ({c, juntar}) => {
 };
 
 export const PConfere: P<{itens: number; fotos: number}> = ({c, itens, fotos}) => {
-  const lista = ['resolução', 'duração', 'volume do áudio'];
-  const chaves = ['resolução', 'duração', 'volume'];
-  const valores = ['1920 × 1080', '08:14', '−14 LUFS'];
+  const lista = ['tamanho da imagem', 'duração', 'volume do áudio'];
+  const chaves = ['tamanho', 'duração', 'volume'];
+  const valores = ['1920 × 1080', '09:20', '−14 LUFS'];
   const tF = c.t(fotos);
   const varre = rampa(c.f, tF + 10, Math.min(c.dur - 10, tF + 150), (v) => v);
   const ruim = 6;
@@ -302,28 +302,33 @@ export const PComentarios: P<{falas: string[]; chaves: string[]; corrige: string
 };
 
 // ---------- As versões de verdade da abertura deste vídeo ----------
-export const PVersoes: P<{quando: number[]; rotulos?: string[]; chaves?: string[]; chavesRotulo?: string[]}> = ({c, quando, rotulos = [], chaves = [], chavesRotulo = []}) => {
+export const PVersoes: P<{quando: number[]; rotulos?: string[]; chaves?: string[]; chavesRotulo?: string[]; imagens?: number[]; semNumero?: boolean; misterio?: boolean; etiqueta?: string}> = ({c, quando, rotulos = [], chaves = [], chavesRotulo = [], imagens, semNumero = false, misterio = false, etiqueta = 'A ABERTURA DESTE VÍDEO, VERSÃO POR VERSÃO'}) => {
   const n = quando.length;
   return (
     <AbsoluteFill>
-      <Etiqueta style={{position: 'absolute', left: 110, top: 190, opacity: ap(c.f, 0)}}>A ABERTURA DESTE VÍDEO, VERSÃO POR VERSÃO</Etiqueta>
+      <Etiqueta style={{position: 'absolute', left: 110, top: 190, opacity: ap(c.f, 0)}}>{etiqueta}</Etiqueta>
       <div style={{position: 'absolute', left: 110, right: 110, top: 270, display: 'flex', gap: 22}}>
         {Array.from({length: n}).map((_, i) => {
           const de = (chaves[i] ? c.p(chaves[i]) : 0) || c.t(quando[i]) + (quando.filter((q, k) => k < i && q === quando[i]).length) * 8;
           const e = ap(c.f, de - 2, 16);
-          const ultima = i === n - 1;
-          const riscada = !ultima && c.f >= de + 22;
+          const oculta = misterio && i > 0;
+          const ultima = !misterio && i === n - 1;
+          const riscada = !ultima && !oculta && c.f >= de + 22;
           return (
             <div key={i} style={{flex: 1, ...surge(e, 60)}}>
               <div style={{borderRadius: 16, overflow: 'hidden', border: `2px solid ${ultima ? C.acento : C.borda}`, position: 'relative', boxShadow: ultima ? brilho(C.acento, 0.9) : 'none', opacity: riscada ? 0.5 : 1}}>
-                <Img src={staticFile(`versoes/v${i + 1}.jpg`)} style={{width: '100%', display: 'block'}} />
+                {oculta ? (
+                  <div style={{aspectRatio: '16 / 9', background: C.cartaoClaro, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 90, color: C.mudo}}>?</div>
+                ) : (
+                  <Img src={staticFile(`versoes/v${imagens ? imagens[i] : i + 1}.jpg`)} style={{width: '100%', display: 'block'}} />
+                )}
                 {riscada ? (
                   <svg viewBox="0 0 100 56" preserveAspectRatio="none" style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}}>
                     <line x1={6} y1={6} x2={94} y2={50} stroke={C.erro} strokeWidth={2.5} />
                   </svg>
                 ) : null}
               </div>
-              <div style={{fontFamily: MONO, fontSize: 26, color: ultima ? C.acento : C.mudo, marginTop: 14}}>versão {i + 1}</div>
+              {semNumero ? null : <div style={{fontFamily: MONO, fontSize: 26, color: ultima ? C.acento : C.mudo, marginTop: 14}}>{oculta ? 'passo 5' : `versão ${i + 1}`}</div>}
               {rotulos[i] ? <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 30, color: C.texto, marginTop: 6, lineHeight: 1.15, ...surge(ap(c.f, (chavesRotulo[i] ? c.p(chavesRotulo[i]) : 0) || de + 10), 14)}}>{rotulos[i]}</div> : null}
             </div>
           );
@@ -334,7 +339,7 @@ export const PVersoes: P<{quando: number[]; rotulos?: string[]; chaves?: string[
 };
 
 // ---------- A conta: quanto custa de verdade ----------
-export const PConta: P<{ferramentas: number; claude: number; valor: number}> = ({c, ferramentas, claude, valor}) => {
+export const PConta: P<{ferramentas: number; claude: number; valor: number; nota?: string; notaEm?: number}> = ({c, ferramentas, claude, valor, nota, notaEm = 4}) => {
   const nomes = ['Whisper', 'auto-editor', 'FFmpeg', 'Remotion'];
   const tZ = c.p('zero') || c.t(ferramentas) + 30;
   const tC = c.t(claude);
@@ -357,6 +362,7 @@ export const PConta: P<{ferramentas: number; claude: number; valor: number}> = (
         <div style={{textAlign: 'right', fontFamily: MONO, fontSize: 36, color: C.mudo, marginTop: 12, ...surge(ap(c.f, tA), 20)}}>
           ou <span style={{color: C.texto}}>US$ 17</span> por mês no plano anual
         </div>
+        {nota ? <div style={{textAlign: 'right', fontFamily: MONO, fontSize: 30, color: C.mudo, marginTop: 26, ...surge(ap(c.f, c.t(notaEm)), 20)}}>{nota}</div> : null}
       </div>
     </AbsoluteFill>
   );
@@ -450,10 +456,10 @@ export const PLinhaVideo: P<{cenas: string[]; duracoes: number[]}> = ({c, cenas,
 };
 
 // ---------- Chamadas: inscrever no meio, e comentar 1 ou 2 no fim ----------
-export const PInscrever: P<{pergunta?: boolean}> = ({c, pergunta = false}) => {
+export const PInscrever: P<{pergunta?: boolean; opcoes?: [string, string]; frase?: number}> = ({c, pergunta = false, opcoes = ['vídeo curto', 'vídeo longo'], frase = 0}) => {
   const e = mola(c.f, 4, {damping: 11});
-  const t1 = c.p('1') || c.p('um') || 40;
-  const t2 = c.p('2') || c.p('dois') || 90;
+  const t1 = c.t(frase) + 22;
+  const t2 = c.t(frase) + 58;
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 60}}>
       {!pergunta ? (
@@ -463,8 +469,8 @@ export const PInscrever: P<{pergunta?: boolean}> = ({c, pergunta = false}) => {
           <Etiqueta style={{opacity: ap(c.f, 0)}}>COMENTA AQUI EMBAIXO</Etiqueta>
           <div style={{display: 'flex', gap: 60}}>
             {[
-              ['1', 'vídeo curto', t1],
-              ['2', 'vídeo longo', t2],
+              ['1', opcoes[0], t1],
+              ['2', opcoes[1], t2],
             ].map(([n, txt, t]) => {
               const m = mola(c.f, Number(t) - 2, {damping: 10});
               return (

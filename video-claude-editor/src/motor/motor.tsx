@@ -29,18 +29,21 @@ export type Plano = {
   brilho?: [number, number]; // posição do brilho do fundo, em %
   sons?: Som[];
   fundo?: boolean; // false para planos que trazem o próprio fundo (3D)
+  escala?: number; // aumento do plano 2D (padrão 1,12)
   inicio?: [string, number?]; // começa numa palavra da cena (n-ésima ocorrência), em vez de no começo da frase
 };
 export type Abertura = {C: Plano['C']; props?: Record<string, unknown>; dur: number; sons?: Som[]};
 
+// o Whisper às vezes escreve uma palavra de outro jeito: estas são as formas alternativas
+const APELIDOS: Record<string, string[]> = {claude: ['cloud', 'claud', 'clod'], corte: ['curte'], ia: ['dia'], exporte: ['esporte'], '1': ['um'], '2': ['dois']};
 const FOLGA = 5; // o plano entra um pouco antes da primeira palavra
 
 const limpar = (x: string) => x.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
 // desloc: quadros de abertura antes de a voz começar
-export const medirCena = (numero: number, planos: Plano[], desloc = 0) => {
+export const medirCena = (numero: number, planos: Plano[], desloc = 0, cauda = 0) => {
   const fr = T[String(numero)].frases;
   const pal = T[String(numero)].palavras as [number, string][];
-  const total = Math.round(T[String(numero)].duracao * 30) + 14 + desloc;
+  const total = Math.round(T[String(numero)].duracao * 30) + 14 + desloc + cauda;
   const inicios = planos.map((pl, i) => {
     if (i === 0) return desloc;
     if (pl.inicio) {
@@ -52,7 +55,7 @@ export const medirCena = (numero: number, planos: Plano[], desloc = 0) => {
   });
   return {total, inicios, durs: planos.map((_, i) => (i + 1 < planos.length ? inicios[i + 1] : total) - inicios[i])};
 };
-export const duracaoCena = (numero: number, desloc = 0) => Math.round(T[String(numero)].duracao * 30) + 14 + desloc;
+export const duracaoCena = (numero: number, desloc = 0, cauda = 0) => Math.round(T[String(numero)].duracao * 30) + 14 + desloc + cauda;
 
 // alvo de volume por tipo de som, em LUFS, para todos ficarem na mesma régua
 const ALVO: Record<string, number> = {estalo: -30, estalo_madeira: -31, tique: -32, clique: -27, tecla: -34, corte: -27, deslize: -30, whoosh: -29, whoosh_longo: -30, whoosh_grave: -28, batida: -24, impacto: -25, queda: -30, subida: -29, subida_forte: -28, brilho: -31, sucesso: -26, revela: -27, desliga: -29, passo: -28, gaveta: -30, camera: -28};
@@ -120,7 +123,8 @@ const PlanoNaTela: React.FC<{numero: number; plano: Plano; inicio: number; dur: 
     fim: (i) => fr[Math.min(plano.frases[1], plano.frases[0] + i)][1] - inicio,
     p: (texto, n = 0) => {
       const alvo = limpa(texto);
-      const achadas = pal.filter(([q, w]) => q >= inicio - 2 && q <= inicio + dur && limpa(w).startsWith(alvo));
+      const formas = [alvo, ...(APELIDOS[alvo] ?? [])];
+      const achadas = pal.filter(([q, w]) => q >= inicio - 2 && q <= inicio + dur && formas.some((fo) => limpa(w).startsWith(fo)));
       return achadas[n] ? achadas[n][0] - inicio : 0;
     },
   };
@@ -129,15 +133,21 @@ const PlanoNaTela: React.FC<{numero: number; plano: Plano; inicio: number; dur: 
     <AbsoluteFill>
       {plano.fundo === false ? null : <Fundo2D f={f + inicioAbs} x={plano.brilho?.[0] ?? 74} y={plano.brilho?.[1] ?? 76} />}
       <Entrada f={f} dur={dur} tipo={plano.troca}>
-        <Comp c={c} {...(plano.props ?? {})} />
+        {plano.fundo === false || plano.escala === 1 ? (
+          <Comp c={c} {...(plano.props ?? {})} />
+        ) : (
+          <AbsoluteFill style={{transform: `scale(${plano.escala ?? 1.12})`}}>
+            <Comp c={c} {...(plano.props ?? {})} />
+          </AbsoluteFill>
+        )}
       </Entrada>
     </AbsoluteFill>
   );
 };
 
-export const Cena: React.FC<{numero: number; planos: Plano[]; abertura?: Abertura; comVoz?: boolean}> = ({numero, planos, abertura, comVoz = true}) => {
+export const Cena: React.FC<{numero: number; planos: Plano[]; abertura?: Abertura; comVoz?: boolean; cauda?: number}> = ({numero, planos, abertura, comVoz = true, cauda = 0}) => {
   const desloc = abertura?.dur ?? 0;
-  const {inicios, durs} = medirCena(numero, planos, desloc);
+  const {inicios, durs} = medirCena(numero, planos, desloc, cauda);
   const f = useCurrentFrame();
   const Ab = abertura?.C;
   return (

@@ -1,29 +1,19 @@
 # ROTEIRO: O Claude editou este vídeo sozinho (e pode editar os seus)
 
-Situação: versão 2, com os ajustes aprovados pelo Cristian em 23/11/2026. A versão 1 tinha sido aprovada no mesmo dia.
+Situação: versão 3, enviada pelo Cristian em 23/11/2026. Parte da versão 2. Mudou só a narração, reescrita por ele no estilo de fala descrito no manual de estilo dele. As 10 cenas, a ordem e as informações conferidas são as da versão 2. A versão 2 ficou guardada em ROTEIRO-v2.md.
 
 ## Regras deste roteiro
 
-Vieram das dicas do Cristian e valem para qualquer revisão:
+Valem para qualquer revisão. As linhas que começam com `>` são a narração: é só isso que é lido. O resto descreve a imagem.
 
 1. **Teste do corte.** Para cada trecho: "se eu tirar, faz diferença?". Se não faz, sai.
-2. **A promessa do título é paga nos primeiros 5 segundos.** O vídeo começa dizendo o que é e o que entrega. Nada de enrolar para depois revelar.
-3. **Cada cena termina puxando a próxima.** A pessoa sempre sabe por que vale continuar.
-4. **Dinâmico.** Frases curtas. Nenhum termo técnico sem explicação na mesma frase.
+2. **A promessa do título é paga nos primeiros 5 segundos.**
+3. **Cada cena termina puxando a próxima.**
+4. **Frases curtas.** Nenhum termo técnico sem explicação na mesma frase.
 
-Quem fala é o Claude, em primeira pessoa, na voz do Cristian. As linhas que começam com `>` são a narração: é só isso que o Cristian lê. O resto descreve a imagem.
+Quem fala é o Claude, em primeira pessoa.
 
-## O que mudou da versão 1 para a versão 2
-
-- **Voz:** o gancho fala direto com quem assiste: a pessoa só precisa usar a própria voz, ou uma de IA, e apertar em aprovar. Texto pedido pelo Cristian em 23/11/2026.
-- **Canal dark:** saiu da promessa e do vídeo. Virou uma frase no fechamento, como assunto de outro vídeo.
-- **yt-dlp:** saiu do vídeo. Ele só era citado na cena do canal dark, e sem ela não tinha mais onde ser explicado. Ficaram quatro ferramentas.
-- **Dois ganchos no meio:** um no fim do passo 1, sobre o custo, e um no fim do passo 3, sobre as cinco versões da abertura.
-- **Cena das ferramentas:** deixou de ser cena. Virou um cartão na tela por cima do bloco de custo.
-- **Bloco novo:** quanto custa e o que não funciona.
-- **Chamada:** uma curta no meio e, no fim, a pergunta de 1 ou 2.
-
-O vídeo ficou com 10 cenas.
+As descrições de "Na tela" vêm da versão 2 e foram escritas antes de o visual virar 2D. O que vale para a imagem é o que está em `src/cenas/`.
 
 ---
 
@@ -31,9 +21,17 @@ O vídeo ficou com 10 cenas.
 
 **Na tela:** começa já em movimento, sem vinheta. Uma linha do tempo em pé se monta sozinha, com um monitor em cima, e o bloco do Claude chega girando. A agulha faz dois cortes num clipe, o trecho ruim fica vermelho e voa para fora. A câmera entra no monitor e uma linha se desenha. Depois a câmera dá a volta na parede. Os ícones dos programas de edição apagam e caem. Dois cartões mostram as opções de voz, a sua ou uma de IA, e o botão APROVAR é clicado. Uma escada de cinco degraus acende. Um celular mostra um corte vertical ganhando legenda, e uma tela larga mostra um vídeo de história sendo montado com fotos. Quatro caixas com os nomes das ferramentas caem numa prateleira e um pedido é digitado.
 
-> Este vídeo foi editado inteiro por mim, o Claude. Cada corte, cada animação, cada movimento de câmera. Ninguém abriu um programa de edição. Você só precisa usar a sua voz, ou uma de IA, e apertar em aprovar. O resto eu faço.
+> Este vídeo foi editado por mim, o Claude. Guarda esse número: zero. É quantas pessoas abriram um programa de edição para fazer ele.
 >
-> Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos: cortes curtos e vídeos longos. Com o nome de cada ferramenta e o pedido exato que você escreve.
+> Cada corte, cada animação, cada movimento de câmera: fui eu.
+>
+> E você pode fazer o mesmo. O seu trabalho é usar a sua voz, ou uma de IA, dizer o que quer e clicar em aprovar. O resto eu faço.
+>
+> Eu te mostro como fazer o mesmo com os seus vídeos. Cortes curtos, ou um vídeo inteiro montado do começo ao fim. Com o nome de cada ferramenta e o pedido que você escreve. Fica aí.
+>
+> Fala, galera! Claude aqui.
+>
+> A regra do jogo é simples: cinco passos, quatro ferramentas e dois jeitos de usar. E antes do fim eu te falo quanto custa.
 >
 > Passo um.
 
@@ -41,25 +39,25 @@ O vídeo ficou com 10 cenas.
 
 **Na tela:** duas janelas lado a lado. À esquerda um chat, com pergunta e resposta em texto. À direita uma pasta de computador, e o personagem entra nela. Depois, área de trabalho: o cursor cria a pasta "meus-videos", arrasta três arquivos de vídeo para dentro. A câmera mergulha na pasta. Lá dentro, o pedido é digitado letra por letra. As caixas das ferramentas chegam e a pasta se divide em três gavetas: bruto, trabalho, pronto. Um cadeado fecha na gaveta "bruto". No gancho do custo, quatro etiquetas "grátis" aparecem nas caixas e uma etiqueta com interrogação aparece ao lado.
 
-> Primeiro, esquece o Claude do chat. No chat, você pergunta e eu respondo com texto. Para editar vídeo, você precisa do Claude Code.
+> Primeiro, esquece o Claude do chat. No chat, você pergunta e eu respondo com texto. Só isso. Para editar vídeo, você precisa do Claude Code.
 >
-> A diferença é simples: no Claude Code, eu trabalho dentro de uma pasta do seu computador. Eu abro arquivos, instalo programas e executo comandos. Você pede, eu faço.
+> A diferença, cara, é simples. No Claude Code, eu trabalho dentro de uma pasta do seu computador. Eu abro arquivos, instalo programas e executo comandos, quer dizer, ordens escritas para o computador. Você pede, eu faço.
 >
-> A preparação tem três movimentos.
+> A gente prepara tudo em três movimentos. Se liga.
 >
-> Um: instale o aplicativo do Claude e abra a aba Code. Ela faz parte dos planos pagos, e o link está na descrição.
+> Um: instala o aplicativo do Claude e abre a aba Code. Ela vem nos planos pagos, e o link está na descrição.
 >
-> Dois: crie uma pasta e arraste os seus vídeos brutos para dentro dela.
+> Dois: cria uma pasta e arrasta os seus vídeos brutos para dentro. Bruto é a gravação crua, do jeito que saiu da câmera.
 >
-> Três: escolha essa pasta dentro do aplicativo e escreva: "prepare esta pasta para edição de vídeo".
+> Três: escolhe essa pasta no aplicativo e escreve: "prepare esta pasta para edição de vídeo".
 >
-> A partir daqui, eu assumo. Eu instalo as ferramentas, que você vai conhecer nos próximos passos, e organizo a pasta em três partes: bruto, trabalho e pronto.
+> Pronto. Daqui eu assumo. Eu instalo as ferramentas, que você vai conhecer nos próximos passos, e divido a pasta em três: bruto, trabalho e pronto. Você não instala nenhuma ferramenta à mão.
 >
-> Um detalhe importante: os seus originais ficam guardados. Todo corte gera um arquivo novo. Se você não gostar, é só pedir de novo.
+> Mas Claude, e se você estragar o meu vídeo? Não estraga, ok? Os seus originais ficam trancados na pasta bruto. Todo corte vira um arquivo novo. Não gostou, é só pedir de novo.
 >
-> E antes de eu falar de ferramenta: as quatro que eu uso são gratuitas para quem trabalha sozinho. O que custa dinheiro é outra coisa, e eu te falo o valor exato no final.
+> E antes de falar de ferramenta: as quatro que eu uso são grátis para quem trabalha sozinho. O que custa dinheiro é outra coisa, e eu falo no fim.
 >
-> Só que existe um problema. Eu ainda não sei o que tem dentro do seu vídeo. É isso que o passo dois resolve.
+> Só que tem um problema. Eu ainda não sei o que tem dentro do seu vídeo. E é isso que o passo dois resolve.
 
 ## Cena 3. Passo 2: Entender
 
@@ -67,17 +65,17 @@ O vídeo ficou com 10 cenas.
 
 > Aqui está o segredo de tudo: eu não assisto o seu vídeo como você assiste. Eu leio.
 >
-> A ferramenta se chama Whisper. É um programa gratuito, que funciona no seu computador. Ele ouve o áudio e devolve o texto de tudo que foi dito. E não é só o texto: cada palavra vem com o momento em que foi falada.
+> A ferramenta se chama Whisper. É um programa gratuito, que roda no seu computador. Ele ouve o áudio e devolve o texto de tudo que foi dito, com o momento em que cada palavra foi falada.
 >
-> Você escreve: "transcreva este vídeo palavra por palavra". E um vídeo de uma hora vira um texto que eu leio em segundos.
+> Você escreve: "transcreva este vídeo palavra por palavra". E um vídeo de uma hora vira um texto. Depois de pronto, eu leio em segundos.
 >
-> Quando eu leio, eu enxergo o vídeo inteiro de uma vez. Onde você errou e repetiu a frase. Onde ficou cinco segundos em silêncio. Onde a explicação ficou boa. Onde tem uma frase forte, que daria um corte.
+> É como ter a legenda do filme na mão, né? Em vez de assistir o filme inteiro para achar uma cena.
+>
+> Lendo, eu enxergo o vídeo inteiro de uma vez. Onde você errou e repetiu a frase. Onde ficou cinco segundos em silêncio. Onde a explicação ficou boa. Onde tem uma frase forte, que dá um corte.
 >
 > E quando o que importa é a imagem, eu tiro fotos do vídeo nos momentos certos e olho para elas.
 >
-> No fim deste passo, você recebe um mapa: o que sai, o que fica, e os melhores momentos, marcados.
->
-> Funciona para um vídeo ou para cinquenta. O pedido é o mesmo.
+> No fim deste passo, você recebe um mapa: o que sai, o que fica e os melhores momentos, marcados. Para um vídeo ou para cinquenta, o pedido é o mesmo.
 >
 > Com o mapa pronto, cortar vira a parte fácil.
 
@@ -87,19 +85,19 @@ O vídeo ficou com 10 cenas.
 
 > Duas ferramentas fazem o corte.
 >
-> A primeira é o auto-editor. Ela mede o volume do áudio e remove sozinha os trechos de silêncio. A pausa para pensar, a respiração antes de começar, o tempo morto entre uma frase e outra. Some tudo.
+> A primeira é o auto-editor. Ele mede o volume do áudio e remove sozinho os trechos de silêncio. A pausa para pensar, a respiração antes de começar, o tempo morto entre uma frase e outra. Some tudo.
 >
-> A segunda é o FFmpeg. É o motor que está por trás de boa parte dos vídeos da internet. Ele corta no ponto exato, junta trechos, muda o formato, ajusta o som. Não tem botão nem tela, só comandos. E quem escreve os comandos sou eu.
+> A segunda é o FFmpeg. Ele corta o vídeo, junta trechos e muda o formato do arquivo. Não tem botão nem tela, só comandos escritos. E quem escreve sou eu.
 >
-> Mas antes de cortar qualquer coisa, eu te mostro a lista. "Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete." Você lê, muda o que quiser e aprova. Só então eu corto.
+> Mas, antes de a gente cortar qualquer coisa, eu te mostro a lista, tá? "Vou tirar este erro aos dois minutos. Vou tirar esta repetição aos sete." Você lê, muda o que quiser e aprova. Só então eu corto.
 >
-> E como eu sei o tempo de cada palavra, o corte acontece entre uma palavra e outra. Nunca no meio.
+> E como eu sei o tempo de cada palavra, eu corto entre uma palavra e outra, não no meio de uma.
 >
-> Resultado: um bruto de vinte minutos vira doze, sem você arrastar nada.
+> Resultado: uma gravação crua de vinte minutos pode virar doze, por exemplo. Sem você arrastar nada.
 >
-> E se você prefere dar o acabamento com as próprias mãos, o auto-editor entrega a linha do tempo já cortada para abrir no seu programa de edição.
+> Prefere dar o acabamento com as próprias mãos? O auto-editor entrega a linha do tempo já cortada, para abrir no seu programa de edição.
 >
-> E aqui vem a parte que quase ninguém conta: a abertura deste vídeo ficou ruim na primeira versão. E na segunda. O Cristian me mandou refazer várias vezes. No passo cinco eu te mostro por que isso faz parte do processo.
+> Agora uma confissão: a abertura deste vídeo ficou ruim na primeira versão. No passo cinco eu te mostro o que aconteceu depois.
 >
 > Se está valendo a pena até aqui, se inscreve.
 >
@@ -111,19 +109,21 @@ O vídeo ficou com 10 cenas.
 
 > Tudo que se mexe neste vídeo é código. Este personagem, esta linha do tempo, este movimento de câmera.
 >
-> A ferramenta é o Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo.
+> Código é só texto com instruções, como uma receita: cada linha diz o que fazer e quando.
 >
-> Olha a prova. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali.
+> A ferramenta se chama Remotion. Ela transforma código em vídeo. Em vez de arrastar um texto com o mouse, eu escrevo: este título entra no segundo três, cresce, e a câmera se aproxima. O Remotion desenha quadro por quadro e entrega o vídeo.
 >
-> Para você, isso significa três coisas.
+> Olha a prova, cara. Esta é a abertura deste vídeo. E este é o código dela. Eu mudo um número aqui, e o personagem muda de lugar ali.
+>
+> Para você, isso vira três coisas.
 >
 > Legendas palavra por palavra, no tempo certo, porque eu já tenho o tempo de cada palavra desde o passo dois.
 >
-> Textos e gráficos que aparecem na hora exata em que você fala deles.
+> Textos e gráficos que aparecem na hora em que você fala deles.
 >
-> E mudanças em uma frase. Não gostou da cor? Quer a legenda maior? Você pede e eu refaço o vídeo inteiro.
+> E mudar qualquer coisa leva uma frase. Não gostou da cor? Quer a legenda maior? Você pede e eu refaço o vídeo inteiro.
 >
-> Você não precisa entender o código. Precisa saber descrever o que quer ver. Quanto mais claro o pedido, melhor a cena.
+> Mas Claude, eu não sei programar. Não precisa, ok? Você só precisa descrever o que quer ver. E quanto mais claro for o pedido, melhor sai a cena.
 >
 > Falta só uma coisa: tirar o vídeo da pasta e colocar no mundo.
 
@@ -133,13 +133,15 @@ O vídeo ficou com 10 cenas.
 
 > Você escreve: "exporte o vídeo final". Eu junto os cortes, as animações e a música, e gero um arquivo pronto para o YouTube.
 >
-> Depois eu confiro. Resolução, duração, volume do áudio. E tiro fotos de vários pontos do vídeo para procurar tela preta, texto cortado ou legenda fora do lugar.
+> Depois eu confiro. O tamanho da imagem, a duração, o volume do áudio. E tiro fotos de vários pontos do vídeo para procurar tela preta, texto cortado ou legenda fora do lugar.
 >
-> Aí vem a parte mais importante do processo inteiro: você assiste. E me fala o que sentiu. "O começo está lento." "Esta parte ficou confusa." "A música está alta aqui." Eu corrijo e exporto de novo.
+> Aí vem a parte mais importante do processo inteiro, entende? Você assiste. E me fala o que sentiu. "O começo está lento." "Esta parte ficou confusa." "A música está alta aqui." Eu corrijo e exporto de novo.
 >
-> Foi assim com a abertura deste vídeo. Em cada versão, o Cristian assistiu e disse o que incomodava. Linha do tempo deitada. Cor demais. Câmera parada. Eu não adivinho o seu gosto. Eu aprendo com o que você me fala.
+> Foi assim com a abertura deste vídeo. A cada versão, o Cristian, que me empresta a voz, assistiu e disse o que incomodava. A primeira tinha a linha do tempo deitada, de lado. A segunda ficou colorida demais.
 >
-> Eu sou rápido, mas o gosto é seu. Quem decide se o vídeo está bom é você.
+> Mas Claude, por que você não acerta de primeira? Porque eu não adivinho o seu gosto. Eu aprendo com o que você me fala.
+>
+> Quem decide se o vídeo está bom é você.
 >
 > E como eu já li o vídeo inteiro, eu também entrego o que vai em volta dele: ideias de título, a descrição e os capítulos com o tempo certo.
 >
@@ -149,53 +151,67 @@ O vídeo ficou com 10 cenas.
 
 **Na tela:** o pedido aparece grande, digitado letra por letra, e fica na tela tempo suficiente para um print. Um vídeo horizontal comprido solta dez retângulos verticais, que se alinham como cartas. Cada um ganha legenda e tem um vídeo passando dentro. Ao lado de cada corte aparece um bilhete curto com o motivo da escolha.
 
-> Primeiro uso: cortes. Você tem um vídeo longo: um podcast, uma aula, uma live. O pedido é este:
+> Primeiro jeito: tirar cortes de um vídeo que você já tem. Um podcast, uma aula, uma live. O pedido é este:
 >
 > "Encontre os dez melhores trechos deste vídeo, com até um minuto cada, corte na vertical e coloque legenda palavra por palavra."
 >
-> Eu leio a transcrição, escolho trechos que funcionam sozinhos, com começo e fim, corto, viro para a vertical e legendo. Dez cortes, uma frase.
+> Eu leio o texto do vídeo e escolho trechos que funcionam sozinhos, com começo e fim. Corto, viro para a vertical e coloco a legenda. Dez cortes, uma frase.
 >
-> A dica: peça para eu explicar por que escolhi cada trecho. Assim você aprova antes de eu exportar.
+> Se liga na dica: peça para eu explicar por que escolhi cada trecho. Assim você aprova antes de eu gerar o arquivo final.
+>
+> Isso foi tirar cortes de um vídeo pronto. E se você só tem a gravação crua, cheia de erro?
 
 ## Cena 8. Na prática: vídeo longo
 
 **Na tela:** o pedido digitado. Cinco arquivos de gravação entram na pasta. Uma mesma frase aparece repetida três vezes na transcrição: duas são riscadas e a melhor acende. Os trechos escolhidos se encaixam em ordem e formam um arquivo só.
 
-> Segundo uso: vídeo longo. Você gravou uma hora, em vários arquivos, errando e repetindo. O pedido:
+> Segundo jeito: montar o vídeo inteiro, do começo ao fim. Você gravou uma hora, em vários arquivos, errando e repetindo. O pedido:
 >
 > "Junte estas gravações, tire os erros e os silêncios, e monte um vídeo de quinze minutos."
 >
-> Eu transcrevo tudo. Quando você repetiu a mesma frase três vezes, eu fico com a melhor. Monto na ordem e te mostro a lista de cortes.
+> Eu transformo tudo em texto. Quando você repetiu a mesma frase três vezes, eu fico com a melhor. Monto na ordem e te mostro a lista de cortes.
 >
-> A parte mais chata da edição, que é ouvir tudo de novo procurando erro, deixa de ser sua.
+> Sabe a parte mais chata da edição? Ouvir tudo de novo, procurando erro. Essa parte deixa de ser sua.
+>
+> Tá, e quanto custa isso tudo?
 
 ## Cena 9. Quanto custa e o que não funciona
 
 **Na tela:** uma conta se monta: quatro linhas com os nomes das ferramentas e "R$ 0" em cada uma, e uma quinta linha, "Claude Pro", com "US$ 20 por mês". Na frase do print, entra um cartão com as quatro ferramentas, uma função em duas palavras para cada e o endereço, e a tela fica parada dois segundos. Na parte do que não funciona, três cartões viram um de cada vez.
 
-> Quanto isso custa de verdade? As quatro ferramentas: zero, para quem trabalha sozinho. O único custo é o Claude. O Claude Code vem no plano Pro, que custa vinte dólares por mês, ou dezessete no plano anual. Agora tira um print.
+> Lembra que eu prometi falar o valor? Bora, a gente faz a conta.
 >
-> E o que não funciona: eu não tenho gosto próprio. Eu exporto devagar. E a minha primeira versão quase nunca é a boa.
+> As quatro ferramentas: zero, para quem trabalha sozinho. O único custo desta lista é o Claude. O Claude Code vem no plano Pro, que custa vinte dólares por mês, ou dezessete no plano anual. É em dólar, então o cartão converte para reais.
+>
+> Agora tira um print.
+>
+> E o que não funciona, porque eu não vendo milagre. Se o seu pedido for vago, o corte sai genérico. E o plano tem um limite de uso, que você confere na página dele.
+>
+> Então sobra para você a parte que importa: a ideia. Eu volto nisso no final.
 
 ## Cena 10. Fechamento
 
 **Na tela:** a câmera afasta, como na cena 1, e revela a linha do tempo completa deste vídeo, com as 10 cenas nomeadas. O personagem senta em cima do último clipe. Botão de inscrição simples, sem nome de canal. No fim, os números 1 e 2 grandes na tela.
 
-> Lembra da primeira cena? Esta é a linha do tempo deste vídeo. Dez cenas, e nenhum programa de edição aberto.
+> Lembra da primeira cena? Esta é a linha do tempo deste vídeo. Dez cenas, cinco passos: preparar, entender, cortar, animar e finalizar. E nenhum programa de edição aberto.
 >
-> Eu não substituo o seu olhar. Eu tiro da sua frente a parte repetitiva, para sobrar tempo para a parte que é sua: a ideia.
+> Eu não substituo o seu olhar. Eu tiro da sua frente a parte repetitiva, para sobrar tempo para a parte que é sua: a ideia. Eu corto, você decide.
 >
-> E isso vale até para canal dark, mas isso é assunto para outro vídeo.
+> E isso vale até para canal dark, aquele que não mostra o rosto de ninguém. Mas isso é assunto para outro vídeo.
 >
 > Começa pequeno. Pega um vídeo, cria a pasta e escreve o primeiro pedido.
 >
-> Se este vídeo te ajudou, se inscreve e comenta: 1 se você quer me ver editando um vídeo curto, 2 se quer um vídeo longo.
+> Agora me diz: quer ver eu tirando cortes de um vídeo, ou montando um vídeo inteiro do zero, na sua frente? Comenta 1 para os cortes, 2 para o vídeo inteiro.
+>
+> E se este vídeo te ajudou, se inscreve.
+>
+> Valeu, galera. Até a próxima. Fui!
 
 ---
 
 ## Fontes conferidas em 23/11/2026
 
-Cada afirmação sobre ferramenta foi checada na página oficial.
+Valem as da versão 2. Na versão 3 saíram duas afirmações sobre o FFmpeg ("motor por trás de boa parte dos vídeos da internet" e "ajusta o som"), e "nunca no meio" virou "não no meio de uma".
 
 | Afirmação no roteiro | Resultado | Fonte oficial |
 |---|---|---|
@@ -211,8 +227,16 @@ Cada afirmação sobre ferramenta foi checada na página oficial.
 | Remotion cria vídeo com código, quadro por quadro | Confirmado | https://www.remotion.dev/docs/the-fundamentals |
 | Remotion é gratuito para pessoas e empresas de até 3 pessoas | Confirmado. Acima disso, a partir de 25 dólares por mês por pessoa | https://www.remotion.dev/docs/license/pricing |
 
-Observações para a hora de gravar e publicar:
+## Pontos de atenção da versão 3
 
-- O preço do Claude pode mudar. Vale conferir a página de novo na semana da publicação.
-- A frase "O Cristian me mandou refazer várias vezes" usa "várias" porque o número ainda pode aumentar até o vídeo ficar pronto. Na gravação dá para trocar pelo número real.
-- O auto-editor hoje se instala baixando o programa na página de versões do projeto, não mais pelo pip.
+Anotados pelo Cristian junto com o roteiro, e mantidos aqui:
+
+- **Próximo vídeo.** A frase "o que ganhar mais votos vira o próximo vídeo" ficou fora da narração, porque só pode ser dita se for verdade.
+- **Voz de IA.** A cena 1 cita "uma voz de IA". A ferramenta de voz não está entre as quatro e o preço dela não foi conferido. A cena 9 diz "o único custo desta lista é o Claude", que fala só da lista.
+- **Limite de uso.** "O plano tem um limite de uso" (cena 9) é verdade em geral, mas o limite do Pro não foi conferido na página oficial.
+- **Dólar.** O valor é em dólar. O imposto do cartão internacional não foi conferido.
+- **Preço do Claude.** Pode mudar. Vale conferir na semana da publicação.
+
+Ponto de atenção do Claude:
+
+- **"A segunda ficou colorida demais" (cena 6).** A primeira versão da abertura tinha mesmo a linha do tempo deitada. A versão colorida demais foi a terceira e a quarta, não a segunda. Na tela, as miniaturas aparecem sem número de ordem para não mostrar algo falso. Se quiser a fala exata, troque por "Outra ficou colorida demais."
