@@ -4,7 +4,7 @@ import {ThreeCanvas} from '@remotion/three';
 import * as THREE from 'three';
 import './fontes';
 import {cores, vivas, fonte, fonteTitulo} from './tema';
-import {Personagem3D} from './tres/Personagem3D';
+import {Icone3D} from './tres/Icone3D';
 import {Bloco, Clipe3D, Luzes, ChaoSombra} from './tres/pecas';
 import {Camera} from './tres/Camera';
 
@@ -62,7 +62,7 @@ export const CapaA: React.FC = () => (
       <Clipe3D larg={4.6} cor={vivas.azul} posicao={[4.75, 0.2, 0]} semente={4} />
       {/* agulha luminosa */}
       <Bloco tam={[0.08, 2.0, 0.08]} cor={cores.creme} posicao={[2.15, 0.55, 0.9]} raio={0.03} emissivo={cores.creme} intensidade={2.2} sombra={false} />
-      <Personagem3D posicao={[2.15, 2.72, 0.1]} rotacao={[0.1, -0.42, 0.12]} escala={1.28} olhar={[-0.7, -0.6]} />
+      <Icone3D posicao={[2.25, 2.72, 0.2]} rotacao={[0.12, -0.5, 0.14]} escala={1.12} />
     </Tela3D>
     <Titulo>
       <div>EDITADO</div>
@@ -113,7 +113,7 @@ export const CapaB: React.FC = () => (
       ))}
       {/* divisa luminosa */}
       <Bloco tam={[0.09, 9, 0.09]} cor={cores.creme} posicao={[0, 3, 0]} raio={0.03} emissivo={cores.creme} intensidade={2.4} sombra={false} />
-      <Personagem3D posicao={[0, 1.6, 1.6]} rotacao={[0.05, 0.3, -0.1]} escala={1.5} olhar={[0.7, 0.2]} />
+      <Icone3D posicao={[0, 1.75, 1.6]} rotacao={[0.08, 0.38, -0.1]} escala={1.3} />
     </Tela3D>
     <div style={{position: 'absolute', left: 0, width: 640, top: 14, textAlign: 'center', fontFamily: fonteTitulo, fontSize: 168, color: '#b9b6b0', textShadow: sombraTexto, letterSpacing: 2}}>BRUTO</div>
     <div style={{position: 'absolute', left: 640, width: 640, top: 14, textAlign: 'center', fontFamily: fonteTitulo, fontSize: 168, color: cores.laranja, textShadow: sombraTexto, letterSpacing: 2}}>CLAUDE</div>
@@ -164,7 +164,7 @@ export const CapaC: React.FC = () => (
       <Filme posicao={[-3.05, -0.55, 0]} rotacao={[0.1, 0.25, -0.2]} quadros={[vivas.azul, vivas.verde, vivas.azul, vivas.vermelho]} />
       <Filme posicao={[5.2, -0.2, 0.2]} rotacao={[0.1, -0.2, 0.3]} quadros={[vivas.verde, vivas.azul]} />
       <Tesoura posicao={[1.95, 0.75, 1.2]} rotacao={[0, -0.15, -1.72]} escala={0.95} />
-      <Personagem3D posicao={[4.35, 2.75, 0.6]} rotacao={[0.1, -0.4, 0.1]} escala={1.35} olhar={[-0.8, -0.8]} />
+      <Icone3D posicao={[4.3, 2.7, 0.6]} rotacao={[0.12, -0.5, 0.14]} escala={1.15} />
     </Tela3D>
     <Titulo tam={200} left={56} top={22}>
       <div>

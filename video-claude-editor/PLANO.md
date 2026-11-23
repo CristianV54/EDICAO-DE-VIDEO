@@ -81,7 +81,7 @@ Ferramentas que o vídeo indica: FFmpeg, Whisper, auto-editor, Remotion e yt-dlp
 
 ### Personagem
 
-Desenho próprio, inspirado no símbolo do Claude: uma estrela laranja de pontas arredondadas, com dois olhos simples e pequenas mãos que aparecem só quando ele pega algo. Fundo escuro, laranja como cor principal. A logo oficial aparece apenas nos momentos em que o produto é citado pelo nome, e a descrição do vídeo informa que o canal não tem ligação com a Anthropic.
+Definido pelo Cristian em 23/11/2026, com base em capas de referência que ele enviou: um bloco 3D laranja de cantos arredondados, brilhante, com a estrela clara em relevo na frente. Sem olhos e sem pontas soltas, porque a versão anterior parecia um vírus. Ele se expressa pelo movimento: inclina, pula, gira e brilha. O desenho é próprio, feito para lembrar o ícone do Claude, e a descrição do vídeo informa que o canal não tem ligação com a Anthropic.
 
 ## 6. Organização dos arquivos (modelo de dados)
 

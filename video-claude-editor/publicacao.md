@@ -16,9 +16,9 @@ O título 2 passa de 70 caracteres e pode aparecer cortado em algumas telas. A p
 
 | Opção | Arquivo | Ideia | Texto |
 |---|---|---|---|
-| A | capa/capa-a.png | Personagem em cima da linha do tempo, com o trecho vermelho cortado caindo | EDITADO POR IA, 0 editores |
-| B | capa/capa-b.png | Metade cinza com clipes bagunçados, metade colorida com clipes arrumados, personagem na divisa | BRUTO, CLAUDE |
-| C | capa/capa-c.png | Personagem, tesoura e tira de filme cortada | 5 PASSOS, para editar com IA |
+| A | capa/capa-a.png | Bloco do Claude em cima da linha do tempo, com o trecho vermelho cortado caindo | EDITADO POR IA, 0 editores |
+| B | capa/capa-b.png | Metade cinza com clipes bagunçados, metade colorida com clipes arrumados, bloco do Claude na divisa | BRUTO, CLAUDE |
+| C | capa/capa-c.png | Bloco do Claude, tesoura e tira de filme cortada | 5 PASSOS, para editar com IA |
 
 Todas em 1280x720, em 3D, geradas por código em `src/Capa.tsx`.
 
