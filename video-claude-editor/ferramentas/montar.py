@@ -8,15 +8,15 @@ import numpy as np
 import soundfile as sf
 
 SR = 48000
-ORDEM = [f'Cena{n:02d}' for n in range(1, 11)]
-NOMES = ['Abertura', 'Passo 1: Preparar', 'Passo 2: Entender', 'Passo 3: Cortar', 'Passo 4: Animar', 'Passo 5: Finalizar', 'Na prática: cortes', 'Na prática: vídeo inteiro', 'Quanto custa e o que não funciona', 'Fechamento']
+ORDEM = [f'Cena{n:02d}' for n in range(1, 9)]
+NOMES = ['Abertura', 'O ambiente', 'Nível 1: Limpar', 'Nível 2: Cortes', 'Nível 3: O vídeo inteiro', 'As três regras', 'Quanto custa', 'Fechamento']
 # cada bloco do vídeo tem a sua faixa: [faixa, cenas do bloco, segundo da faixa em que começa]
 BLOCOS = [
     ['screen_saver', ['Cena01', 'Cena02'], 0.0],
-    ['jerry_five', ['Cena03', 'Cena04'], 2.0],
-    ['pamgaea', ['Cena05', 'Cena06'], 0.0],
-    ['newer_wave', ['Cena07', 'Cena08'], 0.0],
-    ['hypnothis', ['Cena09', 'Cena10'], 8.0],
+    ['jerry_five', ['Cena03'], 2.0],
+    ['pamgaea', ['Cena04'], 0.0],
+    ['newer_wave', ['Cena05'], 0.0],
+    ['hypnothis', ['Cena06', 'Cena07', 'Cena08'], 8.0],
 ]
 VOZ_LUFS = -22.6      # volume medido da voz-guia
 MUSICA_ABAIXO = 19.0  # a música fica este tanto de dB abaixo da voz
