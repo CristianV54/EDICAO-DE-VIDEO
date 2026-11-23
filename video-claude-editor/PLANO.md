@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: aprovado pelo Cristian. Fase 0 concluída. Fase atual: 2 (roteiro), antecipada a pedido do Cristian. A capa (fase 1) vem em seguida.
+Situação: aprovado pelo Cristian. Fase 0 concluída. Roteiro (fase 2) aprovado. Capa (fase 1) entregue, aguardando aprovação.
 
 ## 1. Objetivo
 

@@ -1,6 +1,6 @@
 # ROTEIRO: O Claude editou este vídeo sozinho (e pode editar os seus)
 
-Situação: aguardando aprovação do Cristian.
+Situação: aprovado pelo Cristian em 23/11/2026.
 
 ## Regras deste roteiro
 

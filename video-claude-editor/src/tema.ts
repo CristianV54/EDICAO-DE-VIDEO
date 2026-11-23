@@ -10,3 +10,4 @@ export const cores = {
   azul: '#6a9bcc',
 };
 export const fonte = 'Poppins, "DejaVu Sans", Arial, sans-serif';
+export const fonteTitulo = 'Anton, Impact, sans-serif';

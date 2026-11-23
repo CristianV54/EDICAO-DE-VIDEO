@@ -31,17 +31,17 @@ export const Personagem: React.FC<{
               x2={0}
               y2={-(88 * r + mexe)}
               stroke={cores.laranja}
-              strokeWidth={19}
+              strokeWidth={25}
               strokeLinecap="round"
               transform={`rotate(${ang})`}
             />
           );
         })}
-        <circle r={40} fill={cores.laranja} />
+        <circle r={50} fill={cores.laranja} />
       </g>
       <g transform={`translate(${olharX * 7} ${olharY * 6})`}>
-        <ellipse cx={-15} cy={-2} rx={7} ry={11 * Math.max(0.1, olhoAberto)} fill={cores.fundo} />
-        <ellipse cx={15} cy={-2} rx={7} ry={11 * Math.max(0.1, olhoAberto)} fill={cores.fundo} />
+        <ellipse cx={-17} cy={-3} rx={9.5} ry={15 * Math.max(0.1, olhoAberto)} fill={cores.fundo} />
+        <ellipse cx={17} cy={-3} rx={9.5} ry={15 * Math.max(0.1, olhoAberto)} fill={cores.fundo} />
       </g>
     </svg>
   );
