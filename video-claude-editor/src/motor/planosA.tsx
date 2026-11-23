@@ -126,7 +126,7 @@ export const PComparar: P<{chatEm: number; codeEm: number}> = ({c, chatEm, codeE
   const resp = ap(c.f, c.p('respondo') || c.t(chatEm) + 44);
   const arquivos = ['bruto_01.mp4', 'bruto_02.mp4', 'roteiro.txt', 'cortes.json', 'video_final.mp4'];
   return (
-    <AbsoluteFill style={{transform: 'scale(1.1) translateY(30px)'}}>
+    <AbsoluteFill style={{transform: 'translateY(10px)'}}>
       <div style={{position: 'absolute', left: 130, top: 190, width: 780, ...surge(a), opacity: a * (1 - troca * 0.62), filter: troca > 0.05 ? `saturate(${1 - troca}) blur(${troca * 2}px)` : undefined}}>
         <Etiqueta cor={C.mudo} style={{marginBottom: 20}}>CLAUDE NO CHAT</Etiqueta>
         <Janela style={{position: 'relative', width: 780, height: 560}} luz={0.3}>

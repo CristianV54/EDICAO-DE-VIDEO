@@ -1,6 +1,6 @@
 # PLANO: vídeo "O Claude editou este vídeo sozinho"
 
-Situação: vídeo versão 2 (roteiro versão 3) entregue. Roteiro versão 4 escrito e voz-guia gerada. MAPA-VIDEO.md (plano de edição da versão 4) aguardando aprovação.
+Situação: vídeo versão 4 (roteiro de três níveis) entregue em 23/11/2026, com 8:19. Aguardando o Cristian detalhar os erros que viu.
 
 ## 1. Objetivo
 

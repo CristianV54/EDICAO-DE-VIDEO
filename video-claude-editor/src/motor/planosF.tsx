@@ -481,7 +481,7 @@ export const PRegra: P<{n: number; palavra: string; tipo: 'aprove' | 'partes' | 
     <AbsoluteFill>
       <div style={{position: 'absolute', left: 150, top: 150, fontFamily: SANS, fontWeight: 900, fontSize: 560, lineHeight: 0.9, color: 'rgba(242,98,46,0.16)', transform: `scale(${Math.max(0.001, mola(c.f, 0, {damping: 12}))})`, transformOrigin: 'left top'}}>{n}</div>
       <Etiqueta style={{position: 'absolute', left: 430, top: 200, opacity: ap(c.f, 0)}}>REGRA {n}</Etiqueta>
-      <div style={{position: 'absolute', left: 424, top: 250, fontFamily: SANS, fontWeight: 900, fontSize: tipo === 'partes' ? 150 : 210, letterSpacing: -5, lineHeight: 1, color: C.acento, textShadow: brilho(C.acento, 1), transform: `scale(${Math.max(0.001, peso)})`, transformOrigin: 'left center', whiteSpace: 'nowrap'}}>{palavra}</div>
+      <div style={{position: 'absolute', left: 424, top: 250, fontFamily: SANS, fontWeight: 900, fontSize: tipo === 'partes' ? 124 : 210, letterSpacing: -5, lineHeight: 1, color: C.acento, textShadow: brilho(C.acento, 1), transform: `scale(${Math.max(0.001, peso)})`, transformOrigin: 'left center', whiteSpace: 'nowrap'}}>{palavra}</div>
       <div style={{position: 'absolute', left: 430, right: 150, top: 520}}>
         {tipo === 'aprove' ? (
           <>

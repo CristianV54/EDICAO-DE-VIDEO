@@ -1,6 +1,6 @@
 # MAPA DO VÍDEO: plano de edição do roteiro versão 4
 
-Situação: aguardando aprovação do Cristian. Nenhuma cena foi mexida ainda. O plano da versão 3 ficou guardado em MAPA-VIDEO-v3.md.
+Situação: aprovado pelo Cristian e executado. Vídeo versão 4 entregue em 23/11/2026. O plano da versão 3 ficou guardado em MAPA-VIDEO-v3.md.
 
 ## Objetivo
 
