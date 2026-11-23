@@ -84,7 +84,7 @@ export const Enfase: React.FC<{
 
 // Etiqueta pequena em letra de máquina, com um ponto aceso.
 export const Etiqueta: React.FC<{children: React.ReactNode; style?: React.CSSProperties; cor?: string}> = ({children, style, cor = C.acento}) => (
-  <div style={{fontFamily: MONO, fontSize: 20, letterSpacing: 4, color: C.mudo, display: 'flex', alignItems: 'center', gap: 12, ...style}}>
+  <div style={{fontFamily: MONO, fontSize: 27, letterSpacing: 5, color: C.mudo, display: 'flex', alignItems: 'center', gap: 12, ...style}}>
     <span style={{width: 10, height: 10, borderRadius: 5, background: cor, boxShadow: `0 0 12px ${cor}`}} />
     {children}
   </div>

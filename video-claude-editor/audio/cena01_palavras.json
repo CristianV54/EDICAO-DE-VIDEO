@@ -1,0 +1,388 @@
+{
+ "voz": "pm_alex",
+ "duracao": 25.76,
+ "frases": [
+  "Este vídeo foi editado inteiro por mim, o Claude.",
+  "Cada corte, cada animação, cada movimento de câmera.",
+  "Ninguém abriu um programa de edição.",
+  "A voz é do Cristian.",
+  "Ele gravou e apertou o botão de aprovar:",
+  "o resto fui eu.",
+  "Em cinco passos, eu te mostro como fazer o mesmo com os seus vídeos:",
+  "cortes curtos e vídeos longos.",
+  "Com o nome de cada ferramenta e o pedido exato que você escreve.",
+  "Passo um."
+ ],
+ "palavras": [
+  {
+   "ini": 0.0,
+   "fim": 0.18,
+   "txt": "Este"
+  },
+  {
+   "ini": 0.18,
+   "fim": 0.54,
+   "txt": "vídeo"
+  },
+  {
+   "ini": 0.54,
+   "fim": 0.8,
+   "txt": "foi"
+  },
+  {
+   "ini": 0.8,
+   "fim": 1.3,
+   "txt": "editado"
+  },
+  {
+   "ini": 1.3,
+   "fim": 1.6,
+   "txt": "inteiro"
+  },
+  {
+   "ini": 1.6,
+   "fim": 1.88,
+   "txt": "por"
+  },
+  {
+   "ini": 1.88,
+   "fim": 2.06,
+   "txt": "mim,"
+  },
+  {
+   "ini": 2.26,
+   "fim": 2.32,
+   "txt": "o"
+  },
+  {
+   "ini": 2.32,
+   "fim": 2.6,
+   "txt": "Cloud."
+  },
+  {
+   "ini": 3.1,
+   "fim": 3.32,
+   "txt": "Cada"
+  },
+  {
+   "ini": 3.32,
+   "fim": 3.84,
+   "txt": "corte,"
+  },
+  {
+   "ini": 3.92,
+   "fim": 4.08,
+   "txt": "cada"
+  },
+  {
+   "ini": 4.08,
+   "fim": 4.66,
+   "txt": "animação,"
+  },
+  {
+   "ini": 4.92,
+   "fim": 5.06,
+   "txt": "cada"
+  },
+  {
+   "ini": 5.06,
+   "fim": 5.38,
+   "txt": "movimento"
+  },
+  {
+   "ini": 5.38,
+   "fim": 5.78,
+   "txt": "de"
+  },
+  {
+   "ini": 5.78,
+   "fim": 6.2,
+   "txt": "câmera."
+  },
+  {
+   "ini": 6.54,
+   "fim": 6.86,
+   "txt": "Ninguém"
+  },
+  {
+   "ini": 6.86,
+   "fim": 7.46,
+   "txt": "abriu"
+  },
+  {
+   "ini": 7.46,
+   "fim": 7.6,
+   "txt": "um"
+  },
+  {
+   "ini": 7.6,
+   "fim": 8.02,
+   "txt": "programa"
+  },
+  {
+   "ini": 8.02,
+   "fim": 8.28,
+   "txt": "de"
+  },
+  {
+   "ini": 8.28,
+   "fim": 8.72,
+   "txt": "edição."
+  },
+  {
+   "ini": 9.08,
+   "fim": 9.14,
+   "txt": "A"
+  },
+  {
+   "ini": 9.14,
+   "fim": 9.4,
+   "txt": "voz"
+  },
+  {
+   "ini": 9.4,
+   "fim": 9.58,
+   "txt": "é"
+  },
+  {
+   "ini": 9.58,
+   "fim": 9.66,
+   "txt": "do"
+  },
+  {
+   "ini": 9.66,
+   "fim": 10.24,
+   "txt": "Cristian."
+  },
+  {
+   "ini": 10.6,
+   "fim": 10.74,
+   "txt": "Ele"
+  },
+  {
+   "ini": 10.74,
+   "fim": 11.22,
+   "txt": "gravou"
+  },
+  {
+   "ini": 11.22,
+   "fim": 11.38,
+   "txt": "e"
+  },
+  {
+   "ini": 11.38,
+   "fim": 11.78,
+   "txt": "apertou"
+  },
+  {
+   "ini": 11.78,
+   "fim": 11.92,
+   "txt": "o"
+  },
+  {
+   "ini": 11.92,
+   "fim": 12.24,
+   "txt": "botão"
+  },
+  {
+   "ini": 12.24,
+   "fim": 12.36,
+   "txt": "de"
+  },
+  {
+   "ini": 12.36,
+   "fim": 12.8,
+   "txt": "aprovar."
+  },
+  {
+   "ini": 13.18,
+   "fim": 13.3,
+   "txt": "O"
+  },
+  {
+   "ini": 13.3,
+   "fim": 13.58,
+   "txt": "resto"
+  },
+  {
+   "ini": 13.58,
+   "fim": 13.92,
+   "txt": "fui"
+  },
+  {
+   "ini": 13.92,
+   "fim": 14.18,
+   "txt": "eu."
+  },
+  {
+   "ini": 14.52,
+   "fim": 14.68,
+   "txt": "Em"
+  },
+  {
+   "ini": 14.68,
+   "fim": 14.94,
+   "txt": "cinco"
+  },
+  {
+   "ini": 14.94,
+   "fim": 15.62,
+   "txt": "passos,"
+  },
+  {
+   "ini": 15.7,
+   "fim": 15.76,
+   "txt": "eu"
+  },
+  {
+   "ini": 15.76,
+   "fim": 15.88,
+   "txt": "te"
+  },
+  {
+   "ini": 15.88,
+   "fim": 16.28,
+   "txt": "mostro"
+  },
+  {
+   "ini": 16.28,
+   "fim": 16.44,
+   "txt": "como"
+  },
+  {
+   "ini": 16.44,
+   "fim": 16.76,
+   "txt": "fazer"
+  },
+  {
+   "ini": 16.76,
+   "fim": 16.92,
+   "txt": "o"
+  },
+  {
+   "ini": 16.92,
+   "fim": 17.2,
+   "txt": "mesmo"
+  },
+  {
+   "ini": 17.2,
+   "fim": 17.5,
+   "txt": "com"
+  },
+  {
+   "ini": 17.5,
+   "fim": 17.6,
+   "txt": "os"
+  },
+  {
+   "ini": 17.6,
+   "fim": 17.74,
+   "txt": "seus"
+  },
+  {
+   "ini": 17.74,
+   "fim": 18.2,
+   "txt": "vídeos."
+  },
+  {
+   "ini": 18.68,
+   "fim": 19.04,
+   "txt": "Cortes"
+  },
+  {
+   "ini": 19.04,
+   "fim": 19.54,
+   "txt": "curtos"
+  },
+  {
+   "ini": 19.54,
+   "fim": 19.66,
+   "txt": "e"
+  },
+  {
+   "ini": 19.66,
+   "fim": 19.98,
+   "txt": "vídeos"
+  },
+  {
+   "ini": 19.98,
+   "fim": 20.58,
+   "txt": "longos,"
+  },
+  {
+   "ini": 20.78,
+   "fim": 21.02,
+   "txt": "com"
+  },
+  {
+   "ini": 21.02,
+   "fim": 21.1,
+   "txt": "o"
+  },
+  {
+   "ini": 21.1,
+   "fim": 21.28,
+   "txt": "nome"
+  },
+  {
+   "ini": 21.28,
+   "fim": 21.46,
+   "txt": "de"
+  },
+  {
+   "ini": 21.46,
+   "fim": 21.68,
+   "txt": "cada"
+  },
+  {
+   "ini": 21.68,
+   "fim": 22.44,
+   "txt": "ferramenta"
+  },
+  {
+   "ini": 22.44,
+   "fim": 22.72,
+   "txt": "e"
+  },
+  {
+   "ini": 22.72,
+   "fim": 22.8,
+   "txt": "o"
+  },
+  {
+   "ini": 22.8,
+   "fim": 23.22,
+   "txt": "pedido"
+  },
+  {
+   "ini": 23.22,
+   "fim": 23.64,
+   "txt": "exato"
+  },
+  {
+   "ini": 23.64,
+   "fim": 23.82,
+   "txt": "que"
+  },
+  {
+   "ini": 23.82,
+   "fim": 24.06,
+   "txt": "você"
+  },
+  {
+   "ini": 24.06,
+   "fim": 24.62,
+   "txt": "escreve."
+  },
+  {
+   "ini": 24.82,
+   "fim": 25.22,
+   "txt": "Passo"
+  },
+  {
+   "ini": 25.22,
+   "fim": 25.4,
+   "txt": "1."
+  }
+ ]
+}

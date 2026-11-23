@@ -385,7 +385,7 @@ const Escada: React.FC<{f: number; sobe?: boolean; acesos: number[]}> = ({f, sob
   </>
 );
 
-const CincoPassos: React.FC = () => {
+export const CincoPassos: React.FC = () => {
   const f = useCurrentFrame();
   const c = chegadaRampa(f, 28);
   const s = saidaRampa(f, 135, 12);
@@ -513,7 +513,7 @@ const Ferramentas: React.FC = () => {
 };
 
 // ====================== Trecho 7: passo um ======================
-const PassoUm: React.FC = () => {
+export const PassoUm: React.FC = () => {
   const f = useCurrentFrame();
   const c = chegadaRampa(f, 22);
   const mergulho = rampa(f, 0, 38, power4InOut);
