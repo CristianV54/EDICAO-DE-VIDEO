@@ -60,7 +60,7 @@ Já aprovado pelo Cristian:
 
 ## 5. Cenas do vídeo
 
-Atenção: a lista que vale é a do ROTEIRO.md, que ficou com 11 cenas. A tabela abaixo é a versão inicial, com 13.
+Atenção: a lista que vale é a do ROTEIRO.md, versão 2, que ficou com 10 cenas e sem canal dark. A tabela abaixo é a versão inicial, com 13.
 
 Como este projeto é um vídeo, a "lista de telas" é a lista de cenas. Os tempos são estimativas e mudam quando a narração chegar.
 

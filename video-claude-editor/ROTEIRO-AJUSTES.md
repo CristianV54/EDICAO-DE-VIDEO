@@ -1,6 +1,6 @@
 # Proposta de ajustes no roteiro
 
-Situação: aguardando decisão do Cristian. O ROTEIRO.md aprovado não foi alterado.
+Situação: aprovado pelo Cristian em 23/11/2026, com o canal dark fora do vídeo. Os ajustes já estão no ROTEIRO.md, versão 2. Este arquivo fica como registro da análise. Diferenças na aplicação: o yt-dlp saiu junto com o canal dark, então são quatro ferramentas, e o roteiro diz "várias vezes" em vez de um número fixo de versões.
 
 Origem: uma análise do roteiro que o Cristian recebeu e enviou em 23/11/2026, com sete sugestões. Abaixo está o que eu faria com cada uma e o texto novo proposto.
 

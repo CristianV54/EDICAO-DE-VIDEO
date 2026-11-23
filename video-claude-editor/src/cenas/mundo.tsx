@@ -243,8 +243,10 @@ export const Destaque: React.FC<{
   ate: number;
   tam?: number;
   onde?: 'baixo' | 'topo' | 'centro';
-}> = ({texto, de, ate, tam = 150, onde = 'baixo'}) => {
-  const f = useCurrentFrame();
+  quadro?: number; // se a cena for cortada em duas partes, o quadro contínuo dela
+}> = ({texto, de, ate, tam = 150, onde = 'baixo', quadro}) => {
+  const atual = useCurrentFrame();
+  const f = quadro ?? atual;
   if (f < de || f > ate) return null;
   const entra = rampa(f, de, de + 8, expoOut);
   const sai = rampa(f, ate - 8, ate, power3In);

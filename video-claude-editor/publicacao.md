@@ -7,10 +7,10 @@ Aprovados pelo Cristian em 23/11/2026.
 | Opção | Título | Caracteres |
 |---|---|---|
 | 1 | O Claude editou este vídeo sozinho (e pode editar os seus) | 57 |
-| 2 | Como editar vídeos com o Claude em 5 passos: cortes, vídeos longos e canal dark | 79 |
+| 2 | Como editar vídeos com o Claude em 5 passos: cortes e vídeos longos | 67 |
 | 3 | Este vídeo não teve editor: foi feito 100% pelo Claude | 54 |
 
-O título 2 passa de 70 caracteres e pode aparecer cortado em algumas telas. A parte que importa, "Como editar vídeos com o Claude em 5 passos", fica no começo.
+O título 2 perdeu "canal dark" em 23/11/2026, quando o Cristian tirou o assunto do vídeo. Agora cabe em 70 caracteres.
 
 ## Capas
 
