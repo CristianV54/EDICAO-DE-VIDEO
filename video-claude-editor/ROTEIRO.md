@@ -37,11 +37,11 @@ Mudança em relação ao plano: as cenas "Promessa" e "O que é o Claude" foram 
 >
 > A preparação tem três movimentos.
 >
-> Um: instale o Claude Code. Ele faz parte dos planos pagos do Claude, e o link está na descrição.
+> Um: instale o aplicativo do Claude e abra a aba Code. Ela faz parte dos planos pagos, e o link está na descrição.
 >
 > Dois: crie uma pasta e arraste os seus vídeos brutos para dentro dela.
 >
-> Três: abra o Claude Code nessa pasta e escreva: "prepare esta pasta para edição de vídeo".
+> Três: escolha essa pasta dentro do aplicativo e escreva: "prepare esta pasta para edição de vídeo".
 >
 > A partir daqui, eu assumo. Eu instalo as ferramentas, que você vai conhecer nos próximos passos, e organizo a pasta em três partes: bruto, trabalho e pronto.
 >
@@ -55,7 +55,7 @@ Mudança em relação ao plano: as cenas "Promessa" e "O que é o Claude" foram 
 
 > Aqui está o segredo de tudo: eu não assisto o seu vídeo como você assiste. Eu leio.
 >
-> A ferramenta se chama Whisper. É um programa gratuito, que funciona no seu computador. Ele ouve o áudio e devolve o texto de tudo que foi dito. E não é só o texto: cada palavra vem com o momento exato em que foi falada.
+> A ferramenta se chama Whisper. É um programa gratuito, que funciona no seu computador. Ele ouve o áudio e devolve o texto de tudo que foi dito. E não é só o texto: cada palavra vem com o momento em que foi falada.
 >
 > Você escreve: "transcreva este vídeo palavra por palavra". E um vídeo de uma hora vira um texto que eu leio em segundos.
 >
@@ -71,7 +71,7 @@ Mudança em relação ao plano: as cenas "Promessa" e "O que é o Claude" foram 
 
 ## Cena 4. Passo 3: Cortar
 
-**Na tela:** a faixa pintada vira linha do tempo. Entra a caixa "auto-editor": um medidor de volume varre a faixa e os trechos de silêncio encolhem até sumir. Entra a caixa "FFmpeg", desenhada como um motor, com comandos de texto passando rápido. Depois uma prancheta com a lista de cortes, cada linha com o tempo, e o cursor marcando "Aprovar". Os trechos vermelhos caem para fora da tela e os verdes se juntam com um estalo. Contador: 20:00 vira 12:00. No fim, três ícones genéricos de programas de edição recebem a linha do tempo.
+**Na tela:** a faixa pintada vira linha do tempo. Entra a caixa "auto-editor": um medidor de volume varre a faixa e os trechos de silêncio encolhem até sumir. Entra a caixa "FFmpeg", desenhada como um motor, com comandos de texto passando rápido. Depois uma prancheta com a lista de cortes, cada linha com o tempo, e o cursor marcando "Aprovar". Os trechos vermelhos caem para fora da tela e os verdes se juntam com um estalo. Contador: 20:00 vira 12:00. No fim, cinco etiquetas de texto recebem a linha do tempo: Premiere, DaVinci Resolve, Final Cut, Shotcut e Kdenlive.
 
 > Duas ferramentas fazem o corte.
 >
@@ -109,7 +109,7 @@ Mudança em relação ao plano: as cenas "Promessa" e "O que é o Claude" foram 
 >
 > Você não precisa entender o código. Precisa saber descrever o que quer ver. Quanto mais claro o pedido, melhor a cena.
 >
-> Um aviso honesto: o Remotion é gratuito para pessoas e empresas pequenas, e pago para empresas maiores. Confira a licença antes de usar no trabalho.
+> Um aviso honesto: o Remotion é gratuito para pessoas e para empresas de até três pessoas. Acima disso, é pago. Confira a licença antes de usar no trabalho.
 >
 > Falta só uma coisa: tirar o vídeo da pasta e colocar no mundo.
 
@@ -184,3 +184,27 @@ Mudança em relação ao plano: as cenas "Promessa" e "O que é o Claude" foram 
 > Começa pequeno. Pega um vídeo, cria a pasta e escreve o primeiro pedido.
 >
 > Se este vídeo te ajudou, se inscreve e me conta nos comentários: qual vídeo você quer que eu edite primeiro?
+
+---
+
+## Fontes conferidas em 23/11/2026
+
+Cada afirmação sobre ferramenta foi checada na página oficial.
+
+| Afirmação no roteiro | Resultado | Fonte oficial |
+|---|---|---|
+| Claude Code exige plano pago | Confirmado: Pro, Max, Ultra, Team ou Enterprise | https://code.claude.com/docs/en/quickstart |
+| Dá para usar pelo aplicativo, sem terminal, na aba Code | Confirmado: Mac e Windows, Linux em teste | https://code.claude.com/docs/en/desktop-quickstart |
+| Trabalha dentro de uma pasta: lê arquivos e executa comandos | Confirmado. Vale só para o aplicativo no computador. A versão do site roda na nuvem, por isso o roteiro manda usar o aplicativo | https://code.claude.com/docs/en/overview |
+| Whisper é gratuito e roda no computador | Confirmado, licença MIT | https://github.com/openai/whisper |
+| Whisper marca o tempo de cada palavra | Confirmado, com a opção word_timestamps, que o projeto chama de experimental. Por isso o roteiro não diz "exato" | https://github.com/openai/whisper/blob/main/whisper/transcribe.py |
+| auto-editor remove silêncio pelo volume do áudio | Confirmado | https://github.com/WyattBlue/auto-editor |
+| auto-editor exporta a linha do tempo para programas de edição | Confirmado: Premiere, DaVinci Resolve, Final Cut, Shotcut e Kdenlive | https://auto-editor.com |
+| FFmpeg funciona por comandos e converte, corta e junta vídeo | Confirmado | https://ffmpeg.org/about.html |
+| Remotion cria vídeo com código, quadro por quadro | Confirmado | https://www.remotion.dev/docs/the-fundamentals |
+| Remotion é gratuito para pessoas e empresas de até 3 pessoas | Confirmado. Acima disso, a partir de 25 dólares por mês por pessoa | https://www.remotion.dev/docs/license/pricing |
+| yt-dlp baixa vídeo e áudio de milhares de sites | Confirmado | https://github.com/yt-dlp/yt-dlp |
+
+Não conferido: a tabela de preços atual do Claude. O roteiro não cita valores, então não depende disso.
+
+Observação para a descrição do vídeo: o auto-editor hoje se instala baixando o programa na página de versões do projeto, não mais pelo pip.
