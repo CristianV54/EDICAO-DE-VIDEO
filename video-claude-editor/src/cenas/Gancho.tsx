@@ -76,11 +76,12 @@ const LINHAS_LOG: [string, number, number][] = [
   ['Movendo a câmera', 78, 186],
 ];
 
-const Editor: React.FC = () => {
-  const f = useCurrentFrame();
+export const Editor: React.FC<{fq?: number; parte?: 'A' | 'B'}> = ({fq, parte}) => {
+  const atual = useCurrentFrame();
+  const f = fq ?? atual;
   // câmera 2D: começa perto da linha do tempo, abre, aproxima no corte, entra no monitor, abre de novo
   const q = [0, 40, 92, 101, 116, 124, 148, 160];
-  const z = trilho1(f, q, [1.7, 1.0, 1.04, 2.5, 2.62, 2.7, 2.76, 1.0]);
+  const z = trilho1(f, q, [1.7, 1.0, 1.04, 2.5, 2.62, 2.7, 2.76, 1.0]) * (1 + 0.05 * rampa(f, 36, 92));
   const fx = trilho1(f, q, [960, 960, 960, 1075, 1075, 557.5, 557.5, 960]);
   const fy = trilho1(f, q, [770, 540, 540, 729, 729, 376, 376, 540]);
   // 3D na palavra "câmera": a janela plana inclina no espaço e a câmera dá a volta nela
@@ -102,7 +103,7 @@ const Editor: React.FC = () => {
   // bloco do Claude em 3D: chega na palavra "Claude", depois vira a cabeça da agulha
   const chega = rampa(f, 54, 70, expoOut);
   const vira = rampa(f, 82, 94, power4InOut);
-  const heroi = f >= 52 && f < 96;
+  const heroi = f >= 52 && f < 96 && parte !== 'B';
   const desfoque = chega * (1 - vira);
   // alvo em unidades 3D: a cabeça da agulha na tela (147 px por unidade, com a câmera usada abaixo)
   const alvoX = (xAgulha - 960) / 147;
@@ -203,15 +204,19 @@ const Editor: React.FC = () => {
           </Tela3D>
         </AbsoluteFill>
       ) : null}
+      {fq === undefined ? (
+        <>
       <Enfase f={f} palavras={[['editado', 24], ['inteiro', 39], ['pelo', 56], ['*Claude', 68]]} ate={92} style={{bottom: 92}} tam={104} />
       <Enfase f={f} palavras={[['cada', 93], ['*corte', 100]]} ate={117} style={{top: 96}} tam={120} />
       <Enfase f={f} palavras={[['cada', 148], ['movimento', 152], ['de', 161], ['*câmera', 173]]} ate={190} style={{bottom: 80}} tam={104} />
+        </>
+      ) : null}
     </AbsoluteFill>
   );
 };
 
 // ====================== Trecho 2: nenhum programa de edição ======================
-const Programa: React.FC<{tipo: number; fechado: number}> = ({tipo, fechado}) => (
+export const Programa: React.FC<{tipo: number; fechado: number}> = ({tipo, fechado}) => (
   <div style={{width: 270, height: 270, borderRadius: 62, position: 'relative', background: tipo === 0 ? '#1d1466' : tipo === 1 ? '#22262d' : '#1b1f23', border: `2px solid ${tipo === 0 ? '#9d9df0' : 'rgba(255,255,255,0.2)'}`, filter: `grayscale(${fechado}) brightness(${1 - fechado * 0.55})`, transform: `scale(${1 - fechado * 0.12})`, boxShadow: fechado < 0.5 ? '0 0 40px rgba(255,255,255,0.12)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
     {tipo === 0 ? <span style={{fontFamily: SANS, fontWeight: 900, fontSize: 132, color: '#a3a3ff'}}>Pr</span> : null}
     {tipo === 1 ? (
@@ -372,7 +377,7 @@ const DoisUsos: React.FC = () => {
 };
 
 // ====================== Trecho 6: as ferramentas e o pedido ======================
-const FERRAMENTAS: [string, string][] = [
+export const FERRAMENTAS: [string, string][] = [
   ['Whisper', 'transcreve'],
   ['auto-editor', 'tira o silêncio'],
   ['FFmpeg', 'corta e exporta'],

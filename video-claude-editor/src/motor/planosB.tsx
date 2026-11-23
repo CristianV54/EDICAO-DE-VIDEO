@@ -10,11 +10,11 @@ const altura = (k: number, s = 0) => Math.abs(Math.sin(k * 1.31 + s) * Math.cos(
 
 // ---------- Whisper: a onda de áudio vira texto, e cada palavra ganha o seu tempo ----------
 const FALA = ['então', 'hoje', 'eu', 'vou', 'te', 'mostrar', 'como', 'editar', 'um', 'vídeo', 'inteiro', 'sem', 'abrir', 'nenhum', 'programa'];
-export const POnda: P<{varrer: number; tempos?: number; rotulo?: string}> = ({c, varrer, tempos, rotulo = 'WHISPER'}) => {
+export const POnda: P<{varrer: number; tempos?: number; temposPalavra?: string; rotulo?: string}> = ({c, varrer, tempos, temposPalavra, rotulo = 'WHISPER'}) => {
   const ini = c.t(varrer);
   const prog = rampa(c.f, ini, Math.min(c.dur - 10, ini + 150), (n) => n);
   const n = 150;
-  const tT = tempos !== undefined ? c.t(tempos) : 99999;
+  const tT = (temposPalavra ? c.p(temposPalavra) : 0) || (tempos !== undefined ? c.t(tempos) : 99999);
   return (
     <AbsoluteFill>
       <Etiqueta style={{position: 'absolute', left: 130, top: 150, opacity: ap(c.f, 0)}}>{rotulo}</Etiqueta>

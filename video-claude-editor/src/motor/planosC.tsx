@@ -458,8 +458,8 @@ export const PLinhaVideo: P<{cenas: string[]; duracoes: number[]}> = ({c, cenas,
 // ---------- Chamadas: inscrever no meio, e comentar 1 ou 2 no fim ----------
 export const PInscrever: P<{pergunta?: boolean; opcoes?: [string, string]; frase?: number}> = ({c, pergunta = false, opcoes = ['vídeo curto', 'vídeo longo'], frase = 0}) => {
   const e = mola(c.f, 4, {damping: 11});
-  const t1 = c.t(frase) + 22;
-  const t2 = c.t(frase) + 58;
+  const t1 = c.p('cortes') || c.t(frase) + 22;
+  const t2 = Math.max(t1 + 12, c.p('montando') || c.t(frase) + 58);
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 60}}>
       {!pergunta ? (

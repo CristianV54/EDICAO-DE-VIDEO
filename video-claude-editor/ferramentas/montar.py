@@ -8,11 +8,11 @@ import numpy as np
 import soundfile as sf
 
 SR = 48000
-ORDEM = ['Gancho'] + [f'Cena{n:02d}' for n in range(2, 11)]
-NOMES = ['Abertura', 'Passo 1: Preparar', 'Passo 2: Entender', 'Passo 3: Cortar', 'Passo 4: Animar', 'Passo 5: Finalizar', 'Na prática: cortes', 'Na prática: vídeo longo', 'Quanto custa e o que não funciona', 'Fechamento']
+ORDEM = [f'Cena{n:02d}' for n in range(1, 11)]
+NOMES = ['Abertura', 'Passo 1: Preparar', 'Passo 2: Entender', 'Passo 3: Cortar', 'Passo 4: Animar', 'Passo 5: Finalizar', 'Na prática: cortes', 'Na prática: vídeo inteiro', 'Quanto custa e o que não funciona', 'Fechamento']
 # cada bloco do vídeo tem a sua faixa: [faixa, cenas do bloco, segundo da faixa em que começa]
 BLOCOS = [
-    ['screen_saver', ['Gancho', 'Cena02'], 0.0],
+    ['screen_saver', ['Cena01', 'Cena02'], 0.0],
     ['jerry_five', ['Cena03', 'Cena04'], 2.0],
     ['pamgaea', ['Cena05', 'Cena06'], 0.0],
     ['newer_wave', ['Cena07', 'Cena08'], 0.0],

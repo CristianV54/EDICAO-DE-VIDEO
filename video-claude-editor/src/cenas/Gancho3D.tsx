@@ -385,11 +385,11 @@ const Escada: React.FC<{f: number; sobe?: boolean; acesos: number[]}> = ({f, sob
   </>
 );
 
-export const CincoPassos: React.FC<{atraso?: number}> = ({atraso = 0}) => {
+export const CincoPassos: React.FC<{atraso?: number; sai?: number}> = ({atraso = 0, sai = 135}) => {
   const f = useCurrentFrame();
   const c = chegadaRampa(f, 28);
-  const s = saidaRampa(f, 135, 12);
-  const q = [0, 40, 108, 135];
+  const s = saidaRampa(f, sai, 12);
+  const q = [0, 40, sai - 27, sai];
   const pos = somar(somar(trilho(f, q, [[-9, 2.2, 10], [-5, 3.4, 10.5], [5.5, 7, 12], [2.5, 6, 16.5]]), [0, -8, 0], c), [10, 0, 0], s);
   const alvo = somar(somar(trilho(f, q, [[-6.5, 1, 0], [-4, 1.6, 0], [4, 3.6, 0], [0.5, 2.4, 0]]), [0, -8, 0], c), [10, 0, 0], s);
   const pouso = (i: number) => 24 + atraso + i * 17;

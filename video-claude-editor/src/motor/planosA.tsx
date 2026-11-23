@@ -12,7 +12,7 @@ const limpa = (x: string) => x.replace(/\*/g, '');
 
 // ---------- Frase grande: as palavras entram quando são ditas ----------
 // texto: palavras separadas por espaço; "*" marca a cor de destaque; "|" quebra a linha.
-export const PFrase: P<{texto: string; etiqueta?: string; tam?: number; marca?: boolean; sub?: string; subEm?: number}> = ({c, texto, etiqueta, tam = 130, marca, sub, subEm}) => {
+export const PFrase: P<{texto: string; etiqueta?: string; tam?: number; marca?: boolean; sub?: string; subEm?: number; subFrase?: number}> = ({c, texto, etiqueta, tam = 130, marca, sub, subEm, subFrase}) => {
   const linhas = texto.split('|').map((l) => l.trim().split(' '));
   const vistos: Record<string, number> = {};
   let i = 0;
@@ -39,7 +39,7 @@ export const PFrase: P<{texto: string; etiqueta?: string; tam?: number; marca?: 
           })}
         </div>
       ))}
-      {sub ? <div style={{fontFamily: MONO, fontSize: 34, color: C.mudo, ...surge(ap(c.f, subEm ?? 20))}}>{sub}</div> : null}
+      {sub ? <div style={{fontFamily: MONO, fontSize: 34, color: C.mudo, ...surge(ap(c.f, subFrase !== undefined ? c.t(subFrase) : subEm ?? 20))}}>{sub}</div> : null}
     </AbsoluteFill>
   );
 };
@@ -84,9 +84,12 @@ export const PTerminal: P<{pedido?: string; pedidoEm?: number; linhas?: LinhaLog
 
 // ---------- Cartões em fileira ou grade ----------
 export type Cartao = {n?: string; titulo: string; sub?: string; selo?: string};
-export const PCartoes: P<{etiqueta?: string; cartoes: Cartao[]; quando: number[]; colunas?: number; foco?: boolean; titulo?: string; tamTitulo?: number}> = ({c, etiqueta, cartoes, quando, colunas, foco = true, titulo, tamTitulo = 56}) => {
+export const PCartoes: P<{etiqueta?: string; cartoes: Cartao[]; quando: (number | string)[]; colunas?: number; foco?: boolean; titulo?: string; tamTitulo?: number}> = ({c, etiqueta, cartoes, quando, colunas, foco = true, titulo, tamTitulo = 56}) => {
   const col = colunas ?? cartoes.length;
-  const tempos = cartoes.map((_, i) => c.t(quando[i]) + (quando[i] === quando[0] && i > 0 && quando[i] === quando[i - 1] ? 0 : 0));
+  const tempos = cartoes.map((_, i) => {
+    const q = quando[i];
+    return typeof q === 'string' ? c.p(q) || 10 + i * 14 : c.t(q);
+  });
   // cartões que entram na mesma frase entram em cascata
   const cascata = cartoes.map((_, i) => tempos[i] + cartoes.slice(0, i).filter((__, k) => quando[k] === quando[i]).length * 5);
   const atual = cascata.reduce((a, t, i) => (c.f >= t ? i : a), -1);
@@ -186,7 +189,7 @@ const Pasta: React.FC<{nome: string; aceso?: number; trava?: number; tam?: numbe
 
 export const PPasta: P<{criar?: number; arrastar?: number; legenda?: string; legendaEm?: number}> = ({c, criar = 0, arrastar = 0, legenda, legendaEm = 2}) => {
   const pasta = mola(c.f, c.t(criar) + 4, {damping: 11});
-  const ini = c.p('arraste') || c.t(arrastar) + 30;
+  const ini = c.p('arrast') || c.t(arrastar) + 30;
   return (
     <AbsoluteFill>
       <Janela titulo="computador · área de trabalho" style={{left: 210, top: 150, width: 1500, height: 780}} luz={0.6}>
@@ -216,7 +219,7 @@ export const PPasta: P<{criar?: number; arrastar?: number; legenda?: string; leg
 };
 
 // A pasta por dentro: três partes, originais travados, cada corte gera um arquivo novo.
-export const PPastaDentro: P<{dividir: number; travar?: number; novo?: number}> = ({c, dividir, travar, novo}) => {
+export const PPastaDentro: P<{dividir: number; travar?: number; novo?: number; prontas?: boolean; aviso?: string; avisoEm?: number; denovo?: number}> = ({c, dividir, travar, novo, prontas, aviso, avisoEm = 1, denovo}) => {
   const nomes = ['bruto', 'trabalho', 'pronto'];
   const tTrava = travar !== undefined ? c.t(travar) : 99999;
   const tNovo = novo !== undefined ? c.t(novo) : 99999;
@@ -225,7 +228,7 @@ export const PPastaDentro: P<{dividir: number; travar?: number; novo?: number}> 
       <Janela titulo="~/meus-videos" style={{left: 210, top: 170, width: 1500, height: 740}} luz={0.9}>
         <div style={{position: 'absolute', left: 0, right: 0, top: 120, display: 'flex', justifyContent: 'center', gap: 130}}>
           {nomes.map((n, i) => {
-            const falada = c.p(n);
+            const falada = prontas ? 0 : c.p(n);
             const e = mola(c.f, (falada || c.t(dividir) + 10) + (falada ? 0 : i * 8) - 2, {damping: 11});
             return (
               <div key={n} style={{transform: `scale(${e})`}}>
@@ -241,6 +244,16 @@ export const PPastaDentro: P<{dividir: number; travar?: number; novo?: number}> 
                 <Arquivo nome={n} cor={C.acento} tam={0.95} />
               </div>
             ))}
+          </div>
+        ) : null}
+        {aviso ? <div style={{position: 'absolute', left: 0, right: 0, top: 500, textAlign: 'center', fontFamily: SANS, fontWeight: 900, fontSize: 60, color: C.texto, ...surge(ap(c.f, c.t(avisoEm)), 30)}}>{aviso}</div> : null}
+        {denovo !== undefined && c.f >= c.t(denovo) ? (
+          <div style={{position: 'absolute', left: 1130, top: 420, display: 'flex', alignItems: 'center', gap: 22, ...surge(ap(c.f, c.t(denovo)), 30)}}>
+            <svg width={110} height={110} viewBox="-50 -50 100 100" style={{transform: `rotate(${-(c.f - c.t(denovo)) * 7}deg)`}}>
+              <path d="M 34 0 A 34 34 0 1 1 10 -32" fill="none" stroke={C.acento} strokeWidth={9} strokeLinecap="round" />
+              <path d="M 0 -48 L 22 -32 L 0 -14 Z" fill={C.acento} />
+            </svg>
+            <div style={{fontFamily: MONO, fontSize: 32, color: C.texto}}>é só pedir<br />de novo</div>
           </div>
         ) : null}
         {c.f >= tTrava ? <div style={{position: 'absolute', left: 150, top: 470, fontFamily: MONO, fontSize: 28, color: C.mudo, width: 360, textAlign: 'center', ...surge(ap(c.f, tTrava + 16))}}>originais guardados</div> : null}
