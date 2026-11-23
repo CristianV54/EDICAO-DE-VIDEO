@@ -115,7 +115,7 @@ export const PVoce: P = ({c}) => {
         const aceso = rampa(c.f, de - 3, de + 7);
         const feito = rampa(c.f, de, de + 26, (v) => v);
         return (
-          <div key={nome} style={{position: 'absolute', left: 150 + i * 560, top: 300, width: 500, height: 350, borderRadius: 26, background: C.cartao, border: `1px solid ${aceso > 0.5 ? C.acento : C.borda}`, boxShadow: aceso > 0.5 ? '0 0 70px rgba(242,98,46,0.28)' : 'none', opacity: chega * (0.16 + 0.84 * Math.max(aceso, sobe * 0.2)), transform: `translateY(${(1 - chega) * 80}px) scale(${0.94 + aceso * 0.06})`, overflow: 'hidden'}}>
+          <div key={nome} style={{position: 'absolute', left: 150 + i * 560, top: 300, width: 500, height: 350, borderRadius: 26, background: C.cartao, border: `1px solid ${aceso > 0.5 ? C.acento : C.borda}`, boxShadow: aceso > 0.5 ? '0 0 70px rgba(242,98,46,0.28)' : 'none', opacity: chega * (0.3 + 0.7 * aceso), transform: `translateY(${(1 - chega) * 80}px) scale(${0.94 + aceso * 0.06})`, overflow: 'hidden'}}>
             <div style={{fontFamily: MONO, fontSize: 26, letterSpacing: 4, color: aceso > 0.5 ? C.acento : C.mudo, margin: '30px 34px'}}>{nome}</div>
             {i < 2 ? (
               <svg width={440} height={180} style={{position: 'absolute', left: 30, top: 120}}>
@@ -165,9 +165,9 @@ export const PResto: P = ({c}) => {
           <div style={{width: '12%', whiteSpace: 'nowrap'}}>
             <span style={{color: C.texto}}>Você</span>
             <br />
-            voz e aprovação
+            aprova
           </div>
-          <div style={{marginLeft: 60}}>
+          <div style={{marginLeft: 20}}>
             <span style={{color: C.acento}}>Claude</span>
             <br />
             cortes, animações, câmera, som, legendas
